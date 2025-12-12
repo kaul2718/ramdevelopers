@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApprovalStatus extends Model
 {
-    protected $table      = 'approvalStatuses';
+    protected $table      = 'approval_statuses';
     protected $primaryKey = 'apvSta_id';
 
     protected $fillable = [
@@ -13,5 +13,9 @@ class ApprovalStatus extends Model
         'apvSta_code',
         'apvSta_description',
         'apvSta_active',
+    ];
+
+    protected $casts = [
+        'apvSta_active' => 'boolean',
     ];
 }

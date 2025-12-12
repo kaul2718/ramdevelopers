@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BusinessState extends Model
 {
-    protected $table      = 'businessState';
+    protected $table      = 'business_state';
     protected $primaryKey = 'busiSta_id';
 
     protected $fillable = [

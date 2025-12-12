@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('apvSta_code')->unique(); // Ej: PEND, APRV, RJCT
             $table->string('apvSta_description')->nullable();
             $table->boolean('apvSta_active')->default(true);
+            $table->timestamps();
+
         });
     }
 
