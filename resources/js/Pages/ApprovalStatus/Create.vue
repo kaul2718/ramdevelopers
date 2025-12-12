@@ -12,9 +12,10 @@ import ApprovalStatusForm from '@/Components/ApprovalStatus/Form.vue'
 const form = useForm({
     apvSta_name: '',
     apvSta_code: '',
-    apvSta_description: ''
-
+    apvSta_description: '',
+    apvSta_active: true, 
 })
+
 </script>
 
 <template>
