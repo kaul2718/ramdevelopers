@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadSource extends Model
 {
-    protected $table = 'leadSources';
+    protected $table = 'lead_sources';
     protected $primaryKey = 'leadSou_id';
 
     protected $fillable = [
@@ -16,6 +16,9 @@ class LeadSource extends Model
         'leadSou_active'
     ];
 
+    protected $casts = [
+        'leadSou_active' => 'boolean',
+    ];
     public function leads()
     {
         return $this->hasMany(Lead::class, 'leadSou_id', 'leadSou_id');

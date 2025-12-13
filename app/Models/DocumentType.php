@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentType extends Model
 {
-    protected $table = 'documentTypes';
+    protected $table      = 'document_types';
     protected $primaryKey = 'docTyp_id';
 
     protected $fillable = [
@@ -14,7 +13,12 @@ class DocumentType extends Model
         'docTyp_name',
         'docTyp_description',
         'docTyp_isInternal',
-        'docTyp_active'
+        'docTyp_active',
+    ];
+
+    protected $casts = [
+        'docTyp_active'     => 'boolean',
+        'docTyp_isInternal' => 'boolean',
     ];
 
     public function developmentFiles()

@@ -1,8 +1,12 @@
 <?php
+// filepath: app/Http/Controllers/LeadStatusController.php
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LeadStatusRequest;
+use App\Models\LeadStatus;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LeadStatusController extends Controller
 {
@@ -11,7 +15,8 @@ class LeadStatusController extends Controller
      */
     public function index()
     {
-        //
+        $lead_statuses = LeadStatus::latest()->paginate(10);
+        return Inertia::render('LeadStatus/Index', ['lead_statuses' => $lead_statuses]);
     }
 
     /**
@@ -19,21 +24,22 @@ class LeadStatusController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('LeadStatus/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LeadStatusRequest $request)
     {
-        //
+        LeadStatus::create($request->validated());
+        return redirect()->route('leadstatus.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $leadSta_id)
     {
         //
     }
@@ -41,24 +47,28 @@ class LeadStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(LeadStatus $leadstatus)
     {
-        //
+        return Inertia::render('LeadStatus/Edit', [
+            'lead_status' => $leadstatus,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(LeadStatusRequest $request, LeadStatus $leadstatus)
     {
-        //
+        $leadstatus->update($request->validated());
+        return redirect()->route('leadstatus.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(LeadStatus $leadstatus)
     {
-        //
+        $leadstatus->delete();
+        return redirect()->route('leadstatus.index');
     }
 }

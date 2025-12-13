@@ -1,43 +1,41 @@
+<!-- filepath: resources/js/Pages/Country/Index.vue -->
 <script>
 export default {
-    name: 'ApprovalStatusIndex'
+    name: 'CountryIndex'
 }
 </script>
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3'
-
+import { Link, router } from '@inertiajs/vue3'
 
 defineProps({
-    approval_statuses: {
+    countries: {
         type: Object,
         required: true
     }
 })
 
-const deleteapproval_statuses = (id) => {
-    if (confirm("¿Seguro que deseas eliminar este estado?")) {
-        router.delete(route("approvalstatus.destroy", id));
+const deleteCountry = (id) => {
+    if (confirm("¿Seguro que deseas eliminar este país?")) {
+        router.delete(route("countries.destroy", id));
     }
 };
-
 </script>
 
 <template>
     <AppLayout>
         <template #header>
-            <h1 class="font-semibold text-xl text-gray-800 leading-tight">Estado Aprobación</h1>
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight">Países</h1>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 bg-white border-border-gray-200">
                     <div class="flex justify-end pr-2"
-                        v-if="$page.props.user.permissions.includes('create approval status')">
-                        <Link :href="route('approvalstatus.create')"
+                        v-if="$page.props.user.permissions.includes('create countries')">
+                        <Link :href="route('countries.create')"
                             class="text-white bg-indigo-500 hover:bg-indigo-700 py-2 px-4 rounded">
-                            Crear Estado
+                            Crear País
                         </Link>
                     </div>
                 </div>
@@ -61,55 +59,48 @@ const deleteapproval_statuses = (id) => {
                                                     Código</th>
                                                 <th scope="col"
                                                     class="p-5 text-left whitespace-nowrap text-sm leading-6 font-semibold text-gray-900 capitalize">
-                                                    Descripción </th>
+                                                    Estado </th>
                                                 <th scope="col"
                                                     class="p-5 text-left whitespace-nowrap text-sm leading-6 font-semibold text-gray-900 capitalize">
-                                                    Status </th>
-                                                <th scope="col"
-                                                    class="p-5 text-left whitespace-nowrap text-sm leading-6 font-semibold text-gray-900 capitalize">
-                                                    Actions </th>
+                                                    Acciones </th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-300 ">
-                                            <tr v-for="item in approval_statuses.data" :key="item.apvSta_id"
+                                            <tr v-for="item in countries.data" :key="item.ctry_id"
                                                 class="bg-white transition-all duration-500 hover:bg-gray-50">
                                                 <td
                                                     class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 ">
-                                                    {{ item.apvSta_id }}
+                                                    {{ item.ctry_id }}
                                                 </td>
                                                 <td
                                                     class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                                                    {{ item.apvSta_name }}
+                                                    {{ item.ctry_name }}
                                                 </td>
                                                 <td
                                                     class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                                                    {{ item.apvSta_code }}
-                                                </td>
-                                                <td
-                                                    class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                                                    {{ item.apvSta_description }}
+                                                    {{ item.ctry_code }}
                                                 </td>
                                                 <td
                                                     class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                                                     <div :class="[
                                                         'py-1.5 px-2.5 rounded-full flex justify-center w-24 items-center gap-2',
-                                                        item.apvSta_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+                                                        item.ctry_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
                                                     ]">
                                                         <svg width="6" height="6" viewBox="0 0 6 6" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
                                                             <circle cx="3" cy="3" r="3"
-                                                                :fill="item.apvSta_active ? '#059669' : '#dc2626'" />
+                                                                :fill="item.ctry_active ? '#059669' : '#dc2626'" />
                                                         </svg>
 
                                                         <span class="font-semibold text-xs">
-                                                            {{ item.apvSta_active ? 'Activo' : 'Inactivo' }}
+                                                            {{ item.ctry_active ? 'Activo' : 'Inactivo' }}
                                                         </span>
                                                     </div>
                                                 </td>
 
                                                 <td class="flex p-5 items-center gap-0.5">
-                                                    <Link :href="route('approvalstatus.edit', item.apvSta_id)"
-                                                        v-if="$page.props.user.permissions.includes('update approval status')"
+                                                    <Link :href="route('countries.edit', item.ctry_id)"
+                                                        v-if="$page.props.user.permissions.includes('update countries')"
                                                         class="p-2  rounded-full bg-white group transition-all duration-500 hover:bg-indigo-600 flex item-center">
                                                         <svg class="cursor-pointer" width="20" height="20"
                                                             viewBox="0 0 20 20" fill="none"
@@ -119,8 +110,8 @@ const deleteapproval_statuses = (id) => {
                                                                 fill="#818CF8"></path>
                                                         </svg>
                                                     </Link>
-                                                    <Link @click="deleteapproval_statuses(item.apvSta_id)"
-                                                        v-if="$page.props.user.permissions.includes('delete approval status')"
+                                                    <Link @click="deleteCountry(item.ctry_id)"
+                                                        v-if="$page.props.user.permissions.includes('delete countries')"
                                                         class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-red-600 flex item-center">
                                                         <svg class="" width="20" height="20" viewBox="0 0 20 20"
                                                             fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -150,13 +141,13 @@ const deleteapproval_statuses = (id) => {
                                     class="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
                                     <!-- Mobile Pagination -->
                                     <div class="flex flex-1 justify-between sm:hidden">
-                                        <Link v-if="approval_statuses.prev_page_url"
-                                            :href="approval_statuses.prev_page_url"
+                                        <Link v-if="countries.prev_page_url"
+                                            :href="countries.prev_page_url"
                                             class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                                             Anterior
                                         </Link>
-                                        <Link v-if="approval_statuses.next_page_url"
-                                            :href="approval_statuses.next_page_url"
+                                        <Link v-if="countries.next_page_url"
+                                            :href="countries.next_page_url"
                                             class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                                             Siguiente
                                         </Link>
@@ -167,11 +158,11 @@ const deleteapproval_statuses = (id) => {
                                         <div>
                                             <p class="text-sm text-gray-700">
                                                 Mostrando
-                                                <span class="font-medium">{{ approval_statuses.from }}</span>
+                                                <span class="font-medium">{{ countries.from }}</span>
                                                 a
-                                                <span class="font-medium">{{ approval_statuses.to }}</span>
+                                                <span class="font-medium">{{ countries.to }}</span>
                                                 de
-                                                <span class="font-medium">{{ approval_statuses.total }}</span>
+                                                <span class="font-medium">{{ countries.total }}</span>
                                                 resultados
                                             </p>
                                         </div>
@@ -180,8 +171,8 @@ const deleteapproval_statuses = (id) => {
                                             <nav aria-label="Pagination"
                                                 class="isolate inline-flex -space-x-px rounded-md shadow-sm">
                                                 <!-- Previous Button -->
-                                                <Link v-if="approval_statuses.prev_page_url"
-                                                    :href="approval_statuses.prev_page_url"
+                                                <Link v-if="countries.prev_page_url"
+                                                    :href="countries.prev_page_url"
                                                     class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                                                     <span class="sr-only">Anterior</span>
                                                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
@@ -193,10 +184,10 @@ const deleteapproval_statuses = (id) => {
                                                 </Link>
 
                                                 <!-- Page Numbers -->
-                                                <Link v-for="page in approval_statuses.last_page" :key="page"
+                                                <Link v-for="page in countries.last_page" :key="page"
                                                     :href="`?page=${page}`" :class="[
                                                         'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus:outline-offset-0',
-                                                        page === approval_statuses.current_page
+                                                        page === countries.current_page
                                                             ? 'z-10 text-white bg-indigo-600 focus-visible:outline-2 focus-visible:outline-indigo-600'
                                                             : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
                                                     ]">
@@ -204,8 +195,8 @@ const deleteapproval_statuses = (id) => {
                                                 </Link>
 
                                                 <!-- Next Button -->
-                                                <Link v-if="approval_statuses.next_page_url"
-                                                    :href="approval_statuses.next_page_url"
+                                                <Link v-if="countries.next_page_url"
+                                                    :href="countries.next_page_url"
                                                     class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                                                     <span class="sr-only">Siguiente</span>
                                                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"

@@ -14,4 +14,7 @@ class BusinessState extends Model
         'busiSta_description',
         'busiSta_active',
     ];
+    protected $casts = [
+        'busiSta_active' => 'boolean',
+    ];
 }

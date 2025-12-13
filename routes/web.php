@@ -27,18 +27,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // AUTH Routes
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
     Route::resource('approvalstatus', ApprovalStatusController::class);
-    Route::resource('/businessstate', BusinessStateController::class);
-    Route::resource('/cities', CityController::class);
-    Route::resource('/countries', CountryController::class);
-    Route::resource('/developers', DeveloperController::class);
-    Route::resource('/developmentimages', DevelopmentImageController::class);
-    Route::resource('/development', DevelopmentController::class);
-    Route::resource('/developmentfile', DevelopmentFileController::class);
-    Route::resource('/documenttype', DocumentTypeController::class);
-    Route::resource('/leads', LeadController::class);
-    Route::resource('/leadnotes', LeadNotesController::class);
-    Route::resource('/leadsources', LeadSourcesController::class);
-    Route::resource('/leadstatus', LeadStatusController::class);
-    Route::resource('/roles', RoleController::class);
+    Route::resource('businessstate', BusinessStateController::class);
+    Route::resource('cities', CityController::class);
+    Route::resource('countries', CountryController::class);
+    Route::resource('developers', DeveloperController::class);
+    Route::resource('developmentimages', DevelopmentImageController::class);
+    Route::resource('development', DevelopmentController::class);
+    Route::resource('developmentfile', DevelopmentFileController::class);
+    Route::resource('documenttype', DocumentTypeController::class);
+    Route::resource('leads', LeadController::class);
+    Route::resource('leadnotes', LeadNotesController::class);
+    Route::resource('leadsources', LeadSourcesController::class);
+    Route::resource('leadstatus', LeadStatusController::class);
+    Route::resource('roles', RoleController::class);
 
 });

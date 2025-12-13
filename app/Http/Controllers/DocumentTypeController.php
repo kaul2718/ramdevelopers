@@ -1,8 +1,12 @@
 <?php
+// filepath: app/Http/Controllers/DocumentTypeController.php
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocumentTypeRequest;
+use App\Models\DocumentType;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DocumentTypeController extends Controller
 {
@@ -11,7 +15,8 @@ class DocumentTypeController extends Controller
      */
     public function index()
     {
-        //
+        $document_types = DocumentType::latest()->paginate(10);
+        return Inertia::render('DocumentType/Index', ['document_types' => $document_types]);
     }
 
     /**
@@ -19,21 +24,22 @@ class DocumentTypeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('DocumentType/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DocumentTypeRequest $request)
     {
-        //
+        DocumentType::create($request->validated());
+        return redirect()->route('documenttype.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $docTyp_id)
     {
         //
     }
@@ -41,24 +47,28 @@ class DocumentTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(DocumentType $documenttype)
     {
-        //
+        return Inertia::render('DocumentType/Edit', [
+            'document_type' => $documenttype,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(DocumentTypeRequest $request, DocumentType $documenttype)
     {
-        //
+        $documenttype->update($request->validated());
+        return redirect()->route('documenttype.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(DocumentType $documenttype)
     {
-        //
+        $documenttype->delete();
+        return redirect()->route('documenttype.index');
     }
 }
