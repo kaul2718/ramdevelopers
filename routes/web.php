@@ -42,3 +42,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('/roles', RoleController::class);
 
 });
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/create', [UserController::class, 'create'])->name('create');
+        });
+
+        Route::prefix('countries')->name('countries.')->group(function () {
+            Route::get('/', [CountryController::class, 'index'])->name('index');
+        });
+
+    });
