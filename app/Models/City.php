@@ -15,6 +15,9 @@ class City extends Model
         'ctry_id'
     ];
 
+protected $casts = [
+        'city_active' => 'boolean',
+    ];
     public function country()
     {
         return $this->belongsTo(Country::class, 'ctry_id', 'ctry_id');

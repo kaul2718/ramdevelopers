@@ -13,4 +13,7 @@ class Country extends Model
         'ctry_code',
         'ctry_active'
     ];
+    protected $casts = [
+        'ctry_active' => 'boolean',
+    ];
 }

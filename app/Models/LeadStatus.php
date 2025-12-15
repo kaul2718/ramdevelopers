@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadStatus extends Model
 {
-    protected $table = 'leadStatuses';
+    protected $table = 'lead_statuses';
     protected $primaryKey = 'leadSta_id';
 
     protected $fillable = [
@@ -14,6 +14,10 @@ class LeadStatus extends Model
         'leadSta_name',
         'leadSta_description',
         'leadSta_active'
+    ];
+
+    protected $casts = [
+        'leadSta_active' => 'boolean',
     ];
 
     public function leads()
