@@ -7,6 +7,14 @@
     import DropdownLink from '@/Components/DropdownLink.vue';
     import NavLink from '@/Components/NavLink.vue';
     import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+    import { usePage } from '@inertiajs/vue3';
+
+    const page = usePage();
+
+    const isActive = (path) => {
+        return page.url.startsWith(`/${path}`);
+    };
+
 
     defineProps({
         title: String,
@@ -181,7 +189,7 @@
                         </div>
                         <ul class="flex-col gap-1 flex">
                             <li>
-                                <button type="button" @click="goToProfile">
+                                <button type="button" @click="goToProfile" :class="[isActive('user/profile') ? 'sidebar--btn--active' : '']">
                                     <div class="flex-col gap-1 flex">
                                         <div class="flex-col flex rounded-lg p-2">
                                             <div class="h-5 gap-3 flex">
@@ -220,10 +228,12 @@
                     </div>
                 </div>
             </aside>
-            <div class="flex-1 overflow-y-auto p-4">
-                <main class="min-h-full">
-                    <slot />
-                </main>
+            <div class="body">
+                <div class="body-container">
+                    <main class="min-h-full w-full">
+                        <slot />
+                    </main>
+                </div>
             </div>
         </div>
     </div>
