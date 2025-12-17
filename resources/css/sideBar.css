@@ -1,9 +1,15 @@
 :root{
-    --gris: #6B7280;
-    --morado: #6C3FEB;
-    --celeste: #96F7E4;
-    --blanco: #ECFEFF;
+    --fondo: #191e2b;
+    --oscuro: #253045;
+    --medio: #00c6ec;
+    --claro: ghostwhite;
 }
+
+/*----- Body global */
+    .body--global{
+        @apply h-screen flex;
+        background-color: var(--fondo);
+    }
 
 /*----- Sidebar */
     .sidebar {
@@ -20,7 +26,8 @@
         @apply flex flex-col h-full;
         padding: 1em;
         border-radius: 1em;
-        background-color: var(--celeste);
+        background-color: var(--medio);
+        /*border: 1px solid var(--claro);*/
     }
 
     .sidebar--logo{
@@ -29,7 +36,7 @@
     }
 
     .sidebar--container ul{
-        color: var(--morado)!important;
+        color: var(--oscuro)!important;
     }
 
     .sidebar--container ul li button{
@@ -39,24 +46,24 @@
     }
 
     .sidebar--container ul li button:hover{
-        background-color: var(--blanco);
+        background-color: var(--claro);
         padding-left: 1em;
     }   
 
     .sidebar--container ul li .sidebar--btn--active,
     .sidebar--container ul li .sidebar--btn--active:hover{
-        border: 1px solid var(--morado)!important;
+        border: 1px solid var(--oscuro)!important;
         background-color: transparent!important;
-        color: var(--morado)!important;
+        color: var(--oscuro)!important;
         padding: 0;
     }
-    .sidebar--container ul li .sidebar--btn--active h2{
-        color: var(--gris)!important;
+    .sidebar--container ul li .sidebar--btn--active{
+        color: var(--claro)!important;
     }
 
     .sidebar--down{
         @apply w-full flex-col flex mt-auto;
-        color: var(--morado)!important;
+        color: var(--oscuro)!important;
     }
 
     .sidebar--container h6{
@@ -65,8 +72,8 @@
         font-size: 1em;
         text-align: right;
         width: 100%;
-        background-color: var(--morado)!important;
-        color: var(--blanco)!important;
+        background-color: var(--oscuro)!important;
+        color: var(--claro)!important;
         margin-bottom: 1em;
     }
 
@@ -96,8 +103,9 @@
     }
     .body-container{
         @apply flex h-full;
-        background-color: var(--blanco);
+        background-color: var(--claro);
         border-radius: 1em;
+        /*border: 1px solid var(--oscuro);*/
         overflow: hidden;
     }
 

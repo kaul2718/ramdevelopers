@@ -32,27 +32,27 @@
     
     //RUTA DASHBOARD
     const goToDashboard = () => {
-        router.visit('dashboard');
+        router.visit('/dashboard');
     };
     
     //RUTA DEVELOPERS
     const goToDevelopers = () => {
-        router.visit('developers');
+        router.visit('/developers');
     };
     
     //RUTA DEVELOPMENTS
     const goToDevelopments = () => {
-        router.visit('developments');
+        router.visit('/developments');
     };
     
     //RUTA LEADS
     const goToLeads = () => {
-        router.visit('leads');
+        router.visit('/leads');
     };
     
     //RUTA ADMIN
     const goToAdmin = () => {
-        router.visit('admin');
+        router.visit('/admin');
     };
     
     //RUTA PROFILE
@@ -62,7 +62,7 @@
     
     //RUTA LOGOUT
     const logout = () => {
-        router.post(route('logout'));
+        router.post(route('/logout'));
     };
 
 </script>
@@ -73,7 +73,7 @@
         
         <Banner />
         
-        <div class="h-screen flex bg-gray-100">
+        <div class="body--global">
             <aside class="sidebar sidebar--default">
                 <div class="sidebar--container">
                     <div class="sidebar--logo">
@@ -90,11 +90,11 @@
                     </div>
                     <div class="w-full">
                         <div class="w-full h-8 px-3 items-center flex">
-                            <h6 class="text-gray-500 text-xs font-semibold leading-4">Menu</h6>
+                            <h6 class="text-xs font-semibold leading-4">Menu</h6>
                         </div>
                         <ul class="flex-col gap-1 flex">
                             <li>
-                                <button type="button" @click="goToAdmin">
+                                <button type="button" @click="goToDashboard">
                                     <div class="flex-col flex rounded-lg p-2">
                                         <div class="h-5 gap-3 flex">
                                             <div class="relative">
@@ -104,7 +104,7 @@
                                                     </g>
                                                 </svg>
                                             </div>
-                                            <h2 class="text-gray-500 text-sm font-medium leading-snug">Panel</h2>
+                                            <h2 class="text-sm font-medium leading-snug">Panel</h2>
                                         </div>
                                     </div>
                                 </button>
@@ -121,7 +121,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Desarrolladores</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Desarrolladores</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Desarrollos</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Desarrollos</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Leads</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Leads</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Admin</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Admin</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -201,7 +201,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Perfil</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Perfil</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -219,7 +219,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-gray-500 text-sm font-medium leading-snug">Cerrar sessión</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Cerrar sessión</h2>
                                             </div>
                                         </div>
                                     </div>
