@@ -6,17 +6,17 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
-use App\Http\Controllers\DevelopmentImageController;
 use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\DevelopmentFileController;
+use App\Http\Controllers\DevelopmentImageController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadNotesController;
 use App\Http\Controllers\LeadSourcesController;
 use App\Http\Controllers\LeadStatusController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
-
-
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +39,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('leadnotes', LeadNotesController::class);
     Route::resource('leadsources', LeadSourcesController::class);
     Route::resource('leadstatus', LeadStatusController::class);
+    Route::resource('permissions', PermissionController::class);
     Route::resource('roles', RoleController::class);
+    Route::resource('users', UserController::class);
+
+    // Admin panel (grid of admin options)
+    Route::get('/admin', function () {
+        return Inertia::render('Admin/Index');
+    })->name('admin');
 
 });

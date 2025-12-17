@@ -94,7 +94,7 @@
                         </div>
                         <ul class="flex-col gap-1 flex">
                             <li>
-                                <button type="button" @click="goToDashboard">
+                                <button type="button" @click="goToAdmin">
                                     <div class="flex-col flex rounded-lg p-2">
                                         <div class="h-5 gap-3 flex">
                                             <div class="relative">
@@ -183,6 +183,7 @@
                             </li>
                         </ul>
                     </div>
+                    
                     <div class="sidebar--down">
                         <div class="h-8 px-3 items-center inline-flex">
                             <h6 class=" text-xs font-semibold leading-4">Cuenta</h6>

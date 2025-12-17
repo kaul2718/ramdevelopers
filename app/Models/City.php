@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,10 +11,10 @@ class City extends Model
         'city_name',
         'city_active',
         'city_region',
-        'ctry_id'
+        'ctry_id',
     ];
 
-protected $casts = [
+    protected $casts = [
         'city_active' => 'boolean',
     ];
     public function country()

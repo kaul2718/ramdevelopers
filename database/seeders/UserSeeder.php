@@ -1,9 +1,9 @@
 <?php
 namespace Database\Seeders;
 
+use App\Models\User;
 use Hash;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -13,17 +13,19 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            'name' => 'admin', 
-            'email' => 'admin@ramdevelopers.com', 
-            'password' => Hash::make('admin')
+            'name'     => 'Admin',
+            'lastname'     => 'Urbano',
+            'email'    => 'admin@ramdevelopers.com',
+            'password' => Hash::make('admin'),
         ]);
 
         $admin->assignRole('admin');
 
-         $editor = User::create([
-            'name' => 'editor', 
-            'email' => 'editor@ramdevelopers.com', 
-            'password' => Hash::make('editor')
+        $editor = User::create([
+            'name'     => 'Editor',
+            'lastname'     => 'Urbano',
+            'email'    => 'editor@ramdevelopers.com',
+            'password' => Hash::make('editor'),
         ]);
         $editor->assignRole('editor');
 
