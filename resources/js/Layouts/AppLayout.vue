@@ -121,7 +121,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-sm font-medium leading-snug">Desarrolladores</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Promotores</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -219,7 +219,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-sm font-medium leading-snug">Cerrar sessión</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Salir</h2>
                                             </div>
                                         </div>
                                     </div>

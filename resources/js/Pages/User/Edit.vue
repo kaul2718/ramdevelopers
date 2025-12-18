@@ -98,27 +98,13 @@ const handleSubmit = async () => {
 
 <template>
     <AppLayout title="Editar Usuario">
-        <template #header>
-            <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Usuario
-            </h1>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <UserForm 
-                            :updating="true" 
-                            :form="form"
-                            :countries="countries"
-                            :roles="roles"
-                            :permissions="permissions"
-                            @submit="handleSubmit" 
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <UserForm 
+            :updating="true" 
+            :form="form"
+            :countries="countries"
+            :roles="roles"
+            :permissions="permissions"
+            @submit="handleSubmit" 
+        />
     </AppLayout>
 </template>

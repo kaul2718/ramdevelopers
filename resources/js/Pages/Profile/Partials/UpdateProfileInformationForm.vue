@@ -87,7 +87,7 @@ const clearPhotoFileInput = () => {
 
         <template #form>
             <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
+            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input">
                 <!-- Profile Photo File Input -->
                 <input
                     id="photo"
@@ -129,8 +129,7 @@ const clearPhotoFileInput = () => {
             </div>
 
             <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
+            <div class="contenedor--input">
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -139,12 +138,12 @@ const clearPhotoFileInput = () => {
                     required
                     autocomplete="name"
                 />
+                <InputLabel for="name" value="Nombre" />
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
             <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
+            <div class="contenedor--input">
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -153,6 +152,7 @@ const clearPhotoFileInput = () => {
                     required
                     autocomplete="username"
                 />
+                <InputLabel for="email" value="Email" />
                 <InputError :message="form.errors.email" class="mt-2" />
 
                 <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">

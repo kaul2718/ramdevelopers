@@ -1,6 +1,9 @@
 <template>
-    <div class="md:col-span-1 flex justify-between">
-        <div class="px-4 sm:px-0">
+    <div class="col-span-6 md:col-span-6 flex mb-4">
+        <div class="botonera">
+            <slot name="buttons" />
+        </div>
+        <div class="px-4 sm:px-0" style="width: 100%; text-align: right;">
             <h3 class="text-lg font-medium text-gray-900">
                 <slot name="title" />
             </h3>
