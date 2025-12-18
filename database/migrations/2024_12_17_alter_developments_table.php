@@ -45,7 +45,7 @@ return new class extends Migration
     {
         Schema::table('developments', function (Blueprint $table) {
             if (Schema::hasColumn('developments', 'commSta_id')) {
-                $table->dropForeignIdFor('CommercialStatus');
+                $table->dropForeign(['commSta_id']);
                 $table->dropColumn('commSta_id');
             }
             if (Schema::hasColumn('developments', 'devt_active')) {

@@ -29,7 +29,7 @@ class DeveloperController extends Controller
     {
         $countries = Country::where('ctry_active', true)->get();
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Desarrolladores');
+            $query->where('name', 'promotor');
         })->where('usr_active', true)->get();
         return Inertia::render('Developer/Create', [
             'countries' => $countries,
@@ -64,7 +64,7 @@ class DeveloperController extends Controller
     {
         $countries = Country::where('ctry_active', true)->get();
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Desarrolladores');
+            $query->where('name', 'promotor');
         })->where('usr_active', true)->get();
         return Inertia::render('Developer/Edit', [
             'developer' => $developer,

@@ -22,7 +22,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('usr_active');
+            if (Schema::hasColumn('users', 'usr_active')) {
+                $table->dropColumn('usr_active');
+            }
         });
     }
 };
