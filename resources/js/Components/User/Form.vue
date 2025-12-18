@@ -76,12 +76,6 @@
         </template>
 
         <template #form>
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="name" value="Nombre"></InputLabel>
-                <TextInput id="name" v-model="form.name" type="text" autocomplete="given-name"
-                    class="mt-1 block w-full">
-=======
             <div class="contenedor--input">
                 <TextInput 
                 id="name" 
@@ -89,18 +83,11 @@
                     type="text" 
                     autocomplete="given-name"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="name" value="Nombre"></InputLabel>
                 <InputError :message="$page.props.errors.name" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="lastname" value="Apellido"></InputLabel>
-                <TextInput id="lastname" v-model="form.lastname" type="text" autocomplete="family-name"
-                    class="mt-1 block w-full">
-=======
             <div class="contenedor--input">
                 <TextInput 
                     id="lastname" 
@@ -108,17 +95,11 @@
                     type="text" 
                     autocomplete="family-name"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="lastname" value="Apellido"></InputLabel>
                 <InputError :message="$page.props.errors.lastname" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="email" value="Correo Electrónico"></InputLabel>
-                <TextInput id="email" v-model="form.email" type="email" autocomplete="email" class="mt-1 block w-full">
-=======
             <div class="contenedor--input">
                 <TextInput 
                     id="email" 
@@ -126,17 +107,11 @@
                     type="email" 
                     autocomplete="email"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="email" value="Correo Electrónico"></InputLabel>
                 <InputError :message="$page.props.errors.email" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="phone" value="Teléfono (Opcional)"></InputLabel>
-                <TextInput id="phone" v-model="form.phone" type="tel" autocomplete="tel" class="mt-1 block w-full">
-=======
             <div class="contenedor--input">
                 <TextInput 
                     id="phone" 
@@ -144,24 +119,16 @@
                     type="tel" 
                     autocomplete="tel"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="phone" value="Teléfono (Opcional)"></InputLabel>
                 <InputError :message="$page.props.errors.phone" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="usr_id_ctry" value="País (Opcional)"></InputLabel>
-                <select id="usr_id_ctry" v-model="form.usr_id_ctry"
-                    class="mt-1 block w-full border-gray-300 rounded-md">
-=======
             <div class="contenedor--input">
                 <select 
                     id="usr_id_ctry" 
                     v-model="form.usr_id_ctry"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                     <option value="">Selecciona un país</option>
                     <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
                         {{ country.ctry_name }}
@@ -171,12 +138,6 @@
                 <InputError :message="$page.props.errors.usr_id_ctry" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div v-if="!updating" class="col-span-6 sm:col-span-3">
-                <InputLabel for="password" value="Contraseña"></InputLabel>
-                <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
-                    class="mt-1 block w-full">
-=======
             <div v-if="!updating" class="contenedor--input">
                 <TextInput 
                     id="password" 
@@ -184,18 +145,11 @@
                     type="password" 
                     autocomplete="new-password"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="password" value="Contraseña"></InputLabel>
                 <InputError :message="$page.props.errors.password" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div v-if="updating" class="col-span-6 sm:col-span-3">
-                <InputLabel for="password" value="Contraseña (Dejar en blanco para mantener actual)"></InputLabel>
-                <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
-                    class="mt-1 block w-full">
-=======
             <div v-if="updating" class="contenedor--input">
                 <TextInput 
                     id="password" 
@@ -203,18 +157,11 @@
                     type="password" 
                     autocomplete="new-password"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="password" value="Contraseña (Dejar en blanco para mantener actual)"></InputLabel>
                 <InputError :message="$page.props.errors.password" class="mt-2" />
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="idiomas" value="Idiomas (Opcional)"></InputLabel>
-                <TextInput id="idiomas" v-model="form.idiomas" type="text" placeholder="Ej: Español, Inglés, Francés"
-                    class="mt-1 block w-full">
-=======
             <div class="contenedor--input">
                 <TextInput 
                     id="idiomas" 
@@ -222,19 +169,12 @@
                     type="text" 
                     placeholder="Ej: Español, Inglés, Francés"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                 </TextInput>
                 <InputLabel class="label--input" for="idiomas" value="Idiomas (Opcional)"></InputLabel>
                 <InputError :message="$page.props.errors.idiomas" class="mt-2" />
                 <p class="text-xs text-gray-500 mt-1">Separa los idiomas por comas</p>
             </div>
 
-<<<<<<< HEAD
-            <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="profile_photo_path" value="Foto de Perfil (Opcional)"></InputLabel>
-                <input ref="photoInput" id="profile_photo_path" type="file" accept="image/*" @change="handlePhotoChange"
-                    class="mt-1 block w-full text-sm text-gray-500
-=======
             <div class="contenedor--input">
                 <input 
                     ref="photoInput"
@@ -243,7 +183,6 @@
                     accept="image/*"
                     @change="handlePhotoChange"
                     class="campo--input mt-1 block w-full text-sm text-gray-500
->>>>>>> origin/desarrollo/ronaldo
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-md file:border-0
                         file:text-sm file:font-semibold
@@ -255,18 +194,11 @@
                 <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, GIF (máx. 5MB)</p>
             </div>
 
-<<<<<<< HEAD
-            <div v-if="updating" class="col-span-6 sm:col-span-3">
-                <InputLabel for="usr_active" value="Estado"></InputLabel>
-                <select id="usr_active" v-model.number="form.usr_active"
-                    class="mt-1 block w-full border-gray-300 rounded-md">
-=======
             <div v-if="updating" class="contenedor--input">
                 <select 
                     id="usr_active" 
                     v-model.number="form.usr_active"
                     class="campo--input">
->>>>>>> origin/desarrollo/ronaldo
                     <option :value="1">Activo</option>
                     <option :value="0">Inactivo</option>
                 </select>
@@ -275,7 +207,6 @@
             </div>
 
             <div class="col-span-6">
-<<<<<<< HEAD
                 <InputLabel value="Rol" />
 
                 <select v-model="form.role_id" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm
@@ -289,49 +220,6 @@
 
                 <InputError :message="$page.props.errors.role_id" class="mt-2" />
             </div>
-
-
-
-=======
-                <InputLabel class="label--input" value="Roles"></InputLabel>
-                <div class="mt-2 grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div v-for="role in roles" :key="role.id" class="flex items-center">
-                        <input 
-                            :id="`role_${role.id}`"
-                            type="checkbox" 
-                            :value="role.id"
-                            v-model="form.roles"
-                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        >
-                        <label :for="`role_${role.id}`" class="ms-2 text-sm text-gray-700">
-                            {{ role.name }}
-                        </label>
-                    </div>
-                </div>
-                <InputError :message="$page.props.errors.roles" class="mt-2" />
-            </div>
-
-            <div v-if="permissions.length > 0" class="col-span-6">
-                <InputLabel class="label--input" value="Permisos Adicionales"></InputLabel>
-                <p class="text-xs text-gray-600 mt-1 mb-3">Asigna permisos adicionales directos al usuario, independientemente de sus roles</p>
-                <div class="mt-2 grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div v-for="permission in permissions" :key="permission.id" class="flex items-center">
-                        <input 
-                            :id="`permission_${permission.id}`"
-                            type="checkbox" 
-                            :value="permission.id"
-                            v-model="form.permissions"
-                            class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50"
-                        >
-                        <label :for="`permission_${permission.id}`" class="ms-2 text-sm text-gray-700">
-                            {{ permission.name }}
-                            <span class="text-xs text-gray-500 ms-1">({{ permission.guard_name }})</span>
-                        </label>
-                    </div>
-                </div>
-                <InputError :message="$page.props.errors.permissions" class="mt-2" />
-            </div>
->>>>>>> origin/desarrollo/ronaldo
         </template>
 
         <template #actions>
