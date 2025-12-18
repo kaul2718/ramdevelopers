@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('lead_client_phone')->nullable();
             $table->text('lead_message')->nullable();
             $table->string('lead_language')->nullable();
-            $table->timestamp('lead_created')->useCurrent();
-            $table->timestamp('lead_updated')->nullable();
 
             // FK Development
             $table->unsignedBigInteger('devt_id')->nullable();

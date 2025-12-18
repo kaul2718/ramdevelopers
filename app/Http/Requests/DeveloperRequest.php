@@ -55,6 +55,7 @@ class DeveloperRequest extends FormRequest
             ],
             'ctry_id' => ['required', 'exists:countries,ctry_id'],
             'user_id' => ['required', 'exists:users,id'],
+            'devr_active' => ['nullable', 'boolean'],
         ];
     }
 

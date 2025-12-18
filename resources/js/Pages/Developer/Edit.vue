@@ -34,6 +34,7 @@ const form = useForm({
     devr_website: '',
     ctry_id: '',
     user_id: '',
+    devr_active: true,
 })
 
 // Poblamos el formulario con los datos del desarrollador cuando está disponible
@@ -45,6 +46,7 @@ watch(() => props.developer, (newDeveloper) => {
     form.devr_website = newDeveloper.devr_website
     form.ctry_id = newDeveloper.ctry_id
     form.user_id = newDeveloper.user_id
+    form.devr_active = newDeveloper.devr_active
 }, { immediate: true })
 
 </script>

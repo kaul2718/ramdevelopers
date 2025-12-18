@@ -16,16 +16,14 @@ return new class extends Migration
             $table->string('devt_title');
             $table->string('devt_slug')->unique();
             $table->string('devt_address')->nullable();
-            $table->string('devt_asset_type');
             $table->string('devt_short_description');
             $table->text('devt_long_description');
             $table->decimal('devt_price_from', 12, 2)->nullable();
             $table->decimal('devt_price_to', 12, 2)->nullable();
-            $table->string('devt_commercial_status');
             $table->integer('devt_delivery_year')->nullable();
             $table->decimal('devt_estimated_profit', 12, 2)->nullable();
             $table->boolean('devt_is_featured')->default(false);
-            $table->string('devt_approval_status');
+            $table->boolean('devt_active')->default(true);
 
             // FK Developer
             $table->foreignId('devr_id')
@@ -55,6 +53,12 @@ return new class extends Migration
             $table->foreignId('busiSta_id')
                 ->nullable()
                 ->constrained('business_state', 'busiSta_id')
+                ->nullOnDelete();
+
+            // FK Commercial Status
+            $table->foreignId('commSta_id')
+                ->nullable()
+                ->constrained('commercial_statuses', 'commSta_id')
                 ->nullOnDelete();
 
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApprovalStatusController;
 use App\Http\Controllers\BusinessStateController;
+use App\Http\Controllers\CommercialStatusController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
@@ -28,6 +29,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
     Route::resource('approvalstatus', ApprovalStatusController::class);
     Route::resource('businessstate', BusinessStateController::class);
+    Route::resource('commercialstatus', CommercialStatusController::class);
     Route::resource('cities', CityController::class);
     Route::resource('countries', CountryController::class);
     Route::resource('developers', DeveloperController::class);
@@ -35,7 +37,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('development', DevelopmentController::class);
     Route::resource('developmentfile', DevelopmentFileController::class);
     Route::resource('documenttype', DocumentTypeController::class);
-    Route::resource('leads', LeadController::class);
+    Route::resource('lead', LeadController::class);
     Route::resource('leadnotes', LeadNotesController::class);
     Route::resource('leadsources', LeadSourcesController::class);
     Route::resource('leadstatus', LeadStatusController::class);

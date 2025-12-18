@@ -13,10 +13,10 @@ class Development extends Model
         'city_id',
         'apvSta_id',
         'busiSta_id',
+        'commSta_id',
         'devt_title',
         'devt_slug',
         'devt_address',
-        'devt_asset_type',
         'devt_short_description',
         'devt_long_description',
         'devt_price_from',
@@ -24,6 +24,7 @@ class Development extends Model
         'devt_delivery_year',
         'devt_estimated_profit',
         'devt_is_featured',
+        'devt_active',
     ];
 
     public function developer()
@@ -49,5 +50,34 @@ class Development extends Model
     public function businessStatus()
     {
         return $this->belongsTo(BusinessState::class, 'busiSta_id');
+    }
+
+    public function commercialStatus()
+    {
+        return $this->belongsTo(CommercialStatus::class, 'commSta_id');
+    }
+
+    // Relación: Un Development tiene muchos DevelopmentFiles
+    public function developmentFiles()
+    {
+        return $this->hasMany(DevelopmentFile::class, 'devt_id', 'devt_id');
+    }
+
+    // Alias para developmentFiles
+    public function files()
+    {
+        return $this->developmentFiles();
+    }
+
+    // Relación: Un Development tiene muchas DevelopmentImages
+    public function developmentImages()
+    {
+        return $this->hasMany(DevelopmentImage::class, 'devt_id', 'devt_id');
+    }
+
+    // Alias para developmentImages
+    public function images()
+    {
+        return $this->developmentImages();
     }
 }

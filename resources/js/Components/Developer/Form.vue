@@ -138,6 +138,19 @@ defineEmits(['submit'])
                 </select>
                 <InputError :message="$page.props.errors.user_id" class="mt-2" />
             </div>
+
+            <!-- Solo visible cuando se está editando -->
+            <div v-if="updating" class="col-span-6 sm:col-span-6">
+                <InputLabel for="devr_active" value="Estado"></InputLabel>
+                <select 
+                    id="devr_active" 
+                    v-model="form.devr_active"
+                    class="mt-1 block w-full border-gray-300 rounded-md">
+                    <option :value="true">Activo</option>
+                    <option :value="false">Inactivo</option>
+                </select>
+                <InputError :message="$page.props.errors.devr_active" class="mt-2" />
+            </div>
         </template>
 
         <template #actions>

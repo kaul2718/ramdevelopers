@@ -34,12 +34,12 @@
     
     //RUTA DEVELOPMENTS
     const goToDevelopments = () => {
-        router.visit('developments');
+        router.visit('development');
     };
     
     //RUTA LEADS
     const goToLeads = () => {
-        router.visit('leads');
+        router.visit('lead');
     };
     
     //RUTA ADMIN
