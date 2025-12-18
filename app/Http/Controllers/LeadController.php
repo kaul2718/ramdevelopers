@@ -18,7 +18,7 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $leads = Lead::with(['development', 'country', 'source', 'status', 'user'])
+        $leads = Lead::with(['development', 'country', 'source', 'status', 'user', 'notes.user'])
             ->paginate(10);
 
         return Inertia::render('Lead/Index', [

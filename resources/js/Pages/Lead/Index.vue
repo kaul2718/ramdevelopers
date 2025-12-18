@@ -100,6 +100,18 @@
                                                     ></path>
                                                 </svg>
                                             </Link>
+                                            <button
+                                                @click="openNotesModal(item)"
+                                                class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-purple-600 flex item-center"
+                                                title="Ver notas"
+                                            >
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path class="stroke-purple-600 group-hover:stroke-white"
+                                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    ></path>
+                                                </svg>
+                                            </button>
                                             <Link
                                                 :href="route('lead.edit', item.lead_id)"
                                                 class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-indigo-600 flex item-center"
@@ -156,16 +168,90 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Notas -->
+        <div v-if="showNotesModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-96 flex flex-col">
+                <!-- Header del Modal -->
+                <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Notas de {{ selectedLead?.lead_client_name }}
+                    </h3>
+                    <button
+                        @click="closeNotesModal"
+                        class="text-gray-400 hover:text-gray-600 transition"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Contenido del Modal -->
+                <div class="overflow-y-auto flex-1 p-6">
+                    <div v-if="selectedLead?.notes && selectedLead.notes.length > 0" class="space-y-4">
+                        <div
+                            v-for="note in selectedLead.notes"
+                            :key="note.leadNot_id"
+                            class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 transition"
+                        >
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-semibold text-gray-900">{{ note.leadNot_title }}</h4>
+                                <span v-if="note.leadNot_active" class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
+                                    Activa
+                                </span>
+                                <span v-else class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700">
+                                    Inactiva
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-2">{{ note.leadNot_description }}</p>
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>{{ note.user?.name }} {{ note.user?.lastname }}</span>
+                                <span>{{ formatDate(note.created_at) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="text-center py-8">
+                        <p class="text-gray-500">No hay notas asociadas a este lead</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </AppLayout>
 </template>
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps({
     leads: Object,
 });
+
+const showNotesModal = ref(false);
+const selectedLead = ref(null);
+
+const openNotesModal = (lead) => {
+    selectedLead.value = lead;
+    showNotesModal.value = true;
+};
+
+const closeNotesModal = () => {
+    showNotesModal.value = false;
+    selectedLead.value = null;
+};
+
+const formatDate = (date) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
 
 const deleteLead = (id) => {
     if (confirm('¿Está seguro que desea eliminar este lead?')) {
