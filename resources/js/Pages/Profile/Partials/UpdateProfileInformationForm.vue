@@ -78,16 +78,16 @@ const clearPhotoFileInput = () => {
 <template>
     <FormSection @submitted="updateProfileInformation">
         <template #title>
-            Profile Information
+            Información del perfil
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Actualiza la información de perfil y la dirección de correo electrónico de tu cuenta.
         </template>
 
         <template #form>
             <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
+            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input">
                 <!-- Profile Photo File Input -->
                 <input
                     id="photo"
@@ -113,7 +113,7 @@ const clearPhotoFileInput = () => {
                 </div>
 
                 <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
+                    Seleccionar una nueva foto
                 </SecondaryButton>
 
                 <SecondaryButton
@@ -122,15 +122,14 @@ const clearPhotoFileInput = () => {
                     class="mt-2"
                     @click.prevent="deletePhoto"
                 >
-                    Remove Photo
+                    Eliminar foto
                 </SecondaryButton>
 
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
 
             <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
+            <div class="contenedor--input">
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -139,12 +138,12 @@ const clearPhotoFileInput = () => {
                     required
                     autocomplete="name"
                 />
+                <InputLabel for="name" value="Nombre" />
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
             <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
+            <div class="contenedor--input">
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -153,11 +152,12 @@ const clearPhotoFileInput = () => {
                     required
                     autocomplete="username"
                 />
+                <InputLabel for="email" value="Email" />
                 <InputError :message="form.errors.email" class="mt-2" />
 
                 <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
                     <p class="text-sm mt-2">
-                        Your email address is unverified.
+                        Tu dirección de correo electrónico no está verificada.
 
                         <Link
                             :href="route('verification.send')"
@@ -166,12 +166,12 @@ const clearPhotoFileInput = () => {
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             @click.prevent="sendEmailVerification"
                         >
-                            Click here to re-send the verification email.
+                            Haga clic aquí para volver a enviar el correo electrónico de verificación.
                         </Link>
                     </p>
 
                     <div v-show="verificationLinkSent" class="mt-2 font-medium text-sm text-green-600">
-                        A new verification link has been sent to your email address.
+                        Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.
                     </div>
                 </div>
             </div>
@@ -179,11 +179,14 @@ const clearPhotoFileInput = () => {
 
         <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
+                Guardado.
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                <template #texto--boton>Guardar</template>
+                <template #icono--boton>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </template>
             </PrimaryButton>
         </template>
     </FormSection>

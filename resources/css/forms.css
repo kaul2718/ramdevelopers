@@ -1,0 +1,117 @@
+:root{
+    --fondo: #191e2b;
+    --oscuro: #253045;
+    --medio: #00c6ec;
+    --claro: ghostwhite;
+}
+
+.plantilla--form{    
+    padding: none;
+}
+
+.botonera{
+    display: flex;
+    align-items: center;
+}
+
+.botonera button{
+    border-radius: .5em;
+    padding: .25em 0.5em;
+    transition: all 0.3s ease-in-out;
+    background-color: var(--medio);
+}
+
+.botonera button:hover{
+    background-color: var(--oscuro);
+}
+
+.botonera button svg{
+    width: 1.5em;
+    color: var(--oscuro);
+    transition: all 0.3s ease-in-out;
+    stroke-width: 2;
+}
+
+.botonera button:hover svg{
+    color: var(--medio);
+    transform: scale(1.25);
+    transform: rotate(360deg);
+}
+
+.contenedor--form{
+    padding-top: 1em;
+}
+
+.contenedor--input{
+    @apply col-span-6 sm:col-span-3;
+    position: relative;
+}
+
+.campo--input{
+    cursor: pointer;
+    width: 100%;
+    border-radius: .5em!important;
+    outline: none!important;
+    box-shadow: none!important;
+    border: 1px solid var(--medio)!important;
+    background-color: transparent!important;
+    transition: all 0.3s ease-in-out;
+}
+
+.campo--input:focus{
+    border: 1px solid #E6FBFF!important;
+    background-color: #B8F3FF!important;
+}
+
+.contenedor--input label{
+    cursor: pointer;
+    color: var(--oscuro);
+    transform: translate(0, -4em);
+    font-size: 1em;
+    transition: all 0.3s ease-in-out;
+}
+
+.campo--input:focus ~ label{
+    transform: translate(2em, -4em);
+    color: var(--medio);
+}
+
+.contenedor--input p{
+    margin-top: -1.25em;
+}
+
+.envio--form{
+    width: 100%;
+    margin-top: 1em;
+    text-align: right;
+}
+
+.btn--enviar--form{
+    display: inline-flex;
+    align-items: center;
+    border-radius: .5em;
+    padding: .5em 1em;
+    transition: all 0.3s ease-in-out;
+    background-color: var(--medio);
+}
+
+.btn--enviar--form:hover{
+    background-color: var(--oscuro);
+    color: var(--medio);
+}
+
+.btn--enviar--form svg{
+    width: 1.5em;
+    color: var(--oscuro);
+    transition: all 0.3s ease-in-out;
+    stroke-width: 2;
+    font-size: 0em;
+}
+
+.btn--enviar--form:hover svg{
+    font-size: 1em;
+    margin-left: 1em;
+    color: var(--medio);
+    transform: scale(1.25);
+    transform: rotate(360deg);
+}
