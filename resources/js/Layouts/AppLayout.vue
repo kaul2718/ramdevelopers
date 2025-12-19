@@ -47,7 +47,7 @@ const goToDevelopments = () => {
 
 //RUTA LEADS
 const goToLeads = () => {
-    router.visit('lead');
+    router.visit('/lead');
 };
 
 //RUTA ADMIN
@@ -62,7 +62,7 @@ const goToProfile = () => {
 
 //RUTA LOGOUT
 const logout = () => {
-    router.post(route('/logout'));
+    router.post(route('logout'));
 };
 
 </script>
@@ -79,7 +79,7 @@ const logout = () => {
                 <div class="sidebar--container">
                     <div class="sidebar--logo">
                         <a href="javascript:;">
-                            <img src="https://pagedone.io/asset/uploads/1701235273.png" alt="Pagedone logo image">
+                            <img src="/images/logo.png" alt="Pagedone logo image">
                         </a>
                         <a href="javascript:;" class="w-6 h-6 relative">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

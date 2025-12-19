@@ -22,8 +22,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // NO AUTH Routes
-Route::get('/', [DashboardController::class, 'index']);
-
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     // AUTH Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
