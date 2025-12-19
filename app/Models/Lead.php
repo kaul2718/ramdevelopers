@@ -15,8 +15,6 @@ class Lead extends Model
         'lead_client_phone',
         'lead_message',
         'lead_language',
-        'lead_created',
-        'lead_updated',
         'devt_id',
         'ctry_id',
         'user_id',
@@ -36,7 +34,7 @@ class Lead extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function source()

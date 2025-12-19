@@ -28,9 +28,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Revertir idiomas a json
-            $table->json('idiomas')->nullable()->change();
-            
             // Eliminar usr_active
             if (Schema::hasColumn('users', 'usr_active')) {
                 $table->dropColumn('usr_active');

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('leadNot_id');
             $table->string('leadNot_title', 150)->nullable();
             $table->text('leadNot_description')->nullable();
-            $table->dateTime('leadNot_date')->nullable();
             $table->boolean('leadNot_active')->default(true);
 
             // FK Lead

@@ -9,16 +9,19 @@ class LeadNote extends Model
 {
     use HasFactory;
 
-    protected $table = 'leadNotes';
+    protected $table = 'lead_notes';
     protected $primaryKey = 'leadNot_id';
 
     protected $fillable = [
         'leadNot_title',
         'leadNot_description',
-        'leadNot_date',
         'leadNot_active',
         'lead_id',
         'user_id'
+    ];
+
+     protected $casts = [
+        'leadNot_active' => 'boolean',
     ];
 
     public function lead()

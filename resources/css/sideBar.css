@@ -35,6 +35,9 @@
         @apply w-full justify-between items-center gap-2.5 inline-flex;
         margin-bottom: 1em;
     }
+    .sidebar--logo img{
+        height: 3em;
+    }
 
     .sidebar--logo img{
         height: 3em;

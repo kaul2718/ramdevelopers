@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DevelopmentFile extends Model
 {
-    protected $table = 'developmentFiles';
+    protected $table = 'development_files';
     protected $primaryKey = 'devFile_id';
 
     protected $fillable = [
