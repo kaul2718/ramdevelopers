@@ -36,6 +36,10 @@
         margin-bottom: 1em;
     }
 
+    .sidebar--logo img{
+        height: 3em;
+    }
+
     .sidebar--container ul{
         color: var(--oscuro)!important;
     }
