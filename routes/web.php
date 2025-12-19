@@ -26,7 +26,7 @@ Route::get('/', [DashboardController::class, 'index']);
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     // AUTH Routes
-    Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('approvalstatus', ApprovalStatusController::class);
     Route::resource('businessstate', BusinessStateController::class);
     Route::resource('commercialstatus', CommercialStatusController::class);

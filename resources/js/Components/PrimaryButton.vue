@@ -10,7 +10,7 @@ defineProps({
 
 <template>
     <button :type="type" class="btn--enviar--form">
-        <spam><slot name="texto--boton" /></spam>
+        <span><slot name="texto--boton" /></span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="size-5">
             <slot name="icono--boton" />
         </svg>
