@@ -159,20 +159,16 @@ const handlePhotoChange = (event) => {
             <div class="col-span-6">
                 <InputLabel value="Rol" />
 
-                <select v-model="form.role_id" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm
-               focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <select v-model="form.roles" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="" disabled>Seleccione un rol</option>
 
-                    <option v-for="role in roles" :key="role.id" :value="role.id">
+                    <option v-for="role in roles" :key="role.id" :value="[role.id]">
                         {{ role.name }}
                     </option>
                 </select>
 
-                <InputError :message="$page.props.errors.role_id" class="mt-2" />
+                <InputError :message="$page.props.errors.roles" class="mt-2" />
             </div>
-
-
-
         </template>
 
         <template #actions>
