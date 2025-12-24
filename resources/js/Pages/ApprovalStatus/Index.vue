@@ -26,7 +26,7 @@ const deleteapproval_statuses = (id) => {
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout title="Estado Aprobacion">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">Estado Aprobación</h1>
         </template>

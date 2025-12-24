@@ -1,5 +1,6 @@
 @import "sideBar.css";
 @import "forms.css";
+@import "login.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

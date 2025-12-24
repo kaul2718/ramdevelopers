@@ -10,7 +10,7 @@ import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout title="Admin">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">Panel de Administración</h1>
         </template>

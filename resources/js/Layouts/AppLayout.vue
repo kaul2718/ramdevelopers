@@ -79,7 +79,7 @@ const logout = () => {
                 <div class="sidebar--container">
                     <div class="sidebar--logo">
                         <a href="javascript:;">
-                            <img src="/images/logo.png" alt="Ram logo">
+                            <img src="/images/logo2.png" alt="Ram logo">
                         </a>
                         <a href="javascript:;" class="w-6 h-6 relative">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
