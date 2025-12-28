@@ -1,12 +1,3 @@
-:root{
-    --fondo: #191e2b;
-    --oscuro: #253045;
-    --medio: #00c6ec;
-    --claro: ghostwhite;
-    --gris: #5A6677;
-
-}
-
 .page--login{
     @apply h-screen flex;
     display: grid;
@@ -18,6 +9,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+.left--login .contenedor--autenticacion{
+    width: 65%;
 }
 
 .logo--login{
@@ -36,8 +31,13 @@
     font-weight: bold;
 }
 
-.page--login .contenedor--input label{
+.page--login .contenedor--input label,
+.page--login .campo--input{
     color: var(--gris);
+}
+
+.page--login .campo--input:focus{
+    color: var(--oscuro);
 }
 
 .page--login .contenedor--link{
@@ -70,6 +70,10 @@
 .page--login .contenedor--link label:hover,
 .page--login .contenedor--link .link:hover{
     color: var(--medio);
+}
+
+.page--login .btn--enviar--form:hover{
+    box-shadow: 0 0 .3em 0 var(--medio);
 }
 
 .right--login {

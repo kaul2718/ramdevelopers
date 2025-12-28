@@ -27,59 +27,87 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Reset Password" />
+    <Head title="Recuperar contraseña" />
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
+    <div class="page--login">
+        <div class="left--login">
+            <AuthenticationCard>
+                <template #logo>
+                    <AuthenticationCardLogo />
+                </template>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <div class="mensaje">
+                    <h1>Renovar contraseña</h1>
+                    <p>Crea una nueva calve de acceso para que puedas recuperar tu cuenta.</p>
+                </div>
+
+                <form @submit.prevent="submit" class="contenedor--form">
+                    <div class="contenedor--input">
+                        <TextInput
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        class="campo--input"
+                        required
+                        autofocus
+                        autocomplete="username"
+                        />
+                        <InputLabel for="email" value="Email" />
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div><br>
+
+                    <div class="contenedor--input">
+                        <TextInput
+                        id="password"
+                        v-model="form.password"
+                        type="password"
+                        class="campo--input"
+                        required
+                        autocomplete="new-password"
+                        />
+                        <InputLabel for="password" value="Contraseña" />
+                        <InputError class="mt-2" :message="form.errors.password" />
+                    </div><br>
+
+                    <div class="contenedor--input">
+                        <TextInput
+                        id="password_confirmation"
+                        v-model="form.password_confirmation"
+                        type="password"
+                        class="campo--input"
+                        required
+                        autocomplete="new-password"
+                        />
+                        <InputLabel for="password_confirmation" value="Confirmar contraseña" />
+                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                    </div>
+
+                    <div class="flex items-center justify-end mt-4">
+                        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">                   
+                            <template #texto--boton>Guardar contraseña</template>
+                            <template #icono--boton>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </template> 
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </AuthenticationCard>
+        </div>
+        <div class="right--login">
+            <div class="contenedor--texto">
+                <h2>Construyendo el futuro, <span>proyecto a</span> proyecto.</h2>
+                <p>Accede a las herramientas más avanzadas de gestión inmobiliaria y visualización de catálogos en tiempo real.</p>
+                <div class="rejilla--inferior">
+                    <div>
+                        <h4>25+</h4>
+                        <span>Proyectos Activos</span>
+                    </div>
+                    <div>
+                        <h4>100%</h4>
+                        <span>Gestión Digital</span>
+                    </div>
+                </div>
             </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+        </div>
+    </div>
 </template>

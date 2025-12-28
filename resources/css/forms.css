@@ -1,10 +1,3 @@
-:root{
-    --fondo: #191e2b;
-    --oscuro: #253045;
-    --medio: #00c6ec;
-    --claro: ghostwhite;
-}
-
 .plantilla--form{    
     padding: none;
 }
@@ -34,7 +27,6 @@
 
 .botonera button:hover svg{
     color: var(--medio);
-    transform: scale(1.25);
     transform: rotate(360deg);
 }
 
@@ -80,6 +72,49 @@
     margin-top: -1.25em;
 }
 
+.switch {
+    font-size: 0;
+}
+
+.campo--check {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.switch span {
+    margin: 0;
+    display: block;
+    width: 40px;
+    height: 20px;
+    background: var(--claro);
+    border-radius: 20px;
+    transition: 0.3s;
+    position: relative;
+    cursor: pointer;
+}
+
+.switch span::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: var(--oscuro);
+    border-radius: 50%;
+    margin: 2px;
+    transition: 0.3s;
+}
+
+.campo--check:checked+span {
+    background: var(--medio);
+}
+
+.campo--check:checked+span::before {
+    transform: translateX(20px);
+}
+
 .envio--form{
     width: 100%;
     margin-top: 1em;
@@ -112,6 +147,5 @@
     font-size: 1em;
     margin-left: 1em;
     color: var(--medio);
-    transform: scale(1.25);
     transform: rotate(360deg);
 }

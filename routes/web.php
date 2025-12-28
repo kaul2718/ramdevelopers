@@ -25,6 +25,34 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTA RESET PASSWORD SOLO DESARROLLO
+|--------------------------------------------------------------------------
+*/
+if (app()->environment('local')) {
+    Route::get('/reset-password', function () {
+        return Inertia::render('Auth/ResetPassword', [
+            'token' => 'TOKEN_DE_PRUEBA',
+            'email' => 'test@local.dev',
+        ]);
+    });
+}
+
+if (app()->environment('local')) {
+    Route::get('/dev-verify-email', function () {
+        return Inertia::render('Auth/VerifyEmail');
+    });
+}
+
+if (app()->environment('local')) {
+    Route::get('/two-factor-dev', function () {
+        return Inertia::render('Auth/TwoFactorChallenge');
+    });
+}
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     // AUTH Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

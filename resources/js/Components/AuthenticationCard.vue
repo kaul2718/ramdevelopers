@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contenedor--autenticacion">
         <div>
             <slot name="logo" />
         </div>

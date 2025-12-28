@@ -32,7 +32,7 @@
 <template>
     <Head title="Log in" />
 
-    <div class="page--login ">
+    <div class="page--login">
         <div class="left--login">
             <AuthenticationCard>
                 <template #logo>
@@ -41,7 +41,7 @@
 
                 <div class="mensaje">
                     <h1>Bienvenido de nuevo</h1>
-                    <P>Gestiona tus proyectos inmobiliarios con eficiencia.</P>
+                    <p>Gestiona tus proyectos inmobiliarios con eficiencia.</p>
                 </div>
 
                 <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -81,7 +81,7 @@
                             <span>Recordar</span>
                         </label>
                         <Link class="link" v-if="canResetPassword" :href="route('password.request')">
-                            Forgot your password?
+                            Olvidaste tu contraseña?
                         </Link>
                     </div><br>
 
