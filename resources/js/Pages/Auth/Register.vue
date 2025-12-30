@@ -9,9 +9,19 @@
     import TextInput from '@/Components/TextInput.vue';
     import RightLogin from '@/Components/RightLogin.vue';
 
+    defineProps({
+        countries: {
+            type: Array,
+            default: () => []
+        }
+    });
+
     const form = useForm({
         name: '',
+        lastname: '',
         email: '',
+        phone: '',
+        usr_id_ctry: '',
         password: '',
         password_confirmation: '',
         terms: false,
@@ -56,6 +66,19 @@
 
                     <div class="contenedor--input">
                         <TextInput
+                        id="lastname"
+                        v-model="form.lastname"
+                        type="text"
+                        class="campo--input"
+                        required
+                        autocomplete="family-name"
+                        />
+                        <InputLabel for="lastname" value="Apellido" />
+                        <InputError class="mt-2" :message="form.errors.lastname" />
+                    </div>
+
+                    <div class="contenedor--input">
+                        <TextInput
                         id="email"
                         v-model="form.email"
                         type="email"
@@ -65,6 +88,33 @@
                         />
                         <InputLabel for="email" value="Email" />
                         <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
+
+                    <div class="contenedor--input">
+                        <TextInput
+                        id="phone"
+                        v-model="form.phone"
+                        type="text"
+                        class="campo--input"
+                        autocomplete="tel"
+                        />
+                        <InputLabel for="phone" value="Teléfono" />
+                        <InputError class="mt-2" :message="form.errors.phone" />
+                    </div>
+
+                    <div class="contenedor--input">
+                        <select
+                        id="usr_id_ctry"
+                        v-model="form.usr_id_ctry"
+                        class="campo--input"
+                        >
+                            <option value="">Seleccionar país...</option>
+                            <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                                {{ country.ctry_name }}
+                            </option>
+                        </select>
+                        <InputLabel for="usr_id_ctry" value="País" />
+                        <InputError class="mt-2" :message="form.errors.usr_id_ctry" />
                     </div>
 
                     <div class="contenedor--input">
