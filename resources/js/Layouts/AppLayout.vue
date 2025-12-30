@@ -1,69 +1,69 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import ApplicationMark from '@/Components/ApplicationMark.vue';
-import Banner from '@/Components/Banner.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { usePage } from '@inertiajs/vue3';
+    import { ref } from 'vue';
+    import { Head, Link, router } from '@inertiajs/vue3';
+    import Banner from '@/Components/Banner.vue';
+    import { usePage } from '@inertiajs/vue3';
+    //import ApplicationMark from '@/Components/ApplicationMark.vue';
+    //import Dropdown from '@/Components/Dropdown.vue';
+    //import DropdownLink from '@/Components/DropdownLink.vue';
+    //import NavLink from '@/Components/NavLink.vue';
+    //import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
-const page = usePage();
+    const page = usePage();
 
-const isActive = (path) => {
-    return page.url.startsWith(`/${path}`);
-};
+    const isActive = (path) => {
+        return page.url.startsWith(`/${path}`);
+    };
 
 
-defineProps({
-    title: String,
-});
-
-const showingNavigationDropdown = ref(false);
-
-const switchToTeam = (team) => {
-    router.put(route('current-team.update'), {
-        team_id: team.id,
-    }, {
-        preserveState: false,
+    defineProps({
+        title: String,
     });
-};
 
-//RUTA DASHBOARD
-const goToDashboard = () => {
-    router.visit('/dashboard');
-};
+    const showingNavigationDropdown = ref(false);
 
-//RUTA DEVELOPERS
-const goToDevelopers = () => {
-    router.visit('/developers');
-};
+    const switchToTeam = (team) => {
+        router.put(route('current-team.update'), {
+            team_id: team.id,
+        }, {
+            preserveState: false,
+        });
+    };
 
-//RUTA DEVELOPMENTS
-const goToDevelopments = () => {
-    router.visit('/development');
-};
+    //RUTA DASHBOARD
+    const goToDashboard = () => {
+        router.visit('/dashboard');
+    };
 
-//RUTA LEADS
-const goToLeads = () => {
-    router.visit('/lead');
-};
+    //RUTA DEVELOPERS
+    const goToDevelopers = () => {
+        router.visit('/developers');
+    };
 
-//RUTA ADMIN
-const goToAdmin = () => {
-    router.visit('/admin');
-};
+    //RUTA DEVELOPMENTS
+    const goToDevelopments = () => {
+        router.visit('/development');
+    };
 
-//RUTA PROFILE
-const goToProfile = () => {
-    router.visit('/user/profile');
-};
+    //RUTA LEADS
+    const goToLeads = () => {
+        router.visit('/lead');
+    };
 
-//RUTA LOGOUT
-const logout = () => {
-    router.post(route('logout'));
-};
+    //RUTA ADMIN
+    const goToAdmin = () => {
+        router.visit('/admin');
+    };
+
+    //RUTA PROFILE
+    const goToProfile = () => {
+        router.visit('/user/profile');
+    };
+
+    //RUTA LOGOUT
+    const logout = () => {
+        router.post(route('logout'));
+    };
 
 </script>
 
@@ -79,7 +79,7 @@ const logout = () => {
                 <div class="sidebar--container">
                     <div class="sidebar--logo">
                         <a href="javascript:;">
-                            <img src="/images/logo.png" alt="Pagedone logo image">
+                            <img src="/images/logo2.png" alt="Ram logo">
                         </a>
                         <a href="javascript:;" class="w-6 h-6 relative">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

@@ -3,12 +3,14 @@
     --oscuro: #253045;
     --medio: #00c6ec;
     --claro: ghostwhite;
+    --gris: #5A6677;
 }
 
 /*----- Body global */
     .body--global{
         @apply h-screen flex;
-        background-color: var(--fondo);
+        background: #00C6EC;
+        background: linear-gradient(90deg,rgba(0, 198, 236, 1) 0%, rgba(25, 30, 43, 1) 90%);
     }
 
 /*----- Sidebar */
@@ -27,32 +29,40 @@
         @apply flex flex-col h-full;
         padding: 1em;
         border-radius: 1em;
-        background-color: var(--medio);
+        background-color: var(--fondo);
         /*border: 1px solid var(--claro);*/
     }
 
     .sidebar--logo{
         @apply w-full justify-between items-center gap-2.5 inline-flex;
-        margin-bottom: 1em;
+        margin-bottom: 2em;
     }
+
     .sidebar--logo img{
-        height: 3em;
+        height: 2.5em;
     }
-
-    .sidebar--container ul{
-        color: var(--oscuro)!important;
-    }
-
+    
     .sidebar--container ul li button{
         width: 100%;
         border-radius: 1em;
         transition: all 0.3s ease-in-out;
+        color: var(--gris)!important;
     }
 
     .sidebar--container ul li button:hover{
         background-color: var(--claro);
         padding-left: 1em;
+        color: var(--oscuro);
     }   
+
+    .sidebar--container ul li button svg{
+        transition: all 0.3s ease-in-out;
+        color: var(--medio);
+    }
+
+    .sidebar--container ul li button:hover svg{
+        transform: rotate(360deg);
+    }
 
     .sidebar--container ul li .sidebar--btn--active,
     .sidebar--container ul li .sidebar--btn--active:hover{
@@ -61,6 +71,7 @@
         color: var(--oscuro)!important;
         padding: 0;
     }
+
     .sidebar--container ul li .sidebar--btn--active{
         color: var(--claro)!important;
     }
