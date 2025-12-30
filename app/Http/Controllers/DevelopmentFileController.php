@@ -112,6 +112,16 @@ class DevelopmentFileController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $file = DevelopmentFile::findOrFail($id);
+        
+        // Eliminar el archivo del almacenamiento
+        if ($file->devFile_url && \Storage::exists($file->devFile_url)) {
+            \Storage::delete($file->devFile_url);
+        }
+        
+        // Eliminar el registro de la base de datos
+        $file->delete();
+        
+        return response()->json(['message' => 'Archivo eliminado correctamente'], 200);
     }
 }

@@ -19,8 +19,33 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['roles', 'country'])->latest()->paginate(10);
-        return Inertia::render('User/Index', ['users' => $users]);
+        $users = User::with(['roles', 'country'])
+            ->latest()
+            ->paginate(10)
+            ->through(fn($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'usr_id_ctry' => $user->usr_id_ctry,
+                'usr_active' => $user->usr_active,
+                'profile_photo_url' => $user->profile_photo_url,
+                'country' => $user->country,
+                'roles' => $user->roles,
+                'idiomas' => $user->idiomas,
+            ]);
+        
+        $countries = Country::where('ctry_active', true)->get();
+        $roles = Role::all();
+        $permissions = Permission::all();
+        
+        return Inertia::render('User/Index', [
+            'users' => $users,
+            'countries' => $countries,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -85,9 +110,25 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        $user->load(['roles', 'country']);
+        return Inertia::render('User/Show', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'idiomas' => $user->idiomas,
+                'profile_photo_url' => $user->profile_photo_url,
+                'usr_active' => $user->usr_active,
+                'country' => $user->country,
+                'roles' => $user->roles,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ]
+        ]);
     }
 
     /**

@@ -16,10 +16,15 @@ defineProps({
         type: Object,
         required: true
     },
-    updating: {
+    editMode: {
         type: Boolean,
         required: false,
         default: false
+    },
+    errors: {
+        type: Object,
+        required: false,
+        default: () => ({})
     }
 })
 
@@ -29,24 +34,26 @@ defineEmits(['submit'])
 <template>
     <FormSection @submitted="$emit('submit')">
         <template #title>
-            {{ updating ? 'Actualizar Estado Comercial' : 'Crear Estado Comercial' }}
+            {{ editMode ? 'Actualizar Estado Comercial' : 'Crear Estado Comercial' }}
         </template>
         <template #description>
-            {{ updating ? 'Actualizar el Estado Comercial seleccionado' : 'Crear un nuevo Estado Comercial' }}
+            {{ editMode ? 'Actualizar el Estado Comercial seleccionado' : 'Crear un nuevo Estado Comercial' }}
         </template>
 
         <template #form>
             <div class="col-span-6 sm:col-span-6">
                 <InputLabel for="commSta_name" value="Nombre"></InputLabel>
                 <TextInput id="commSta_name" v-model="form.commSta_name" type="text" autocomplete="name"
-                    class="mt-1 block w-full"></TextInput>
-                <InputError :message="$page.props.errors.commSta_name" class="mt-2" />
+                    class="mt-1 block w-full"
+                    :class="errors.commSta_name || $page.props.errors.commSta_name ? 'border-red-500' : ''"></TextInput>
+                <InputError :message="errors.commSta_name || $page.props.errors.commSta_name" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6">
                 <InputLabel for="commSta_code" value="Código"></InputLabel>
                 <TextInput id="commSta_code" v-model="form.commSta_code" type="text" autocomplete="name"
-                    class="mt-1 block w-full"></TextInput>
-                <InputError :message="$page.props.errors.commSta_code" class="mt-2" />
+                    class="mt-1 block w-full"
+                    :class="errors.commSta_code || $page.props.errors.commSta_code ? 'border-red-500' : ''"></TextInput>
+                <InputError :message="errors.commSta_code || $page.props.errors.commSta_code" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6">
                 <InputLabel for="commSta_description" value="Descripción"></InputLabel>
@@ -55,7 +62,7 @@ defineEmits(['submit'])
                 <InputError :message="$page.props.errors.commSta_description" class="mt-2" />
             </div>
 
-            <div v-if="updating" class="col-span-6 sm:col-span-6">
+            <div v-if="editMode" class="col-span-6 sm:col-span-6">
                 <InputLabel for="commSta_active" value="Estado"></InputLabel>
                 <select id="commSta_active" v-model="form.commSta_active"
                     class="mt-1 block w-full border-gray-300 rounded-md">
@@ -68,7 +75,7 @@ defineEmits(['submit'])
 
         <template #actions>
             <PrimaryButton>
-                {{ updating ? 'Actualizar' : 'Crear' }}
+                {{ editMode ? 'Actualizar' : 'Crear' }}
             </PrimaryButton>
         </template>
     </FormSection>

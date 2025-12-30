@@ -7,9 +7,12 @@ export default {
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Form from '@/Components/Development/Form.vue';
-import { Link } from '@inertiajs/vue3'
+import FileModal from '@/Components/Development/FileModal.vue';
+import ImageModal from '@/Components/Development/ImageModal.vue';
+import { Link, router } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
+import axios from 'axios'
 
 const props = defineProps({
     development: {
@@ -39,6 +42,10 @@ const props = defineProps({
     commercialStatuses: {
         type: Array,
         required: true
+    },
+    documentTypes: {
+        type: Array,
+        required: true
     }
 })
 
@@ -62,6 +69,11 @@ const form = useForm({
     devt_active: true,
 })
 
+const showFileModal = ref(false);
+const showImageModal = ref(false);
+const showImagePreview = ref(false);
+const selectedImage = ref(null);
+
 // Poblamos el formulario con los datos del desarrollo cuando está disponible
 watch(() => props.development, (newDevelopment) => {
     form.devr_id = newDevelopment.devr_id
@@ -75,13 +87,65 @@ watch(() => props.development, (newDevelopment) => {
     form.devt_address = newDevelopment.devt_address
     form.devt_short_description = newDevelopment.devt_short_description
     form.devt_long_description = newDevelopment.devt_long_description
-    form.devt_price_from = newDevelopment.devt_price_from
-    form.devt_price_to = newDevelopment.devt_price_to
-    form.devt_delivery_year = newDevelopment.devt_delivery_year
-    form.devt_estimated_profit = newDevelopment.devt_estimated_profit
-    form.devt_is_featured = newDevelopment.devt_is_featured
-    form.devt_active = newDevelopment.devt_active
+    form.devt_price_from = String(newDevelopment.devt_price_from)
+    form.devt_price_to = String(newDevelopment.devt_price_to)
+    form.devt_delivery_year = String(newDevelopment.devt_delivery_year)
+    form.devt_estimated_profit = String(newDevelopment.devt_estimated_profit)
+    form.devt_is_featured = Boolean(newDevelopment.devt_is_featured)
+    form.devt_active = Boolean(newDevelopment.devt_active)
 }, { immediate: true })
+
+const confirmDelete = (itemId, type) => {
+    if (confirm(`¿Está seguro que desea eliminar este ${type === 'file' ? 'archivo' : 'imagen'}?`)) {
+        deleteItem(itemId, type);
+    }
+};
+
+const deleteItem = async (itemId, type) => {
+    try {
+        const endpoint = type === 'file' 
+            ? `/developmentfile/${itemId}` 
+            : `/developmentimages/${itemId}`;
+        
+        
+        // Agregar headers con CSRF token
+        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        const response = await axios.delete(endpoint, {
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            }
+        });
+        
+        // Recargar la página después de eliminar
+        setTimeout(() => {
+            router.reload();
+        }, 500);
+    } catch (error) {
+        alert('Hubo un error al eliminar. Por favor, intenta de nuevo.');
+    }
+};
+
+const handleFilesSaved = () => {
+    showFileModal.value = false;
+    router.reload();
+};
+
+const handleImagesSaved = () => {
+    showImageModal.value = false;
+    router.reload();
+};
+
+const openImagePreview = (image) => {
+    selectedImage.value = image;
+    showImagePreview.value = true;
+};
+
+const closeImagePreview = () => {
+    showImagePreview.value = false;
+    selectedImage.value = null;
+};
 
 </script>
 
@@ -110,39 +174,132 @@ watch(() => props.development, (newDevelopment) => {
                 </div>
 
                 <!-- Sección para administrar archivos -->
-                <div v-if="development.developmentFiles" class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <h2 class="text-lg font-semibold mb-4">Archivos del Desarrollo</h2>
-                        <div v-if="development.developmentFiles.length > 0" class="space-y-2">
-                            <div v-for="file in development.developmentFiles" :key="file.devFile_id" class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                                <span>{{ file.devFile_name }}</span>
-                                <Link :href="route('developmentfile.destroy', file.devFile_id)" method="delete" as="button" class="text-red-600 hover:text-red-900">Eliminar</Link>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Documentos Adjuntos</h2>
+                            <button @click="showFileModal = true" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-medium">
+                                Agregar Archivo
+                            </button>
+                        </div>
+                        <div v-if="development.files && development.files.length > 0" class="space-y-3">
+                            <div v-for="file in development.files" :key="file.devFile_id" class="border rounded-lg p-4 flex items-center justify-between hover:bg-gray-50">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ file.devFile_name }}</p>
+                                        <p class="text-xs text-gray-500">{{ file.documentType?.docTyp_name || 'Documento' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a :href="`/storage/${file.devFile_url}`" target="_blank" class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-medium">
+                                        Ver
+                                    </a>
+                                    <button @click="confirmDelete(file.devFile_id, 'file')" class="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-medium">
+                                        Eliminar
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <p v-else class="text-gray-500">No hay archivos agregados</p>
-                        <Link :href="route('developmentfile.create', {development_id: development.devt_id})" class="mt-4 inline-block text-white bg-indigo-500 hover:bg-indigo-700 py-2 px-4 rounded">
-                            Agregar Archivo
-                        </Link>
+                        <div v-else class="text-center py-6">
+                            <p class="text-gray-500">No hay archivos agregados</p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Sección para administrar imágenes -->
-                <div v-if="development.developmentImages" class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        <h2 class="text-lg font-semibold mb-4">Imágenes del Desarrollo</h2>
-                        <div v-if="development.developmentImages.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            <div v-for="image in development.developmentImages" :key="image.devImg_id" class="relative group">
-                                <img :src="image.devImg_url" :alt="`Imagen ${image.devImg_order}`" class="w-full h-32 object-cover rounded">
-                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center gap-2">
-                                    <button v-if="image.devImg_isCover" class="text-xs bg-yellow-500 text-white px-2 py-1 rounded">Portada</button>
-                                    <Link :href="route('developmentimage.destroy', image.devImg_id)" method="delete" as="button" class="text-xs bg-red-600 text-white px-2 py-1 rounded">Eliminar</Link>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Galería de Imágenes</h2>
+                            <button @click="showImageModal = true" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-medium">
+                                Agregar Imagen
+                            </button>
+                        </div>
+                        <div v-if="development.images && development.images.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div v-for="image in development.images" :key="image.devImg_id" class="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                                <div class="relative group">
+                                    <img :src="`/storage/${image.devImg_url}`" :alt="image.devImg_title" class="w-full h-48 object-cover">
+                                    <div v-if="image.devImg_is_cover" class="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded text-xs font-semibold">
+                                        ★ Portada
+                                    </div>
+                                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                        <button @click="openImagePreview(image)" class="px-3 py-2 bg-blue-600 text-white rounded text-xs font-medium">
+                                            Ver
+                                        </button>
+                                        <button @click="confirmDelete(image.devImg_id, 'image')" class="px-3 py-2 bg-red-600 text-white rounded text-xs font-medium">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-3">
+                                    <p class="font-medium text-gray-900">{{ image.devImg_title }}</p>
                                 </div>
                             </div>
                         </div>
-                        <p v-else class="text-gray-500">No hay imágenes agregadas</p>
-                        <Link :href="route('developmentimage.create', {development_id: development.devt_id})" class="mt-4 inline-block text-white bg-indigo-500 hover:bg-indigo-700 py-2 px-4 rounded">
-                            Agregar Imagen
-                        </Link>
+                        <div v-else class="text-center py-6">
+                            <p class="text-gray-500">No hay imágenes agregadas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modales -->
+                <FileModal 
+                    :show="showFileModal"
+                    :development="development"
+                    :documentTypes="documentTypes"
+                    @close="showFileModal = false"
+                    @saved="handleFilesSaved"
+                />
+
+                <ImageModal 
+                    :show="showImageModal"
+                    :development="development"
+                    @close="showImageModal = false"
+                    @saved="handleImagesSaved"
+                />
+
+                <!-- Botón de guardar cambios -->
+                <div class="mt-8 flex justify-end">
+                    <button 
+                        @click="form.put(route('development.update', props.development.devt_id))"
+                        :disabled="form.processing"
+                        class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 font-semibold"
+                    >
+                        {{ form.processing ? 'Guardando...' : 'Guardar Cambios' }}
+                    </button>
+                </div>
+
+                <!-- Modal de preview de imagen -->
+                <div v-if="showImagePreview" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                    <div class="relative max-w-4xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
+                        <!-- Botón cerrar -->
+                        <button 
+                            @click="closeImagePreview"
+                            class="absolute top-4 right-4 text-gray-700 hover:text-gray-900 bg-white rounded-full p-2 shadow-lg z-10"
+                        >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Imagen -->
+                        <img 
+                            v-if="selectedImage"
+                            :src="`/storage/${selectedImage.devImg_url}`" 
+                            :alt="selectedImage.devImg_title"
+                            class="w-full h-full object-contain"
+                        >
+                        
+                        <!-- Título y info -->
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <p class="text-white font-semibold">{{ selectedImage?.devImg_title }}</p>
+                            <div v-if="selectedImage?.devImg_is_cover" class="mt-2 inline-block bg-yellow-400 text-yellow-900 px-2 py-1 rounded text-xs font-semibold">
+                                ★ Portada
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

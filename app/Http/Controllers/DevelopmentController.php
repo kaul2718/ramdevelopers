@@ -14,17 +14,64 @@ use App\Models\CommercialStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+use App\Models\DocumentType;
+
 class DevelopmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $developments = Development::with(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus'])
-            ->latest()
-            ->paginate(10);
-        return Inertia::render('Development/Index', ['developments' => $developments]);
+        $query = Development::with(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'images']);
+        
+        // Filtro de búsqueda múltiple por palabras
+        $search = $request->get('search', '');
+        if ($search) {
+            $words = collect(array_filter(explode(' ', trim($search))));
+            
+            if ($words->isNotEmpty()) {
+                $query->where(function ($query) use ($words) {
+                    foreach ($words as $word) {
+                        $query->where(function ($q) use ($word) {
+                            $q->whereRaw('LOWER(devt_title) LIKE ?', ["%{$word}%"])
+                              ->orWhereRaw('LOWER(devt_short_description) LIKE ?', ["%{$word}%"])
+                              ->orWhereRaw('LOWER(devt_long_description) LIKE ?', ["%{$word}%"])
+                              ->orWhereHas('developer', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(devr_commercial_name) LIKE ?', ["%{$word}%"]);
+                              })
+                              ->orWhereHas('country', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(ctry_name) LIKE ?', ["%{$word}%"]);
+                              })
+                              ->orWhereHas('city', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(city_name) LIKE ?', ["%{$word}%"]);
+                              });
+                        });
+                    }
+                });
+            }
+        }
+        
+        $developments = $query->latest()->paginate(10)->appends(['search' => $search]);
+        
+        $developers = Developer::where('devr_active', true)->get();
+        $countries = Country::where('ctry_active', true)->with('cities')->get();
+        $cities = City::where('city_active', true)->get();
+        $approvalStatuses = ApprovalStatus::all();
+        $businessStates = BusinessState::all();
+        $commercialStatuses = CommercialStatus::all();
+        $documentTypes = DocumentType::all();
+        
+        return Inertia::render('Development/Index', [
+            'developments' => $developments,
+            'developers' => $developers,
+            'countries' => $countries,
+            'cities' => $cities,
+            'approvalStatuses' => $approvalStatuses,
+            'businessStates' => $businessStates,
+            'commercialStatuses' => $commercialStatuses,
+            'documentTypes' => $documentTypes,
+        ]);
     }
 
     /**
@@ -55,6 +102,16 @@ class DevelopmentController extends Controller
     public function store(DevelopmentRequest $request)
     {
         $development = Development::create($request->validated());
+        
+        // Devolver JSON para peticiones AJAX/Axios
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Desarrollo creado correctamente.',
+                'development' => $development
+            ], 201);
+        }
+        
+        // Redirigir para peticiones tradicionales
         return redirect()->route('developmentfile.create', ['development_id' => $development->devt_id])
                         ->with('message', 'Desarrollo creado correctamente.');
     }
@@ -82,8 +139,9 @@ class DevelopmentController extends Controller
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
+        $documentTypes = DocumentType::all();
         
-        $development->load(['developmentFiles', 'developmentImages']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'files', 'images']);
         
         return Inertia::render('Development/Edit', [
             'development' => $development,
@@ -93,6 +151,7 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'documentTypes' => $documentTypes,
         ]);
     }
 

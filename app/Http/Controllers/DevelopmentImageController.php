@@ -101,6 +101,16 @@ class DevelopmentImageController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $image = DevelopmentImage::findOrFail($id);
+        
+        // Eliminar el archivo del almacenamiento
+        if ($image->devImg_url && \Storage::exists($image->devImg_url)) {
+            \Storage::delete($image->devImg_url);
+        }
+        
+        // Eliminar el registro de la base de datos
+        $image->delete();
+        
+        return response()->json(['message' => 'Imagen eliminada correctamente'], 200);
     }
 }

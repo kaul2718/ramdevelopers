@@ -51,14 +51,14 @@ const handleSubmit = async () => {
     const formData = new FormData();
     
     // Agregar todos los campos
-    formData.append('name', form.name);
-    formData.append('lastname', form.lastname);
-    formData.append('email', form.email);
-    formData.append('phone', form.phone);
-    formData.append('password', form.password);
-    formData.append('idiomas', form.idiomas);
-    formData.append('usr_id_ctry', form.usr_id_ctry);
-    formData.append('usr_active', form.usr_active);
+    if (form.name) formData.append('name', form.name);
+    if (form.lastname) formData.append('lastname', form.lastname);
+    if (form.email) formData.append('email', form.email);
+    if (form.phone) formData.append('phone', form.phone);
+    if (form.password) formData.append('password', form.password);
+    if (form.idiomas) formData.append('idiomas', form.idiomas);
+    if (form.usr_id_ctry) formData.append('usr_id_ctry', form.usr_id_ctry);
+    formData.append('usr_active', form.usr_active || 0);
     
     // Agregar roles como array
     if (form.roles && form.roles.length > 0) {
@@ -74,7 +74,7 @@ const handleSubmit = async () => {
         });
     }
     
-    // Agregar archivo si existe
+    // Agregar archivo SI Y SOLO SI es un File (no agregar si es null o string)
     if (form.profile_photo_path instanceof File) {
         formData.append('profile_photo_path', form.profile_photo_path);
     }
@@ -83,7 +83,7 @@ const handleSubmit = async () => {
     formData.append('_method', 'PUT');
     
     try {
-        await axios.post(route('users.update', props.user.id), formData, {
+        const response = await axios.post(route('users.update', props.user.id), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
@@ -91,7 +91,10 @@ const handleSubmit = async () => {
         // Redirigir después del éxito
         window.location.href = route('users.index');
     } catch (error) {
-        console.error('Error updating user:', error);
+        console.error('Error updating user:', error.response?.data || error.message);
+        if (error.response?.data?.errors) {
+            console.error('Validation errors:', error.response.data.errors);
+        }
     }
 }
 </script>

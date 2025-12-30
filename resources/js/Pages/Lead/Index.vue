@@ -10,17 +10,12 @@
                     <!-- Header con botón crear -->
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-gray-900">Listado de Leads</h3>
-                        <Link
-                            href="/lead/create"
+                        <button
+                            @click="openCreateModal"
                             class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
                         >
-                            + Crear Lead
-                        </Link>
-                    </div>
-
-                    <!-- Mensajes de éxito -->
-                    <div v-if="$page.props.flash?.success" class="p-6 bg-green-50 border-l-4 border-green-500">
-                        <p class="text-green-700">{{ $page.props.flash.success }}</p>
+                            Crear Lead
+                        </button>
                     </div>
 
                     <!-- Tabla -->
@@ -89,8 +84,8 @@
                                             {{ (item.user?.name && item.user?.lastname) ? `${item.user.name} ${item.user.lastname}` : 'Sin asignar' }}
                                         </td>
                                         <td class="flex p-5 items-center gap-0.5">
-                                            <Link
-                                                :href="route('lead.show', item.lead_id)"
+                                            <button
+                                                @click="openViewModal(item)"
                                                 class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-blue-600 flex item-center"
                                             >
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -99,7 +94,7 @@
                                                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                                     ></path>
                                                 </svg>
-                                            </Link>
+                                            </button>
                                             <button
                                                 @click="openNotesModal(item)"
                                                 class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-purple-600 flex item-center"
@@ -112,8 +107,8 @@
                                                     ></path>
                                                 </svg>
                                             </button>
-                                            <Link
-                                                :href="route('lead.edit', item.lead_id)"
+                                            <button
+                                                @click="openEditModal(item)"
                                                 class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-indigo-600 flex item-center"
                                             >
                                                 <svg class="cursor-pointer" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -122,7 +117,7 @@
                                                         fill="#818CF8"
                                                     ></path>
                                                 </svg>
-                                            </Link>
+                                            </button>
                                             <button
                                                 @click="deleteLead(item.lead_id)"
                                                 class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-red-600 flex item-center"
@@ -187,6 +182,16 @@
                     </button>
                 </div>
 
+                <!-- Acciones del Modal -->
+                <div class="flex gap-2 p-6 border-b border-gray-200">
+                    <button
+                        @click="openCreateNoteModal"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                    >
+                        Agregar Nota
+                    </button>
+                </div>
+
                 <!-- Contenido del Modal -->
                 <div class="overflow-y-auto flex-1 p-6">
                     <div v-if="selectedLead?.notes && selectedLead.notes.length > 0" class="space-y-4">
@@ -196,11 +201,27 @@
                             class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 transition"
                         >
                             <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-semibold text-gray-900">{{ note.leadNot_title }}</h4>
-                                <span v-if="note.leadNot_active" class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-900">{{ note.leadNot_title }}</h4>
+                                </div>
+                                <div class="flex gap-2 ml-4">
+                                    <button
+                                        @click="openEditNoteModal(note)"
+                                        class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-medium"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        @click="openDeleteNoteModal(note)"
+                                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs font-medium"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                                <span v-if="note.leadNot_active" class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ml-2">
                                     Activa
                                 </span>
-                                <span v-else class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700">
+                                <span v-else class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ml-2">
                                     Inactiva
                                 </span>
                             </div>
@@ -217,20 +238,124 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modales -->
+        <CreateModal
+            :show="showCreateModal"
+            :countries="countries"
+            :developments="developments"
+            :sources="sources"
+            :statuses="statuses"
+            :users="users"
+            @close="closeCreateModal"
+        />
+
+        <ViewModal
+            :show="showViewModal"
+            :lead="selectedLead"
+            :countries="countries"
+            :developments="developments"
+            :sources="sources"
+            :statuses="statuses"
+            :users="users"
+            :is-editing-initial="isEditingInitial"
+            @close="closeViewModal"
+        />
+
+        <ConfirmModal
+            :show="showConfirmModal"
+            title="Eliminar Lead"
+            message="¿Está seguro de que desea eliminar este lead? Esta acción no se puede deshacer."
+            confirm-text="Eliminar"
+            cancel-text="Cancelar"
+            :isDangerous="true"
+            @confirm="confirmDelete"
+            @close="closeConfirmModal"
+        />
+
+        <LeadNoteFormModal
+            :show="showNoteFormModal"
+            :mode="noteModalMode"
+            :note="selectedNote"
+            :lead="selectedLead"
+            @close="closeNoteFormModal"
+            @saved="handleNoteSaved"
+        />
+
+        <ConfirmModal
+            :show="showNoteDeleteModal"
+            title="Eliminar Nota"
+            message="¿Está seguro de que desea eliminar esta nota? Esta acción no se puede deshacer."
+            confirm-text="Eliminar"
+            cancel-text="Cancelar"
+            :isDangerous="true"
+            @confirm="confirmDeleteNote"
+            @close="closeNoteDeleteModal"
+        />
     </AppLayout>
 </template>
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import CreateModal from '@/Components/Lead/CreateModal.vue';
+import ViewModal from '@/Components/Lead/ViewModal.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
+import LeadNoteFormModal from '@/Components/LeadNote/FormModal.vue';
+import { useNotificationStore } from '@/stores/notificationStore';
 
-defineProps({
+const props = defineProps({
     leads: Object,
+    countries: Array,
+    developments: Array,
+    sources: Array,
+    statuses: Array,
+    users: Array,
 });
 
+const notificationStore = useNotificationStore();
+
+const showCreateModal = ref(false);
+const showViewModal = ref(false);
+const showConfirmModal = ref(false);
 const showNotesModal = ref(false);
+const showNoteFormModal = ref(false);
+const showNoteDeleteModal = ref(false);
+const isEditingInitial = ref(false);
+
 const selectedLead = ref(null);
+const leadToDelete = ref(null);
+const selectedNote = ref(null);
+const noteToDelete = ref(null);
+const noteModalMode = ref('create');
+
+const openCreateModal = () => {
+    showCreateModal.value = true;
+};
+
+const closeCreateModal = () => {
+    showCreateModal.value = false;
+};
+
+const openViewModal = (lead) => {
+    selectedLead.value = lead;
+    isEditingInitial.value = false;
+    showViewModal.value = true;
+};
+
+const openEditModal = (lead) => {
+    selectedLead.value = lead;
+    isEditingInitial.value = true;
+    showViewModal.value = true;
+};
+
+const closeViewModal = () => {
+    showViewModal.value = false;
+    selectedLead.value = null;
+    isEditingInitial.value = false;
+};
 
 const openNotesModal = (lead) => {
     selectedLead.value = lead;
@@ -240,6 +365,139 @@ const openNotesModal = (lead) => {
 const closeNotesModal = () => {
     showNotesModal.value = false;
     selectedLead.value = null;
+};
+
+const openCreateNoteModal = () => {
+    selectedNote.value = null;
+    noteModalMode.value = 'create';
+    showNoteFormModal.value = true;
+};
+
+const openEditNoteModal = (note) => {
+    selectedNote.value = note;
+    noteModalMode.value = 'edit';
+    showNoteFormModal.value = true;
+};
+
+const closeNoteFormModal = () => {
+    showNoteFormModal.value = false;
+    selectedNote.value = null;
+    noteModalMode.value = 'create';
+};
+
+const openDeleteNoteModal = (note) => {
+    noteToDelete.value = note;
+    showNoteDeleteModal.value = true;
+};
+
+const closeNoteDeleteModal = () => {
+    showNoteDeleteModal.value = false;
+    noteToDelete.value = null;
+};
+
+const confirmDeleteNote = async () => {
+    if (noteToDelete.value && selectedLead.value) {
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'DELETE');
+            
+            await axios.post(route('leadnote.destroy', noteToDelete.value.leadNot_id), formData);
+            
+            closeNoteDeleteModal();
+            // Recargar las notas del lead
+            router.get(route('lead.index'), {}, {
+                preserveState: true,
+                onSuccess: (page) => {
+                    // Actualizar el lead seleccionado con las nuevas notas
+                    const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
+                    if (updatedLead) {
+                        selectedLead.value = updatedLead;
+                    }
+                    notificationStore.success('Nota eliminada exitosamente');
+                    
+                    // Remover la notificación después de 3 segundos
+                    setTimeout(() => {
+                        const notyfToasts = document.querySelectorAll('.notyf__toast');
+                        notyfToasts.forEach(toast => {
+                            toast.style.opacity = '0';
+                            toast.style.transition = 'opacity 0.3s ease-out';
+                            setTimeout(() => {
+                                toast.remove();
+                            }, 300);
+                        });
+                    }, 3000);
+                }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            notificationStore.error('Error al eliminar la nota');
+        }
+    }
+};
+
+const handleNoteSaved = (mode) => {
+    closeNoteFormModal();
+    // Recargar las notas del lead
+    router.get(route('lead.index'), {}, {
+        preserveState: true,
+        onSuccess: (page) => {
+            // Actualizar el lead seleccionado con las nuevas notas
+            const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
+            if (updatedLead) {
+                selectedLead.value = updatedLead;
+            }
+            notificationStore.success(mode === 'create' ? 'Nota creada exitosamente' : 'Nota actualizada exitosamente');
+            
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
+        }
+    });
+};
+
+const openConfirmModal = (lead) => {
+    leadToDelete.value = lead;
+    showConfirmModal.value = true;
+};
+
+const closeConfirmModal = () => {
+    showConfirmModal.value = false;
+    leadToDelete.value = null;
+};
+
+const confirmDelete = async () => {
+    if (leadToDelete.value) {
+        router.delete(route('lead.destroy', leadToDelete.value.lead_id), {
+            onSuccess: () => {
+                closeConfirmModal();
+                notificationStore.success('Lead eliminado exitosamente');
+                
+                // Remover la notificación después de 3 segundos
+                setTimeout(() => {
+                    const notyfToasts = document.querySelectorAll('.notyf__toast');
+                    notyfToasts.forEach(toast => {
+                        toast.style.opacity = '0';
+                        toast.style.transition = 'opacity 0.3s ease-out';
+                        setTimeout(() => {
+                            toast.remove();
+                        }, 300);
+                    });
+                }, 3000);
+            }
+        });
+    }
+};
+
+const deleteLead = (leadId) => {
+    openConfirmModal({ lead_id: leadId });
 };
 
 const formatDate = (date) => {
@@ -253,9 +511,45 @@ const formatDate = (date) => {
     });
 };
 
-const deleteLead = (id) => {
-    if (confirm('¿Está seguro que desea eliminar este lead?')) {
-        router.delete(route('lead.destroy', id));
+onMounted(() => {
+    // Mostrar notificación de creación exitosa
+    if (sessionStorage.getItem('showCreateLeadNotification')) {
+        setTimeout(() => {
+            notificationStore.success('Lead creado exitosamente');
+            sessionStorage.removeItem('showCreateLeadNotification');
+            
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
+        }, 100);
     }
-};
+
+    // Mostrar notificación de actualización exitosa
+    if (sessionStorage.getItem('showUpdateLeadNotification')) {
+        setTimeout(() => {
+            notificationStore.success('Lead actualizado exitosamente');
+            sessionStorage.removeItem('showUpdateLeadNotification');
+            
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
+        }, 100);
+    }
+});
 </script>

@@ -9,3 +9,54 @@
     display: none;
 }
 
+/* Clases personalizadas para el modal */
+@layer components {
+    .modal-title {
+        @apply text-2xl font-semibold text-gray-900;
+    }
+
+    .modal-subtitle {
+        @apply text-lg text-gray-600;
+    }
+
+    .modal-section-title {
+        @apply text-lg font-semibold text-gray-900 mb-2;
+    }
+
+    .modal-label {
+        @apply text-gray-600 text-sm;
+    }
+
+    .modal-value {
+        @apply font-medium text-base;
+    }
+
+    .modal-grid {
+        @apply grid grid-cols-2 gap-4;
+    }
+}
+
+/* Asegurar que las notificaciones Notyf aparezcan sobre la modal */
+.notyf {
+    position: fixed !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important; /* Cambiar a none para no bloquear clicks */
+}
+
+.notyf__toast {
+    position: fixed !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+}
+
+.notyf__icon {
+    z-index: 2147483647 !important;
+}
+
+/* Asegurar que el contenedor de Notyf esté en el body */
+.notyf {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+}

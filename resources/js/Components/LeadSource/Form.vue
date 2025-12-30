@@ -20,6 +20,11 @@ defineProps({
         type: Boolean,
         required: false,
         default: false
+    },
+    errors: {
+        type: Object,
+        required: false,
+        default: () => ({})
     }
 })
 
@@ -44,9 +49,10 @@ defineEmits(['submit'])
                     v-model="form.leadSou_name" 
                     type="text" 
                     autocomplete="name"
-                    class="mt-1 block w-full">
+                    class="mt-1 block w-full"
+                    :class="errors.leadSou_name || $page.props.errors.leadSou_name ? 'border-red-500' : ''">
                 </TextInput>
-                <InputError :message="$page.props.errors.leadSou_name" class="mt-2" />
+                <InputError :message="errors.leadSou_name || $page.props.errors.leadSou_name" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-6">
@@ -56,9 +62,10 @@ defineEmits(['submit'])
                     v-model="form.leadSou_code" 
                     type="text" 
                     autocomplete="name"
-                    class="mt-1 block w-full">
+                    class="mt-1 block w-full"
+                    :class="errors.leadSou_code || $page.props.errors.leadSou_code ? 'border-red-500' : ''">
                 </TextInput>
-                <InputError :message="$page.props.errors.leadSou_code" class="mt-2" />
+                <InputError :message="errors.leadSou_code || $page.props.errors.leadSou_code" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-6">

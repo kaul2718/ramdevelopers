@@ -37,6 +37,14 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false
+    },
+    user: {
+        type: Object,
+        default: null
+    },
+    errors: {
+        type: Object,
+        default: () => ({})
     }
 })
 
@@ -69,7 +77,7 @@ const handlePhotoChange = (event) => {
                 <TextInput id="name" v-model="form.name" type="text" autocomplete="given-name"
                     class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.name" class="mt-2" />
+                <InputError :message="errors.name || $page.props.errors.name" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -77,21 +85,21 @@ const handlePhotoChange = (event) => {
                 <TextInput id="lastname" v-model="form.lastname" type="text" autocomplete="family-name"
                     class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.lastname" class="mt-2" />
+                <InputError :message="errors.lastname || $page.props.errors.lastname" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="email" value="Correo Electrónico"></InputLabel>
                 <TextInput id="email" v-model="form.email" type="email" autocomplete="email" class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.email" class="mt-2" />
+                <InputError :message="errors.email || $page.props.errors.email" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="phone" value="Teléfono (Opcional)"></InputLabel>
                 <TextInput id="phone" v-model="form.phone" type="tel" autocomplete="tel" class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.phone" class="mt-2" />
+                <InputError :message="errors.phone || $page.props.errors.phone" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -103,7 +111,7 @@ const handlePhotoChange = (event) => {
                         {{ country.ctry_name }}
                     </option>
                 </select>
-                <InputError :message="$page.props.errors.usr_id_ctry" class="mt-2" />
+                <InputError :message="errors.usr_id_ctry || $page.props.errors.usr_id_ctry" class="mt-2" />
             </div>
 
             <div v-if="!updating" class="col-span-6 sm:col-span-3">
@@ -111,7 +119,7 @@ const handlePhotoChange = (event) => {
                 <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
                     class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.password" class="mt-2" />
+                <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
             </div>
 
             <div v-if="updating" class="col-span-6 sm:col-span-3">
@@ -119,7 +127,15 @@ const handlePhotoChange = (event) => {
                 <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
                     class="mt-1 block w-full">
                 </TextInput>
-                <InputError :message="$page.props.errors.password" class="mt-2" />
+                <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
+            </div>
+
+            <div class="col-span-6 sm:col-span-3">
+                <InputLabel for="password_confirmation" value="Confirmar Contraseña"></InputLabel>
+                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password" 
+                    autocomplete="new-password" class="mt-1 block w-full">
+                </TextInput>
+                <InputError :message="errors.password_confirmation || $page.props.errors.password_confirmation" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -136,6 +152,13 @@ const handlePhotoChange = (event) => {
 
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="profile_photo_path" value="Foto de Perfil (Opcional)"></InputLabel>
+                
+                <!-- Mostrar foto actual si está editando y el usuario tiene foto -->
+                <div v-if="updating && user?.profile_photo_url" class="mb-4">
+                    <p class="text-sm text-gray-600 mb-2">Foto Actual:</p>
+                    <img :src="user.profile_photo_url" :alt="user.name" class="w-24 h-24 rounded-lg object-cover border border-gray-200">
+                </div>
+                
                 <input ref="photoInput" id="profile_photo_path" type="file" accept="image/*" @change="handlePhotoChange"
                     class="mt-1 block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
@@ -147,7 +170,7 @@ const handlePhotoChange = (event) => {
                 <span v-if="selectedPhotoName" class="text-xs text-gray-600 mt-2 block">
                     Archivo seleccionado: {{ selectedPhotoName }}
                 </span>
-                <InputError :message="$page.props.errors.profile_photo_path" class="mt-2" />
+                <InputError :message="errors.profile_photo_path || $page.props.errors.profile_photo_path" class="mt-2" />
                 <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, GIF (máx. 5MB)</p>
             </div>
 
@@ -158,7 +181,7 @@ const handlePhotoChange = (event) => {
                     <option :value="1">Activo</option>
                     <option :value="0">Inactivo</option>
                 </select>
-                <InputError :message="$page.props.errors.usr_active" class="mt-2" />
+                <InputError :message="errors.usr_active || $page.props.errors.usr_active" class="mt-2" />
             </div>
 
             <div class="col-span-6">
@@ -172,7 +195,7 @@ const handlePhotoChange = (event) => {
                     </option>
                 </select>
 
-                <InputError :message="$page.props.errors.roles" class="mt-2" />
+                <InputError :message="errors.roles || $page.props.errors.roles" class="mt-2" />
             </div>
         </template>
 

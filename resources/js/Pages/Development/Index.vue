@@ -1,25 +1,175 @@
-<script>
-export default {
-    name: 'DevelopmentIndex'
-}
-</script>
-
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3'
+import { ref, watch, onMounted } from 'vue'
+import { useNotificationStore } from '@/stores/notificationStore'
+import DevelopmentCreateModal from '@/Components/Development/CreateModal.vue'
+import DevelopmentFileModal from '@/Components/Development/FileModal.vue'
+import DevelopmentImageModal from '@/Components/Development/ImageModal.vue'
 
-defineProps({
+const notificationStore = useNotificationStore();
+
+const props = defineProps({
     developments: {
         type: Object,
         required: true
+    },
+    developers: {
+        type: Array,
+        required: true
+    },
+    countries: {
+        type: Array,
+        required: true
+    },
+    cities: {
+        type: Array,
+        required: true
+    },
+    approvalStatuses: {
+        type: Array,
+        required: true
+    },
+    businessStates: {
+        type: Array,
+        required: true
+    },
+    commercialStatuses: {
+        type: Array,
+        required: true
+    },
+    documentTypes: {
+        type: Array,
+        required: true
     }
 })
+
+// Estados de modales
+const showCreateModal = ref(false)
+const showFileModal = ref(false)
+const showImageModal = ref(false)
+const currentDevelopment = ref(null)
+
+// Estados para galería de imágenes
+const imageGalleryIndex = ref({}) // { devt_id: index }
+
+// Estado de búsqueda
+const searchQuery = ref('')
+let searchTimeout = null
+
+// Métodos para abrir/cerrar modales
+const openCreateModal = () => {
+    showCreateModal.value = true
+}
+
+const closeCreateModal = () => {
+    showCreateModal.value = false
+    // No resetear currentDevelopment aquí porque lo necesitamos para FileModal
+}
+
+const closeFileModal = () => {
+    showFileModal.value = false
+}
+
+const closeImageModal = () => {
+    showImageModal.value = false
+    currentDevelopment.value = null
+}
+
+// Flujo secuencial de modales
+const handleDevelopmentCreated = (development) => {
+    currentDevelopment.value = development
+    closeCreateModal()
+    // Mostrar modal de archivos
+    setTimeout(() => {
+        showFileModal.value = true
+    }, 300)
+}
+
+const handleFilesCompleted = () => {
+    // No mostrar notificación aquí, solo avanzar
+    closeFileModal()
+    // Mostrar modal de imágenes
+    setTimeout(() => {
+        showImageModal.value = true
+    }, 300)
+}
+
+const handleImagesCompleted = () => {
+    closeImageModal()
+    
+    // Mostrar UNA SOLA notificación con el resumen completo
+    notificationStore.success('Desarrollo creado exitosamente');
+    
+    // Esperar más tiempo antes de redirigir (dejar que desaparezca completamente)
+    setTimeout(() => {
+        window.location.href = route('development.index')
+    }, 1000)
+}
 
 const deleteDevelopment = (id) => {
     if (confirm("¿Seguro que deseas eliminar este desarrollo?")) {
         router.delete(route("development.destroy", id));
     }
 };
+
+const getGalleryImages = (item) => {
+    if (!item.images || item.images.length === 0) return [];
+    // Primero la portada, luego las demás
+    const coverImage = item.images.find(img => img.devImg_is_cover);
+    const otherImages = item.images.filter(img => !img.devImg_is_cover);
+    return coverImage ? [coverImage, ...otherImages] : item.images;
+};
+
+const getImageIndex = (devt_id) => {
+    return imageGalleryIndex.value[devt_id] || 0;
+};
+
+const getCurrentImage = (item) => {
+    const images = getGalleryImages(item);
+    const index = getImageIndex(item.devt_id);
+    return images[index];
+};
+
+const goToNextImage = (item, event) => {
+    event.stopPropagation();
+    const images = getGalleryImages(item);
+    if (images.length > 0) {
+        const currentIndex = imageGalleryIndex.value[item.devt_id] || 0;
+        imageGalleryIndex.value[item.devt_id] = (currentIndex + 1) % images.length;
+    }
+};
+
+const goToPrevImage = (item, event) => {
+    event.stopPropagation();
+    const images = getGalleryImages(item);
+    if (images.length > 0) {
+        const currentIndex = imageGalleryIndex.value[item.devt_id] || 0;
+        imageGalleryIndex.value[item.devt_id] = (currentIndex - 1 + images.length) % images.length;
+    }
+};
+
+const handleSearch = () => {
+    router.get(route('development.index'), { search: searchQuery.value }, {
+        replace: true,
+        preserveScroll: true
+    });
+};
+
+onMounted(() => {
+    searchQuery.value = route().params.search || '';
+    
+    // Watch para búsqueda en tiempo real con debounce
+    watch(searchQuery, () => {
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+        searchTimeout = setTimeout(() => {
+            handleSearch();
+        }, 500);
+    });
+});
+
 </script>
 
 <template>
@@ -31,12 +181,32 @@ const deleteDevelopment = (id) => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 bg-white border-border-gray-200">
+                    <div class="flex justify-between items-center pr-2 pb-4">
+                        <div class="flex-1 mr-4 relative">
+                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input 
+                                v-model="searchQuery"
+                                type="text"
+                                placeholder="Buscar por título, pais, ciudad, desarrollador... "
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div class="flex gap-2">
+                            <button 
+                                v-if="searchQuery"
+                                @click="searchQuery = ''"
+                                class="text-gray-700 bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded transition-colors">
+                                Limpiar
+                            </button>
+                        </div>
+                    </div>
                     <div class="flex justify-end pr-2" v-if="$page.props.user.permissions.includes('create development')">
-                        <Link 
-                            :href="route('development.create')"
+                        <button 
+                            @click="openCreateModal"
                             class="text-white bg-indigo-500 hover:bg-indigo-700 py-2 px-4 rounded">
                             Crear Desarrollo
-                        </Link>
+                        </button>
                     </div>
                 </div>
 
@@ -49,7 +219,7 @@ const deleteDevelopment = (id) => {
                                         <thead>
                                             <tr class="bg-gray-50">
                                                 <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 font-semibold text-gray-900 capitalize">
-                                                    Id
+                                                    Portada
                                                 </th>
                                                 <th scope="col" class="p-5 text-left whitespace-nowrap text-sm leading-6 font-semibold text-gray-900 capitalize min-w-[150px]">
                                                     Título
@@ -80,7 +250,42 @@ const deleteDevelopment = (id) => {
                                                 :key="item.devt_id"
                                                 class="bg-white transition-all duration-500 hover:bg-gray-50">
                                                 <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                                                    {{ item.devt_id }}
+                                                    <div v-if="item.images && getGalleryImages(item).length > 0" class="relative w-28 h-28 rounded-lg overflow-hidden bg-gray-200 group hover:scale-110 transition-transform duration-300 cursor-pointer">
+                                                        <!-- Imagen actual -->
+                                                        <img :src="'/storage/' + getCurrentImage(item).devImg_url" 
+                                                             :alt="item.devt_title" 
+                                                             class="w-full h-full object-cover">
+                                                        
+                                                        <!-- Overlay con controles -->
+                                                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-between px-1">
+                                                            <!-- Botón anterior -->
+                                                            <button v-if="getGalleryImages(item).length > 1" 
+                                                                @click="goToPrevImage(item, $event)"
+                                                                class="text-white hover:bg-black hover:bg-opacity-60 rounded transition-all p-1">
+                                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                            </button>
+                                                            <!-- Botón siguiente -->
+                                                            <button v-if="getGalleryImages(item).length > 1" 
+                                                                @click="goToNextImage(item, $event)"
+                                                                class="text-white hover:bg-black hover:bg-opacity-60 rounded transition-all p-1">
+                                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <!-- Contador de imágenes -->
+                                                        <div class="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs rounded px-1.5 py-0.5 group-hover:bg-opacity-80 transition-all">
+                                                            {{ getImageIndex(item.devt_id) + 1 }}/{{ getGalleryImages(item).length }}
+                                                        </div>
+                                                    </div>
+                                                    <div v-else class="w-28 h-28 rounded-lg overflow-hidden bg-gray-300 flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer">
+                                                        <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    </div>
                                                 </td>
                                                 <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                                                     {{ item.devt_title }}
@@ -165,5 +370,33 @@ const deleteDevelopment = (id) => {
                 </div>
             </div>
         </div>
+
+        <!-- Modales -->
+        <DevelopmentCreateModal
+            :show="showCreateModal"
+            :developers="developers"
+            :countries="countries"
+            :cities="cities"
+            :approval-statuses="approvalStatuses"
+            :business-states="businessStates"
+            :commercial-statuses="commercialStatuses"
+            @close="closeCreateModal"
+            @saved="handleDevelopmentCreated"
+        />
+
+        <DevelopmentFileModal
+            :show="showFileModal"
+            :development="currentDevelopment"
+            :document-types="documentTypes"
+            @close="closeFileModal"
+            @saved="handleFilesCompleted"
+        />
+
+        <DevelopmentImageModal
+            :show="showImageModal"
+            :development="currentDevelopment"
+            @close="closeImageModal"
+            @saved="handleImagesCompleted"
+        />
     </AppLayout>
 </template>

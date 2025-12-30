@@ -20,9 +20,20 @@ class LeadController extends Controller
     {
         $leads = Lead::with(['development', 'country', 'source', 'status', 'user', 'notes.user'])
             ->paginate(10);
+        
+        $countries = Country::select('ctry_id', 'ctry_name')->get();
+        $developments = Development::select('devt_id', 'devt_title')->get();
+        $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
+        $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
+        $users = User::select('id', 'name', 'lastname')->get();
 
         return Inertia::render('Lead/Index', [
             'leads' => $leads,
+            'countries' => $countries,
+            'developments' => $developments,
+            'sources' => $sources,
+            'statuses' => $statuses,
+            'users' => $users,
         ]);
     }
 

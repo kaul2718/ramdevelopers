@@ -7,6 +7,8 @@ class CommercialStatus extends Model
 {
     protected $table      = 'commercial_statuses';
     protected $primaryKey = 'commSta_id';
+    public $incrementing  = false;
+    protected $keyType    = 'int';
 
     protected $fillable = [
         'commSta_name',
@@ -18,4 +20,11 @@ class CommercialStatus extends Model
     protected $casts = [
         'commSta_active' => 'boolean',
     ];
+
+    
+
+    public function getRouteKeyName()
+    {
+        return 'commSta_id';
+    }
 }

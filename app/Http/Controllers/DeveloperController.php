@@ -16,10 +16,32 @@ class DeveloperController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $developers = Developer::with(['country', 'user'])->latest()->paginate(10);
-        return Inertia::render('Developer/Index', ['developers' => $developers]);
+        $query = Developer::with(['country', 'user']);
+        
+        // Búsqueda por múltiples campos
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('devr_commercial_name', 'like', "%{$search}%")
+                  ->orWhere('devr_legal_name', 'like', "%{$search}%")
+                  ->orWhere('devr_email_contact', 'like', "%{$search}%")
+                  ->orWhere('devr_id', 'like', "%{$search}%");
+            });
+        }
+        
+        $developers = $query->latest()->paginate(10)->appends($request->query());
+        $countries = Country::where('ctry_active', true)->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'promotor');
+        })->where('usr_active', true)->get();
+        return Inertia::render('Developer/Index', [
+            'developers' => $developers,
+            'countries' => $countries,
+            'users' => $users,
+            'search' => $request->input('search', ''),
+        ]);
     }
 
     /**

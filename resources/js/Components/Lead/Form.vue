@@ -73,14 +73,15 @@ defineEmits(['submit'])
             </div>
 
             <!-- Idioma -->
-            <div class="col-span-6 sm:col-span-6">
-                <InputLabel for="lead_language" value="Idioma"></InputLabel>
-                <TextInput 
-                    id="lead_language" 
-                    v-model="form.lead_language" 
-                    type="text" 
-                    class="mt-1 block w-full"
-                />
+            <div class="col-span-6 sm:col-span-3">
+                <InputLabel for="lead_language" value="Idiomas (Opcional)"></InputLabel>
+                <select id="lead_language" v-model="form.lead_language"
+                    class="mt-1 block w-full border-gray-300 rounded-md">
+                    <option value="">Selecciona un idioma</option>
+                    <option value="Español">Español</option>
+                    <option value="Inglés">Inglés</option>
+                    <option value="Francés">Francés</option>
+                </select>
                 <InputError :message="$page.props.errors.lead_language" class="mt-2" />
             </div>
 

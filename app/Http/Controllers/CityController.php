@@ -17,7 +17,11 @@ class CityController extends Controller
     public function index()
     {
         $cities = City::with('country')->latest()->paginate(10);
-        return Inertia::render('City/Index', ['cities' => $cities]);
+        $countries = Country::where('ctry_active', true)->get();
+        return Inertia::render('City/Index', [
+            'cities' => $cities,
+            'countries' => $countries
+        ]);
     }
 
     /**
