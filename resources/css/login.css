@@ -31,6 +31,10 @@
     font-weight: bold;
 }
 
+.page--login .contenedor--input{
+    margin-bottom: 1em;
+}
+
 .page--login .contenedor--input label,
 .page--login .campo--input{
     color: var(--gris);
@@ -48,28 +52,41 @@
     font-size: .9em;
 }
 
-.page--login .contenedor--link label{
+.page--login .contenedor--switch{
     display: flex;
     align-items: center;
     cursor: pointer;
     width: fit-content;
     transition: all .3s ease-in-out;
+    color: var(--gris);
 }
 
-.page--login .contenedor--link span{
+.page--login .contenedor--switch span{
     margin-left: .5em;
 }
 
 .page--login .contenedor--link .link{
-    text-align: right;
     border-bottom: 1px solid var(--gris);
     transition: all .3s ease-in-out;
 }
 
 .page--login .campo--input:focus ~ label,
-.page--login .contenedor--link label:hover,
+.page--login .contenedor--switch:hover,
 .page--login .contenedor--link .link:hover{
     color: var(--medio);
+}
+
+.page--login .contenedor--switch span a{
+    color: var(--medio);
+    text-decoration: underline; 
+    text-underline-offset: .25em;
+    text-decoration-thickness: 1px;
+    border-radius: .5em;
+    transition: all .3s ease-in-out;
+}
+
+.page--login .contenedor--switch:hover span a{
+    color: var(--claro);
 }
 
 .page--login .btn--enviar--form:hover{

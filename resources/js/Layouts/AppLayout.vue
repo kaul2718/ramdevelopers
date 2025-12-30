@@ -9,61 +9,61 @@
     //import NavLink from '@/Components/NavLink.vue';
     //import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
-const page = usePage();
+    const page = usePage();
 
-const isActive = (path) => {
-    return page.url.startsWith(`/${path}`);
-};
+    const isActive = (path) => {
+        return page.url.startsWith(`/${path}`);
+    };
 
 
-defineProps({
-    title: String,
-});
-
-const showingNavigationDropdown = ref(false);
-
-const switchToTeam = (team) => {
-    router.put(route('current-team.update'), {
-        team_id: team.id,
-    }, {
-        preserveState: false,
+    defineProps({
+        title: String,
     });
-};
 
-//RUTA DASHBOARD
-const goToDashboard = () => {
-    router.visit('/dashboard');
-};
+    const showingNavigationDropdown = ref(false);
 
-//RUTA DEVELOPERS
-const goToDevelopers = () => {
-    router.visit('/developers');
-};
+    const switchToTeam = (team) => {
+        router.put(route('current-team.update'), {
+            team_id: team.id,
+        }, {
+            preserveState: false,
+        });
+    };
 
-//RUTA DEVELOPMENTS
-const goToDevelopments = () => {
-    router.visit('/development');
-};
+    //RUTA DASHBOARD
+    const goToDashboard = () => {
+        router.visit('/dashboard');
+    };
 
-//RUTA LEADS
-const goToLeads = () => {
-    router.visit('/lead');
-};
+    //RUTA DEVELOPERS
+    const goToDevelopers = () => {
+        router.visit('/developers');
+    };
 
-//RUTA ADMIN
-const goToAdmin = () => {
-    router.visit('/admin');
-};
+    //RUTA DEVELOPMENTS
+    const goToDevelopments = () => {
+        router.visit('/development');
+    };
 
-//RUTA PROFILE
-const goToProfile = () => {
-    router.visit('/user/profile');
-};
+    //RUTA LEADS
+    const goToLeads = () => {
+        router.visit('/lead');
+    };
 
-//RUTA LOGOUT
-const logout = () => {
-    router.post(route('logout'));
-};
+    //RUTA ADMIN
+    const goToAdmin = () => {
+        router.visit('/admin');
+    };
+
+    //RUTA PROFILE
+    const goToProfile = () => {
+        router.visit('/user/profile');
+    };
+
+    //RUTA LOGOUT
+    const logout = () => {
+        router.post(route('logout'));
+    };
 
 </script>
 
