@@ -18,6 +18,7 @@ use App\Http\Controllers\LeadStatusController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Country;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,6 +26,14 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Ruta personalizada para el registro con datos adicionales
+Route::get('/register', function () {
+    $countries = Country::where('ctry_active', true)->get();
+    return Inertia::render('Auth/Register', [
+        'countries' => $countries
+    ]);
+})->middleware('guest')->name('register');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     // AUTH Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -8,9 +8,19 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
+defineProps({
+    countries: {
+        type: Array,
+        default: () => []
+    }
+});
+
 const form = useForm({
     name: '',
+    lastname: '',
     email: '',
+    phone: '',
+    usr_id_ctry: '',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -32,18 +42,33 @@ const submit = () => {
         </template>
 
         <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
-                <TextInput
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-                <InputError class="mt-2" :message="form.errors.name" />
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <InputLabel for="name" value="Nombre" />
+                    <TextInput
+                        id="name"
+                        v-model="form.name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        required
+                        autofocus
+                        autocomplete="name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.name" />
+                </div>
+
+                <div>
+                    <InputLabel for="lastname" value="Apellido" />
+                    <TextInput
+                        id="lastname"
+                        v-model="form.lastname"
+                        type="text"
+                        class="mt-1 block w-full"
+                        required
+                        autocomplete="family-name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.lastname" />
+                </div>
             </div>
 
             <div class="mt-4">
@@ -59,8 +84,37 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <InputLabel for="phone" value="Teléfono" />
+                    <TextInput
+                        id="phone"
+                        v-model="form.phone"
+                        type="text"
+                        class="mt-1 block w-full"
+                        autocomplete="tel"
+                    />
+                    <InputError class="mt-2" :message="form.errors.phone" />
+                </div>
+
+                <div>
+                    <InputLabel for="usr_id_ctry" value="País" />
+                    <select
+                        id="usr_id_ctry"
+                        v-model="form.usr_id_ctry"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    >
+                        <option value="">Seleccionar país...</option>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                    <InputError class="mt-2" :message="form.errors.usr_id_ctry" />
+                </div>
+            </div>
+
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" value="Contraseña" />
                 <TextInput
                     id="password"
                     v-model="form.password"
@@ -73,7 +127,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
+                <InputLabel for="password_confirmation" value="Confirmar Contraseña" />
                 <TextInput
                     id="password_confirmation"
                     v-model="form.password_confirmation"
@@ -91,7 +145,7 @@ const submit = () => {
                         <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
 
                         <div class="ms-2">
-                            I agree to the <a target="_blank" :href="route('terms.show')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Terms of Service</a> and <a target="_blank" :href="route('policy.show')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Privacy Policy</a>
+                            Acepto los <a target="_blank" :href="route('terms.show')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Términos de Servicio</a> y la <a target="_blank" :href="route('policy.show')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Política de Privacidad</a>
                         </div>
                     </div>
                     <InputError class="mt-2" :message="form.errors.terms" />
@@ -100,11 +154,11 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
                 <Link :href="route('login')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Already registered?
+                    ¿Ya está registrado?
                 </Link>
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
+                    Registrarse
                 </PrimaryButton>
             </div>
         </form>
