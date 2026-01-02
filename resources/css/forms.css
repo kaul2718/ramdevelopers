@@ -51,8 +51,8 @@
 }
 
 .campo--input:focus{
-    border: 1px solid #E6FBFF!important;
-    background-color: #B8F3FF!important;
+    border: 1px solid var(--medio2)!important;
+    background-color: var(--medio2)!important;
 }
 
 .contenedor--input label{

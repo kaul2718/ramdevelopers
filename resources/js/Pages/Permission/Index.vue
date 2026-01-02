@@ -1,25 +1,25 @@
 <script>
-export default {
-    name: 'PermissionIndex'
-}
+    export default {
+        name: 'PermissionIndex'
+    }
 </script>
 
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3'
+    import AppLayout from '@/Layouts/AppLayout.vue';
+    import { Link, router } from '@inertiajs/vue3'
 
-defineProps({
-    permissions: {
-        type: Object,
-        required: true
-    }
-})
+    defineProps({
+        permissions: {
+            type: Object,
+            required: true
+        }
+    })
 
-const deletePermission = (id) => {
-    if (confirm("¿Seguro que deseas eliminar este permiso?")) {
-        router.delete(route("permissions.destroy", id));
-    }
-};
+    const deletePermission = (id) => {
+        if (confirm("¿Seguro que deseas eliminar este permiso?")) {
+            router.delete(route("permissions.destroy", id));
+        }
+    };
 </script>
 
 <template>
