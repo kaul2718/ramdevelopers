@@ -1,7 +1,9 @@
-@import "variables.css";
+@import "globals.css";
 @import "sideBar.css";
 @import "forms.css";
 @import "login.css";
+@import "dash.css";
+@import "tables.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

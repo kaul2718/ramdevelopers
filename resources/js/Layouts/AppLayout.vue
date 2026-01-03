@@ -75,7 +75,7 @@
         <Banner />
 
         <div class="body--global">
-            <aside class="sidebar sidebar--default">
+            <aside class="sidebar">
                 <div class="sidebar--container">
                     <div class="sidebar--logo">
                         <a href="javascript:;">
@@ -150,7 +150,7 @@
                                                         </g>
                                                     </svg>
                                                 </div>
-                                                <h2 class="text-sm font-medium leading-snug">Desarrollos</h2>
+                                                <h2 class="text-sm font-medium leading-snug">Proyectos</h2>
                                             </div>
                                         </div>
                                     </div>
@@ -254,8 +254,8 @@
                 </div>
             </aside>
             <div class="body">
-                <div class="body-container">
-                    <main class="min-h-full w-full">
+                <div class="body--container">
+                    <main>
                         <slot />
                     </main>
                 </div>

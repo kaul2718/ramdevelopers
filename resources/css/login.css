@@ -9,10 +9,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .left--login .contenedor--autenticacion{
     width: 65%;
+    max-height: 90%;
+    overflow: hidden auto;
+    padding: 1em;
 }
 
 .logo--login{

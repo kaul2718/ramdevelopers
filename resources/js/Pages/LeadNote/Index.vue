@@ -1,20 +1,21 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3'
-import { formatDate } from '@/Helpers/dateHelper'
+    import AppLayout from '@/Layouts/AppLayout.vue';
+    import { Link, router } from '@inertiajs/vue3'
+    import HeaderBody from '@/Components/HeaderBody.vue';
+    import Pagination from '@/Components/Pagination.vue'
 
-defineProps({
-    leadNotes: {
-        type: Object,
-        required: true
-    }
-})
+    defineProps({
+        leadNotes: {
+            type: Object,
+            required: true
+        }
+    })
 
-const deleteLeadNote = (id) => {
-    if (confirm("¿Seguro que deseas eliminar esta nota?")) {
-        router.delete(route("leadnote.destroy", id));
-    }
-};
+    const deleteLeadNote = (id) => {
+        if (confirm("¿Seguro que deseas eliminar esta nota?")) {
+            router.delete(route("leadnote.destroy", id));
+        }
+    };
 </script>
 
 <template>

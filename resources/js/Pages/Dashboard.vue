@@ -1,81 +1,81 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue';
-import Chart from 'chart.js/auto';
+    import AppLayout from '@/Layouts/AppLayout.vue';
+    import { ref, onMounted } from 'vue';
+    import Chart from 'chart.js/auto';
 
-const props = defineProps({
-    stats: Object,
-    usersByCountry: Array,
-    leadsByStatus: Array,
-});
+    const props = defineProps({
+        stats: Object,
+        usersByCountry: Array,
+        leadsByStatus: Array,
+    });
 
-const chartUsers = ref(null);
-const chartLeads = ref(null);
-const chartUsersCanvas = ref(null);
-const chartLeadsCanvas = ref(null);
+    const chartUsers = ref(null);
+    const chartLeads = ref(null);
+    const chartUsersCanvas = ref(null);
+    const chartLeadsCanvas = ref(null);
 
-onMounted(() => {
-    // Gráfica: Usuarios por País
-    if (chartUsersCanvas.value) {
-        chartUsers.value = new Chart(chartUsersCanvas.value, {
-            type: 'bar',
-            data: {
-                labels: props.usersByCountry?.map(item => item.ctry_name) || [],
-                datasets: [{
-                    label: 'Usuarios por País',
-                    data: props.usersByCountry?.map(item => item.total) || [],
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+    onMounted(() => {
+        // Gráfica: Usuarios por País
+        if (chartUsersCanvas.value) {
+            chartUsers.value = new Chart(chartUsersCanvas.value, {
+                type: 'bar',
+                data: {
+                    labels: props.usersByCountry?.map(item => item.ctry_name) || [],
+                    datasets: [{
+                        label: 'Usuarios por País',
+                        data: props.usersByCountry?.map(item => item.total) || [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    // Gráfica: Leads por Estado
-    if (chartLeadsCanvas.value) {
-        chartLeads.value = new Chart(chartLeadsCanvas.value, {
-            type: 'doughnut',
-            data: {
-                labels: props.leadsByStatus?.map(item => item.leadSta_name) || [],
-                datasets: [{
-                    label: 'Leads por Estado',
-                    data: props.leadsByStatus?.map(item => item.total) || [],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 159, 64, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
-        });
-    }
-});
+        // Gráfica: Leads por Estado
+        if (chartLeadsCanvas.value) {
+            chartLeads.value = new Chart(chartLeadsCanvas.value, {
+                type: 'doughnut',
+                data: {
+                    labels: props.leadsByStatus?.map(item => item.leadSta_name) || [],
+                    datasets: [{
+                        label: 'Leads por Estado',
+                        data: props.leadsByStatus?.map(item => item.total) || [],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true
+                }
+            });
+        }
+    });
 </script>
 
 <template>
