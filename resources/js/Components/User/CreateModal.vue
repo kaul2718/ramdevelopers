@@ -62,8 +62,8 @@ const validateForm = () => {
     }
     if (!form.value.password?.trim()) {
         errors.value.password = 'La contraseña es requerida';
-    } else if (form.value.password.length < 6) {
-        errors.value.password = 'La contraseña debe tener al menos 6 caracteres';
+    } else if (form.value.password.length < 8) {
+        errors.value.password = 'La contraseña debe tener al menos 8 caracteres';
     }
     if (!form.value.password_confirmation?.trim()) {
         errors.value.password_confirmation = 'La confirmación de contraseña es requerida';

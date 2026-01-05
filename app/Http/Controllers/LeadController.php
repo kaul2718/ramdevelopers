@@ -25,7 +25,9 @@ class LeadController extends Controller
         $developments = Development::select('devt_id', 'devt_title')->get();
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::select('id', 'name', 'lastname')->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Agente Inmobiliario');
+        })->select('id', 'name', 'lastname')->get();
 
         return Inertia::render('Lead/Index', [
             'leads' => $leads,
@@ -46,7 +48,9 @@ class LeadController extends Controller
         $countries = Country::select('ctry_id', 'ctry_name')->get();
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::select('id', 'name')->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Agente Inmobiliario');
+        })->select('id', 'name', 'lastname')->get();
 
         return Inertia::render('Lead/Create', [
             'developments' => $developments,
@@ -104,7 +108,9 @@ class LeadController extends Controller
         $countries = Country::select('ctry_id', 'ctry_name')->get();
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::select('id', 'name')->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Agente Inmobiliario');
+        })->select('id', 'name', 'lastname')->get();
 
         return Inertia::render('Lead/Edit', [
             'lead' => $lead,

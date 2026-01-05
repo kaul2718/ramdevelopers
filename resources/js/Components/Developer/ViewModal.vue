@@ -59,13 +59,13 @@ const originalForm = ref({
 
 const hasChanges = computed(() => {
     return form.value.devr_commercial_name !== originalForm.value.devr_commercial_name ||
-           form.value.devr_legal_name !== originalForm.value.devr_legal_name ||
-           form.value.devr_email_contact !== originalForm.value.devr_email_contact ||
-           form.value.devr_phone_contact !== originalForm.value.devr_phone_contact ||
-           form.value.devr_website !== originalForm.value.devr_website ||
-           form.value.ctry_id !== originalForm.value.ctry_id ||
-           form.value.user_id !== originalForm.value.user_id ||
-           form.value.devr_active !== originalForm.value.devr_active;
+        form.value.devr_legal_name !== originalForm.value.devr_legal_name ||
+        form.value.devr_email_contact !== originalForm.value.devr_email_contact ||
+        form.value.devr_phone_contact !== originalForm.value.devr_phone_contact ||
+        form.value.devr_website !== originalForm.value.devr_website ||
+        form.value.ctry_id !== originalForm.value.ctry_id ||
+        form.value.user_id !== originalForm.value.user_id ||
+        form.value.devr_active !== originalForm.value.devr_active;
 });
 
 watch(() => props.show, (newVal) => {
@@ -80,10 +80,10 @@ watch(() => props.show, (newVal) => {
             user_id: props.developer.user_id || '',
             devr_active: props.developer.devr_active ? 1 : 0
         };
-        
+
         form.value = formData;
         originalForm.value = JSON.parse(JSON.stringify(formData));
-        
+
         if (props.editMode) {
             isEditing.value = true;
         } else {
@@ -130,7 +130,7 @@ const toggleEdit = () => {
                 user_id: props.developer.user_id || '',
                 devr_active: props.developer.devr_active ? 1 : 0
             };
-            
+
             form.value = formData;
             originalForm.value = JSON.parse(JSON.stringify(formData));
         }
@@ -140,7 +140,7 @@ const toggleEdit = () => {
 
 const validateForm = () => {
     errors.value = {};
-    
+
     if (!form.value.devr_commercial_name?.trim()) {
         errors.value.devr_commercial_name = 'El nombre comercial es requerido';
     }
@@ -156,7 +156,7 @@ const validateForm = () => {
     if (!form.value.user_id) {
         errors.value.user_id = 'El usuario es requerido';
     }
-    
+
     return Object.keys(errors.value).length === 0;
 };
 
@@ -170,10 +170,10 @@ const handleSubmit = async () => {
         notificationStore.error('No has realizado cambios');
         return;
     }
-    
+
     isSubmitting.value = true;
     const formData = new FormData();
-    
+
     if (form.value.devr_commercial_name) formData.append('devr_commercial_name', form.value.devr_commercial_name);
     if (form.value.devr_legal_name) formData.append('devr_legal_name', form.value.devr_legal_name);
     if (form.value.devr_email_contact) formData.append('devr_email_contact', form.value.devr_email_contact);
@@ -183,14 +183,14 @@ const handleSubmit = async () => {
     if (form.value.user_id) formData.append('user_id', form.value.user_id);
     formData.append('devr_active', form.value.devr_active || 0);
     formData.append('_method', 'PUT');
-    
+
     try {
         await axios.post(route('developers.update', props.developer.devr_id), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
         });
-        
+
         sessionStorage.setItem('showUpdateDeveloperNotification', 'true');
         closeModal();
         window.location.href = route('developers.index');
@@ -252,13 +252,21 @@ const closeModal = () => {
                     </div>
                     <div>
                         <p class="modal-label">País</p>
-                        <p class="modal-value">{{ countries.find(c => c.ctry_id == developer?.ctry_id)?.ctry_name || 'N/A' }}</p>
+                        <p class="modal-value">{{countries.find(c => c.ctry_id == developer?.ctry_id)?.ctry_name ||
+                            'N/A'}}</p>
                     </div>
                 </div>
                 <div class="modal-grid">
                     <div>
                         <p class="modal-label">Usuario</p>
-                        <p class="modal-value">{{ users.find(u => u.id == developer?.user_id)?.name || 'N/A' }}</p>
+                        <p class="modal-value">
+                            {{
+                                (() => {
+                                    const user = users.find(u => u.id == developer?.user_id)
+                            return user ? `${user.name} ${user.lastname}` : 'N/A'
+                            })()
+                            }}
+                        </p>
                     </div>
                 </div>
                 <div>
@@ -280,61 +288,51 @@ const closeModal = () => {
             <!-- Edición -->
             <div v-else class="space-y-6">
                 <div>
-                    <label for="devr_commercial_name" class="block text-sm font-medium text-gray-700">Nombre Comercial <span class="text-red-600">*</span></label>
-                    <input 
-                        id="devr_commercial_name" 
-                        v-model="form.devr_commercial_name" 
-                        type="text" 
+                    <label for="devr_commercial_name" class="block text-sm font-medium text-gray-700">Nombre Comercial
+                        <span class="text-red-600">*</span></label>
+                    <input id="devr_commercial_name" v-model="form.devr_commercial_name" type="text"
                         class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         :class="errors.devr_commercial_name ? 'border-red-500' : 'border-gray-300'">
-                    <p v-if="errors.devr_commercial_name" class="mt-1 text-sm text-red-600">{{ errors.devr_commercial_name }}</p>
+                    <p v-if="errors.devr_commercial_name" class="mt-1 text-sm text-red-600">{{
+                        errors.devr_commercial_name }}</p>
                 </div>
 
                 <div>
-                    <label for="devr_legal_name" class="block text-sm font-medium text-gray-700">Nombre Legal <span class="text-red-600">*</span></label>
-                    <input 
-                        id="devr_legal_name" 
-                        v-model="form.devr_legal_name" 
-                        type="text" 
+                    <label for="devr_legal_name" class="block text-sm font-medium text-gray-700">Nombre Legal <span
+                            class="text-red-600">*</span></label>
+                    <input id="devr_legal_name" v-model="form.devr_legal_name" type="text"
                         class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         :class="errors.devr_legal_name ? 'border-red-500' : 'border-gray-300'">
                     <p v-if="errors.devr_legal_name" class="mt-1 text-sm text-red-600">{{ errors.devr_legal_name }}</p>
                 </div>
 
                 <div>
-                    <label for="devr_email_contact" class="block text-sm font-medium text-gray-700">Email de Contacto <span class="text-red-600">*</span></label>
-                    <input 
-                        id="devr_email_contact" 
-                        v-model="form.devr_email_contact" 
-                        type="email" 
+                    <label for="devr_email_contact" class="block text-sm font-medium text-gray-700">Email de Contacto
+                        <span class="text-red-600">*</span></label>
+                    <input id="devr_email_contact" v-model="form.devr_email_contact" type="email"
                         class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         :class="errors.devr_email_contact ? 'border-red-500' : 'border-gray-300'">
-                    <p v-if="errors.devr_email_contact" class="mt-1 text-sm text-red-600">{{ errors.devr_email_contact }}</p>
+                    <p v-if="errors.devr_email_contact" class="mt-1 text-sm text-red-600">{{ errors.devr_email_contact
+                    }}</p>
                 </div>
 
                 <div>
-                    <label for="devr_phone_contact" class="block text-sm font-medium text-gray-700">Teléfono de Contacto</label>
-                    <input 
-                        id="devr_phone_contact" 
-                        v-model="form.devr_phone_contact" 
-                        type="text" 
+                    <label for="devr_phone_contact" class="block text-sm font-medium text-gray-700">Teléfono de
+                        Contacto</label>
+                    <input id="devr_phone_contact" v-model="form.devr_phone_contact" type="text"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
                 <div>
                     <label for="devr_website" class="block text-sm font-medium text-gray-700">Sitio Web</label>
-                    <input 
-                        id="devr_website" 
-                        v-model="form.devr_website" 
-                        type="url" 
+                    <input id="devr_website" v-model="form.devr_website" type="url"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
                 <div>
-                    <label for="ctry_id" class="block text-sm font-medium text-gray-700">País <span class="text-red-600">*</span></label>
-                    <select 
-                        id="ctry_id" 
-                        v-model="form.ctry_id"
+                    <label for="ctry_id" class="block text-sm font-medium text-gray-700">País <span
+                            class="text-red-600">*</span></label>
+                    <select id="ctry_id" v-model="form.ctry_id"
                         class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         :class="errors.ctry_id ? 'border-red-500' : 'border-gray-300'">
                         <option value="">Seleccionar país</option>
@@ -346,15 +344,15 @@ const closeModal = () => {
                 </div>
 
                 <div>
-                    <label for="user_id" class="block text-sm font-medium text-gray-700">Usuario Asociado <span class="text-red-600">*</span></label>
-                    <select 
-                        id="user_id" 
-                        v-model="form.user_id"
+                    <label for="user_id" class="block text-sm font-medium text-gray-700">Usuario Asociado <span
+                            class="text-red-600">*</span></label>
+                    <select id="user_id" v-model="form.user_id"
                         class="mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         :class="errors.user_id ? 'border-red-500' : 'border-gray-300'">
                         <option value="">Seleccionar usuario</option>
                         <option v-for="user in users" :key="user.id" :value="user.id">
-                            {{ user.name }}
+                            {{ user.name }} {{ user.lastname }}
+
                         </option>
                     </select>
                     <p v-if="errors.user_id" class="mt-1 text-sm text-red-600">{{ errors.user_id }}</p>
@@ -362,9 +360,7 @@ const closeModal = () => {
 
                 <div>
                     <label for="devr_active" class="block text-sm font-medium text-gray-700">Estado</label>
-                    <select 
-                        id="devr_active" 
-                        v-model="form.devr_active"
+                    <select id="devr_active" v-model="form.devr_active"
                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         <option :value="1">Activo</option>
                         <option :value="0">Inactivo</option>
@@ -374,21 +370,15 @@ const closeModal = () => {
         </template>
 
         <template #footer>
-            <button
-                @click="closeModal"
+            <button @click="closeModal"
                 class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
                 {{ isEditing ? 'Cancelar' : 'Cerrar' }}
             </button>
-            <button
-                v-if="!isEditing"
-                @click="toggleEdit"
+            <button v-if="!isEditing" @click="toggleEdit"
                 class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3">
                 Editar
             </button>
-            <button
-                v-else
-                @click="handleSubmit"
-                :disabled="!hasChanges || isSubmitting"
+            <button v-else @click="handleSubmit" :disabled="!hasChanges || isSubmitting"
                 class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3 disabled:opacity-50">
                 {{ isSubmitting ? 'Guardando...' : 'Guardar Cambios' }}
             </button>
