@@ -132,7 +132,7 @@ const handleSubmit = async () => {
             const errorMessages = Object.values(errors.value).flat().join(', ');
             notificationStore.error(errorMessages);
         } else {
-            notificationStore.error('Error al actualizar el estado comercial');
+            notificationStore.error('Error al actualizar el tipo de proyecto');
         }
         isSubmitting.value = false;
     }
@@ -148,7 +148,7 @@ const closeModal = () => {
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #title>
             <h2 class="modal-title text-xl">
-                {{ isEditing ? 'Editar Estado Comercial' : 'Información del Estado Comercial' }}
+                {{ isEditing ? 'Editar Tipo de Proyecto' : 'Información del Tipo de Proyecto' }}
             </h2>
         </template>
 

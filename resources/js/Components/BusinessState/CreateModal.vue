@@ -66,7 +66,7 @@ const handleSubmit = async () => {
             const errorMessages = Object.values(errors.value).flat().join(', ');
             notificationStore.error(errorMessages);
         } else {
-            notificationStore.error('Error al crear el estado de negocio');
+            notificationStore.error('Error al crear el estado del proyecto');
         }
         isSubmitting.value = false;
     }
@@ -92,7 +92,7 @@ watch(() => props.show, (newVal) => {
 <template>
     <DialogModal :show="show" @close="emit('close')">
         <template #title>
-            <h2 class="modal-title text-xl">Crear Estado de Negocio</h2>
+            <h2 class="modal-title text-xl">Crear Estado del Proyecto</h2>
         </template>
 
         <template #content>

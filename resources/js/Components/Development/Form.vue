@@ -72,13 +72,13 @@ const validateForm = () => {
             { name: 'ctry_id', label: 'País' },
             { name: 'city_id', label: 'Ciudad' },
             { name: 'apvSta_id', label: 'Estado de Aprobación' },
-            { name: 'busiSta_id', label: 'Estado de Negocio' },
-            { name: 'commSta_id', label: 'Estado Comercial' },
+            { name: 'busiSta_id', label: 'Estado del Proyecto' },
+            { name: 'commSta_id', label: 'Tipo de Proyecto' },
             { name: 'devt_title', label: 'Título del Desarrollo' },
             { name: 'devt_slug', label: 'Slug' },
             { name: 'devt_address', label: 'Dirección' },
-            { name: 'devt_short_description', label: 'Descripción Corta' },
-            { name: 'devt_long_description', label: 'Descripción Larga' }
+            { name: 'devt_short_description', label: 'Resumen' },
+            { name: 'devt_long_description', label: 'Descripción' }
         ]
 
         const missingFields = requiredFields.filter(field => {
@@ -104,7 +104,7 @@ const validateForm = () => {
         }
 
         if (props.form.devt_estimated_profit !== '' && props.form.devt_estimated_profit !== null && parseFloat(props.form.devt_estimated_profit) < 0) {
-            validationErrors.value.devt_estimated_profit = 'La ganancia estimada no puede ser negativa.'
+            validationErrors.value.devt_estimated_profit = 'Los honorarios estimados no pueden ser negativos.'
         }
 
         const hasErrors = missingFields.length > 0 || Object.keys(validationErrors.value).length > 0
@@ -218,7 +218,7 @@ const handleSubmit = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="busiSta_id" value="Estado de Negocio *"></InputLabel>
+                <InputLabel for="busiSta_id" value="Estado del Proyecto *"></InputLabel>
                 <select 
                     id="busiSta_id" 
                     v-model.number="form.busiSta_id"
@@ -233,7 +233,7 @@ const handleSubmit = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="commSta_id" value="Estado Comercial *"></InputLabel>
+                <InputLabel for="commSta_id" value="Tipo de Proyecto *"></InputLabel>
                 <select 
                     id="commSta_id" 
                     v-model.number="form.commSta_id"
@@ -337,7 +337,7 @@ const handleSubmit = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-3">
-                <InputLabel for="devt_estimated_profit" value="Ganancia Estimada"></InputLabel>
+                <InputLabel for="devt_estimated_profit" value="Honorarios"></InputLabel>
                 <TextInput 
                     id="devt_estimated_profit" 
                     v-model="form.devt_estimated_profit" 
@@ -377,20 +377,20 @@ const handleSubmit = () => {
             </div>
 
             <div class="col-span-6 sm:col-span-6">
-                <InputLabel for="devt_short_description" value="Descripción Corta *"></InputLabel>
+                <InputLabel for="devt_short_description" value="Resumen *"></InputLabel>
                 <textarea 
                     id="devt_short_description" 
                     v-model="form.devt_short_description" 
                     :class="validationErrors.devt_short_description ? 'border-red-500' : 'border-gray-300'"
                     class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    placeholder="Descripción breve del desarrollo"
+                    placeholder="Resumen breve del desarrollo"
                     rows="2">
                 </textarea>
                 <InputError :message="validationErrors.devt_short_description || $page.props.errors.devt_short_description" class="mt-2" />
             </div>
 
             <div class="col-span-6 sm:col-span-6">
-                <InputLabel for="devt_long_description" value="Descripción Larga *"></InputLabel>
+                <InputLabel for="devt_long_description" value="Descripción *"></InputLabel>
                 <textarea 
                     id="devt_long_description" 
                     v-model="form.devt_long_description" 

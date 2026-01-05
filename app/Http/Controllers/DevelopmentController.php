@@ -55,8 +55,10 @@ class DevelopmentController extends Controller
         $developments = $query->latest()->paginate(10)->appends(['search' => $search]);
         
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->with('cities')->get();
-        $cities = City::where('city_active', true)->get();
+        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name')->get();
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
@@ -80,8 +82,10 @@ class DevelopmentController extends Controller
     public function create()
     {
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->get();
-        $cities = City::where('city_active', true)->get();
+        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name')->get();
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
@@ -134,8 +138,10 @@ class DevelopmentController extends Controller
     public function edit(Development $development)
     {
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->get();
-        $cities = City::where('city_active', true)->get();
+        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name')->get();
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();

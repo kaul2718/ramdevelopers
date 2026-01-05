@@ -16,8 +16,8 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities = City::with('country')->latest()->paginate(10);
-        $countries = Country::where('ctry_active', true)->get();
+        $cities = City::with('country')->orderBy('city_name')->paginate(10);
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         return Inertia::render('City/Index', [
             'cities' => $cities,
             'countries' => $countries
@@ -29,7 +29,7 @@ class CityController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         return Inertia::render('City/Create', ['countries' => $countries]);
     }
 

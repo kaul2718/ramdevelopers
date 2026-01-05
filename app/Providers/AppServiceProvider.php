@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Inertia::share([
-            'countries' => fn () => Country::where('ctry_active', true)->get(),
+            'countries' => fn () => Country::where('ctry_active', true)->orderBy('ctry_name')->get(),
         ]);
     }
 }

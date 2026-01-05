@@ -29,10 +29,10 @@ defineEmits(['submit'])
 <template>
     <FormSection @submitted="$emit('submit')">
         <template #title>
-            {{ updating ? 'Actualizar Estado de Negocio' : 'Crear Estado de Negocio' }}
+            {{ updating ? 'Actualizar Estado del Proyecto' : 'Crear Estado del Proyecto' }}
         </template>
         <template #description>
-            {{ updating ? 'Actualizar el Estado de Negocio seleccionado' : 'Crear un nuevo Estado de Negocio' }}
+            {{ updating ? 'Actualizar el Estado del Proyecto seleccionado' : 'Crear un nuevo Estado del Proyecto' }}
         </template>
 
         <template #form>

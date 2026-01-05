@@ -91,13 +91,13 @@ const closeImagePreview = () => {
                             </span>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Estado de Negocio</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Estado del Proyecto</label>
                             <span class="inline-flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 border border-blue-200">
                                 {{ development.business_status?.busiSta_name || 'N/A' }}
                             </span>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Estado Comercial</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Proyecto</label>
                             <span class="inline-flex items-center rounded-md bg-purple-50 px-3 py-1 text-sm font-medium text-purple-700 border border-purple-200">
                                 {{ development.commercial_status?.commSta_name || 'N/A' }}
                             </span>
@@ -119,8 +119,8 @@ const closeImagePreview = () => {
                             <p class="text-lg font-semibold text-gray-900">${{ development.devt_price_to?.toLocaleString() || 'N/A' }}</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Ganancia Estimada</label>
-                            <p class="text-lg font-semibold text-green-600">${{ development.devt_estimated_profit?.toLocaleString() || 'N/A' }}</p>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Honorarios</label>
+                            <p class="text-lg font-semibold text-green-600">${{ development.devt_estimated_profit?.toLocaleString() || '0 %' }}</p>
                         </div>
                     </div>
                 </div>
@@ -146,12 +146,12 @@ const closeImagePreview = () => {
                     <h2 class="text-2xl font-bold mb-6 text-gray-900">Descripciones</h2>
                     
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Descripción Corta</label>
-                        <p class="text-gray-900 bg-gray-50 p-3 rounded">{{ development.devt_short_description || 'Sin descripción' }}</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Resumen</label>
+                        <p class="text-gray-900 bg-gray-50 p-3 rounded">{{ development.devt_short_description || 'Sin resumen' }}</p>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Descripción Larga</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Descripción </label>
                         <p class="text-gray-900 bg-gray-50 p-3 rounded whitespace-pre-line">{{ development.devt_long_description || 'Sin descripción' }}</p>
                     </div>
                 </div>

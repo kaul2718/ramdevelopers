@@ -36,7 +36,7 @@ class UserController extends Controller
                 'idiomas' => $user->idiomas,
             ]);
         
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $roles = Role::all();
         $permissions = Permission::all();
         
@@ -53,7 +53,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $roles = Role::all();
         $permissions = Permission::all();
         return Inertia::render('User/Create', [
@@ -136,7 +136,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $roles = Role::all();
         
         // Obtener permisos del usuario a través de sus roles

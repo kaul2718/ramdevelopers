@@ -97,7 +97,7 @@ const handleSave = async () => {
             const errorMessages = Object.values(errors.value).flat().join(', ');
             notificationStore.error(errorMessages);
         } else {
-            notificationStore.error('Error al actualizar el estado de negocio');
+            notificationStore.error('Error al actualizar el estado del Proyecto');
         }
         isSubmitting.value = false;
     }
@@ -150,7 +150,7 @@ watch(() => props.editMode, (newVal) => {
     <DialogModal :show="show" @close="emit('close')">
         <template #title>
             <h2 class="modal-title text-xl">
-                {{ isEditing ? 'Editar Estado de Negocio' : 'Ver Estado de Negocio' }}
+                {{ isEditing ? 'Editar Estado del Proyecto' : 'Ver Estado del Proyecto' }}
             </h2>
         </template>
 
