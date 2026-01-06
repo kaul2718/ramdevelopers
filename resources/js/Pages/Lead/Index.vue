@@ -1,189 +1,124 @@
 <script setup>
-    import AppLayout from '@/Layouts/AppLayout.vue';
-    import { Link, router } from '@inertiajs/vue3';
-    import { ref, onMounted } from 'vue';
-    import axios from 'axios';
-    import CreateModal from '@/Components/Lead/CreateModal.vue';
-    import ViewModal from '@/Components/Lead/ViewModal.vue';
-    import ConfirmModal from '@/Components/ConfirmModal.vue';
-    import LeadNoteFormModal from '@/Components/LeadNote/FormModal.vue';
-    import { useNotificationStore } from '@/stores/notificationStore';
-    import HeaderBody from '@/Components/HeaderBody.vue';
-    import Pagination from '@/Components/Pagination.vue'
+import AppLayout from '@/Layouts/AppLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import CreateModal from '@/Components/Lead/CreateModal.vue';
+import ViewModal from '@/Components/Lead/ViewModal.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
+import LeadNoteFormModal from '@/Components/LeadNote/FormModal.vue';
+import { useNotificationStore } from '@/stores/notificationStore';
+import HeaderBody from '@/Components/HeaderBody.vue';
+import Pagination from '@/Components/Pagination.vue'
 
-    const props = defineProps({
-        leads: Object,
-        countries: Array,
-        developments: Array,
-        sources: Array,
-        statuses: Array,
-        users: Array,
-    });
+const props = defineProps({
+    leads: Object,
+    countries: Array,
+    developments: Array,
+    sources: Array,
+    statuses: Array,
+    users: Array,
+});
 
-    const notificationStore = useNotificationStore();
+const notificationStore = useNotificationStore();
 
-    const showCreateModal = ref(false);
-    const showViewModal = ref(false);
-    const showConfirmModal = ref(false);
-    const showNotesModal = ref(false);
-    const showNoteFormModal = ref(false);
-    const showNoteDeleteModal = ref(false);
-    const isEditingInitial = ref(false);
+const showCreateModal = ref(false);
+const showViewModal = ref(false);
+const showConfirmModal = ref(false);
+const showNotesModal = ref(false);
+const showNoteFormModal = ref(false);
+const showNoteDeleteModal = ref(false);
+const isEditingInitial = ref(false);
 
-    const selectedLead = ref(null);
-    const leadToDelete = ref(null);
-    const selectedNote = ref(null);
-    const noteToDelete = ref(null);
-    const noteModalMode = ref('create');
+const selectedLead = ref(null);
+const leadToDelete = ref(null);
+const selectedNote = ref(null);
+const noteToDelete = ref(null);
+const noteModalMode = ref('create');
 
-    const openCreateModal = () => {
-        showCreateModal.value = true;
-    };
+const openCreateModal = () => {
+    showCreateModal.value = true;
+};
 
-    const closeCreateModal = () => {
-        showCreateModal.value = false;
-    };
+const closeCreateModal = () => {
+    showCreateModal.value = false;
+};
 
-    const openViewModal = (lead) => {
-        selectedLead.value = lead;
-        isEditingInitial.value = false;
-        showViewModal.value = true;
-    };
+const openViewModal = (lead) => {
+    selectedLead.value = lead;
+    isEditingInitial.value = false;
+    showViewModal.value = true;
+};
 
-    const openEditModal = (lead) => {
-        selectedLead.value = lead;
-        isEditingInitial.value = true;
-        showViewModal.value = true;
-    };
+const openEditModal = (lead) => {
+    selectedLead.value = lead;
+    isEditingInitial.value = true;
+    showViewModal.value = true;
+};
 
-    const closeViewModal = () => {
-        showViewModal.value = false;
-        selectedLead.value = null;
-        isEditingInitial.value = false;
-    };
+const closeViewModal = () => {
+    showViewModal.value = false;
+    selectedLead.value = null;
+    isEditingInitial.value = false;
+};
 
-    const openNotesModal = (lead) => {
-        selectedLead.value = lead;
-        showNotesModal.value = true;
-    };
+const openNotesModal = (lead) => {
+    selectedLead.value = lead;
+    showNotesModal.value = true;
+};
 
-    const closeNotesModal = () => {
-        showNotesModal.value = false;
-        selectedLead.value = null;
-    };
+const closeNotesModal = () => {
+    showNotesModal.value = false;
+    selectedLead.value = null;
+};
 
-    const openCreateNoteModal = () => {
-        selectedNote.value = null;
-        noteModalMode.value = 'create';
-        showNoteFormModal.value = true;
-    };
+const openCreateNoteModal = () => {
+    selectedNote.value = null;
+    noteModalMode.value = 'create';
+    showNoteFormModal.value = true;
+};
 
-    const openEditNoteModal = (note) => {
-        selectedNote.value = note;
-        noteModalMode.value = 'edit';
-        showNoteFormModal.value = true;
-    };
+const openEditNoteModal = (note) => {
+    selectedNote.value = note;
+    noteModalMode.value = 'edit';
+    showNoteFormModal.value = true;
+};
 
-    const closeNoteFormModal = () => {
-        showNoteFormModal.value = false;
-        selectedNote.value = null;
-        noteModalMode.value = 'create';
-    };
+const closeNoteFormModal = () => {
+    showNoteFormModal.value = false;
+    selectedNote.value = null;
+    noteModalMode.value = 'create';
+};
 
-    const openDeleteNoteModal = (note) => {
-        noteToDelete.value = note;
-        showNoteDeleteModal.value = true;
-    };
+const openDeleteNoteModal = (note) => {
+    noteToDelete.value = note;
+    showNoteDeleteModal.value = true;
+};
 
-    const closeNoteDeleteModal = () => {
-        showNoteDeleteModal.value = false;
-        noteToDelete.value = null;
-    };
+const closeNoteDeleteModal = () => {
+    showNoteDeleteModal.value = false;
+    noteToDelete.value = null;
+};
 
-    const confirmDeleteNote = async () => {
-        if (noteToDelete.value && selectedLead.value) {
-            try {
-                const formData = new FormData();
-                formData.append('_method', 'DELETE');
+const confirmDeleteNote = async () => {
+    if (noteToDelete.value && selectedLead.value) {
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'DELETE');
 
-                await axios.post(route('leadnote.destroy', noteToDelete.value.leadNot_id), formData);
+            await axios.post(route('leadnote.destroy', noteToDelete.value.leadNot_id), formData);
 
-                closeNoteDeleteModal();
-                // Recargar las notas del lead
-                router.get(route('lead.index'), {}, {
-                    preserveState: true,
-                    onSuccess: (page) => {
-                        // Actualizar el lead seleccionado con las nuevas notas
-                        const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
-                        if (updatedLead) {
-                            selectedLead.value = updatedLead;
-                        }
-                        notificationStore.success('Nota eliminada exitosamente');
-
-                        // Remover la notificación después de 3 segundos
-                        setTimeout(() => {
-                            const notyfToasts = document.querySelectorAll('.notyf__toast');
-                            notyfToasts.forEach(toast => {
-                                toast.style.opacity = '0';
-                                toast.style.transition = 'opacity 0.3s ease-out';
-                                setTimeout(() => {
-                                    toast.remove();
-                                }, 300);
-                            });
-                        }, 3000);
+            closeNoteDeleteModal();
+            // Recargar las notas del lead
+            router.get(route('lead.index'), {}, {
+                preserveState: true,
+                onSuccess: (page) => {
+                    // Actualizar el lead seleccionado con las nuevas notas
+                    const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
+                    if (updatedLead) {
+                        selectedLead.value = updatedLead;
                     }
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                notificationStore.error('Error al eliminar la nota');
-            }
-        }
-    };
-
-    const handleNoteSaved = (mode) => {
-        closeNoteFormModal();
-        // Recargar las notas del lead
-        router.get(route('lead.index'), {}, {
-            preserveState: true,
-            onSuccess: (page) => {
-                // Actualizar el lead seleccionado con las nuevas notas
-                const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
-                if (updatedLead) {
-                    selectedLead.value = updatedLead;
-                }
-                notificationStore.success(mode === 'create' ? 'Nota creada exitosamente' : 'Nota actualizada exitosamente');
-
-                // Remover la notificación después de 3 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }
-        });
-    };
-
-    const openConfirmModal = (lead) => {
-        leadToDelete.value = lead;
-        showConfirmModal.value = true;
-    };
-
-    const closeConfirmModal = () => {
-        showConfirmModal.value = false;
-        leadToDelete.value = null;
-    };
-
-    const confirmDelete = async () => {
-        if (leadToDelete.value) {
-            router.delete(route('lead.destroy', leadToDelete.value.lead_id), {
-                onSuccess: () => {
-                    closeConfirmModal();
-                    notificationStore.success('Lead eliminado exitosamente');
+                    notificationStore.success('Nota eliminada exitosamente');
 
                     // Remover la notificación después de 3 segundos
                     setTimeout(() => {
@@ -198,74 +133,139 @@
                     }, 3000);
                 }
             });
+        } catch (error) {
+            console.error('Error:', error);
+            notificationStore.error('Error al eliminar la nota');
         }
-    };
+    }
+};
 
-    const deleteLead = (leadId) => {
-        openConfirmModal({ lead_id: leadId });
-    };
+const handleNoteSaved = (mode) => {
+    closeNoteFormModal();
+    // Recargar las notas del lead
+    router.get(route('lead.index'), {}, {
+        preserveState: true,
+        onSuccess: (page) => {
+            // Actualizar el lead seleccionado con las nuevas notas
+            const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
+            if (updatedLead) {
+                selectedLead.value = updatedLead;
+            }
+            notificationStore.success(mode === 'create' ? 'Nota creada exitosamente' : 'Nota actualizada exitosamente');
 
-    const formatDate = (date) => {
-        if (!date) return '';
-        return new Date(date).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const formatDateOnly = (date) => {
-        if (!date) return '';
-        return new Date(date).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        });
-    };
-
-    onMounted(() => {
-        // Mostrar notificación de creación exitosa
-        if (sessionStorage.getItem('showCreateLeadNotification')) {
+            // Remover la notificación después de 3 segundos
             setTimeout(() => {
-                notificationStore.success('Lead creado exitosamente');
-                sessionStorage.removeItem('showCreateLeadNotification');
-
-                // Remover la notificación después de 3 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
-        }
-
-        // Mostrar notificación de actualización exitosa
-        if (sessionStorage.getItem('showUpdateLeadNotification')) {
-            setTimeout(() => {
-                notificationStore.success('Lead actualizado exitosamente');
-                sessionStorage.removeItem('showUpdateLeadNotification');
-
-                // Remover la notificación después de 3 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
         }
     });
+};
+
+const openConfirmModal = (lead) => {
+    leadToDelete.value = lead;
+    showConfirmModal.value = true;
+};
+
+const closeConfirmModal = () => {
+    showConfirmModal.value = false;
+    leadToDelete.value = null;
+};
+
+const confirmDelete = async () => {
+    if (leadToDelete.value) {
+        router.delete(route('lead.destroy', leadToDelete.value.lead_id), {
+            onSuccess: () => {
+                closeConfirmModal();
+                notificationStore.success('Lead eliminado exitosamente');
+
+                // Remover la notificación después de 3 segundos
+                setTimeout(() => {
+                    const notyfToasts = document.querySelectorAll('.notyf__toast');
+                    notyfToasts.forEach(toast => {
+                        toast.style.opacity = '0';
+                        toast.style.transition = 'opacity 0.3s ease-out';
+                        setTimeout(() => {
+                            toast.remove();
+                        }, 300);
+                    });
+                }, 3000);
+            }
+        });
+    }
+};
+
+const deleteLead = (leadId) => {
+    openConfirmModal({ lead_id: leadId });
+};
+
+const formatDate = (date) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
+
+const formatDateOnly = (date) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+};
+
+onMounted(() => {
+    // Mostrar notificación de creación exitosa
+    if (sessionStorage.getItem('showCreateLeadNotification')) {
+        setTimeout(() => {
+            notificationStore.success('Lead creado exitosamente');
+            sessionStorage.removeItem('showCreateLeadNotification');
+
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
+        }, 100);
+    }
+
+    // Mostrar notificación de actualización exitosa
+    if (sessionStorage.getItem('showUpdateLeadNotification')) {
+        setTimeout(() => {
+            notificationStore.success('Lead actualizado exitosamente');
+            sessionStorage.removeItem('showUpdateLeadNotification');
+
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast');
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease-out';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                });
+            }, 3000);
+        }, 100);
+    }
+});
 </script>
 
 <template>
@@ -279,7 +279,7 @@
                     <tr>
                         <th>Acciones</th>
                         <th>Cliente</th>
-                        <th>Estado | Fecha</th>
+                        <th>Estado</th>
                         <th>Desarrollo</th>
                         <th>Email</th>
                         <th>País</th>
@@ -317,17 +317,28 @@
                                     </path>
                                 </svg>
                             </button>
+                            <!--<button
+                                class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-black flex item-center">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path class="stroke-black group-hover:stroke-white"
+                                        d="M10.0161 14.9897V15.0397M10.0161 9.97598V10.026M10.0161 4.96231V5.01231"
+                                        stroke="black" stroke-width="2.5"
+                                        stroke-linecap="round">
+                                    </path>
+                                </svg>
+                            </button>-->
                         </td>
                         <td>{{ item.lead_client_name }}</td>
                         <td>
                             <div class="space-y-2">
                                 <span
-                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 text-s font-medium text-yellow-700">
-                                    {{ item.status?.leadSta_name
-                                        ? `${item.status.leadSta_name} | ${formatDateOnly(item.updated_at)}`
-                                        : 'N/A'
-                                    }}
+                                    class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700">
+                                    {{ item.status?.leadSta_name || 'N/A' }}
                                 </span>
+                                <div class="text-xs text-gray-500">
+                                    {{ formatDateOnly(item.updated_at) }}
+                                </div>
                             </div>
                         </td>
                         <td>{{ item.development?.devt_title || 'Sin desarrollo' }}</td>
@@ -335,7 +346,7 @@
                         <td>{{ item.country?.ctry_name || 'Sin país' }}</td>
                         <td>
                             <span
-                                class="inline-flex items-center rounded-md bg-blue-50 px-2 text-s font-medium text-blue-700">
+                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                                 {{ item.source?.leadSou_name || 'N/A' }}
                             </span>
                         </td>

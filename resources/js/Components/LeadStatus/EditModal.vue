@@ -1,10 +1,11 @@
 <script setup>
 import DialogModal from '@/Components/DialogModal.vue'
-import DocumentTypeForm from '@/Components/DocumentType/Form.vue'
+import LeadStatusForm from '@/Components/LeadStatus/Form.vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    show: Boolean
+    show: Boolean,
+    leadStatus: Object
 })
 
 const emit = defineEmits(['close'])
@@ -15,14 +16,19 @@ const closeModal = () => {
 
 const handleSuccess = () => {
     closeModal()
-    router.visit(route('documenttype.index'))
+    router.visit(route('leadstatus.index'))
 }
 </script>
 
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #content>
-            <DocumentTypeForm :updating="false" @success="handleSuccess" @cancel="closeModal" />
+            <LeadStatusForm
+                :lead-status="leadStatus"
+                :updating="true"
+                @success="handleSuccess"
+                @cancel="closeModal"
+            />
         </template>
     </DialogModal>
 </template>
