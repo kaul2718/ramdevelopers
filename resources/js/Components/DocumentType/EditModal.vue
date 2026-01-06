@@ -4,7 +4,8 @@ import DocumentTypeForm from '@/Components/DocumentType/Form.vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    show: Boolean
+    show: Boolean,
+    documentType: Object
 })
 
 const emit = defineEmits(['close'])
@@ -22,7 +23,7 @@ const handleSuccess = () => {
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #content>
-            <DocumentTypeForm :updating="false" @success="handleSuccess" @cancel="closeModal" />
+            <DocumentTypeForm :updating="true" :document-type="documentType" @success="handleSuccess" @cancel="closeModal" />
         </template>
     </DialogModal>
 </template>

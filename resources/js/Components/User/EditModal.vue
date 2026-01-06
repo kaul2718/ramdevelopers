@@ -5,6 +5,7 @@
 
     const props = defineProps({
         show: Boolean,
+        user: Object,
         countries: Array,
         roles: Array,
         permissions: Array
@@ -29,7 +30,8 @@
                 :countries="countries"
                 :roles="roles"
                 :permissions="permissions"
-                :updating="false"
+                :updating="true"
+                :user="user"
                 @success="handleSuccess"
                 @cancel="closeModal"
             />
