@@ -7,9 +7,10 @@
 <script setup>
     import AppLayout from '@/Layouts/AppLayout.vue';
     import { Link, router } from '@inertiajs/vue3'
-    import { ref, onMounted } from 'vue';
+    import { ref } from 'vue';
     import { useNotificationStore } from '@/stores/notificationStore';
     import CreateModal from '@/Components/City/CreateModal.vue';
+    import EditModal from '@/Components/City/EditModal.vue';
     import ViewModal from '@/Components/City/ViewModal.vue';
     import ConfirmModal from '@/Components/ConfirmModal.vue';
     import HeaderBody from '@/Components/HeaderBody.vue';
@@ -26,31 +27,39 @@
             type: Array,
             default: () => []
         }
-    })
+    });
 
     const showCreateModal = ref(false);
-    const showCityModal = ref(false);
+    const showViewModal = ref(false);
+    const showEditModal = ref(false);
     const selectedCity = ref(null);
-    const editMode = ref(false);
     const showDeleteConfirm = ref(false);
     const cityToDelete = ref(null);
 
-    const openCityModal = (city) => {
-        selectedCity.value = city;
-        editMode.value = false;
-        showCityModal.value = true;
+    const closeCreateModal = () => {
+        showCreateModal.value = false;
+        router.get(route('cities.index'));
     };
 
-    const openCityModalForEdit = (city) => {
+    const openViewModal = (city) => {
         selectedCity.value = city;
-        editMode.value = true;
-        showCityModal.value = true;
+        showViewModal.value = true;
     };
 
-    const closeCityModal = () => {
-        showCityModal.value = false;
+    const openEditModal = (city) => {
+        selectedCity.value = city;
+        showEditModal.value = true;
+    };
+
+    const closeViewModal = () => {
+        showViewModal.value = false;
         selectedCity.value = null;
-        editMode.value = false;
+    };
+
+    const closeEditModal = () => {
+        showEditModal.value = false;
+        selectedCity.value = null;
+        router.get(route('cities.index'));
     };
 
     const openDeleteConfirm = (city) => {
@@ -64,11 +73,9 @@
                 onSuccess: () => {
                     showDeleteConfirm.value = false;
                     cityToDelete.value = null;
-                    
-                    // Mostrar notificación inmediatamente
+
                     notificationStore.success('Ciudad eliminada exitosamente');
-                    
-                    // Remover la notificación después de 5 segundos
+
                     setTimeout(() => {
                         const notyfToasts = document.querySelectorAll('.notyf__toast');
                         notyfToasts.forEach(toast => {
@@ -94,48 +101,6 @@
         showDeleteConfirm.value = false;
         cityToDelete.value = null;
     };
-
-    onMounted(() => {
-        // Notificación de creación exitosa
-        if (sessionStorage.getItem('showCreateCityNotification')) {
-            setTimeout(() => {
-                notificationStore.success('Ciudad creada exitosamente');
-                sessionStorage.removeItem('showCreateCityNotification');
-                
-                // Remover la notificación después de 5 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
-        }
-
-        // Notificación de actualización exitosa
-        if (sessionStorage.getItem('showUpdateCityNotification')) {
-            setTimeout(() => {
-                notificationStore.success('Ciudad actualizada exitosamente');
-                sessionStorage.removeItem('showUpdateCityNotification');
-                
-                // Remover la notificación después de 5 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
-        }
-    });
 </script>
 
 <template>
@@ -169,7 +134,7 @@
                         </td>                        
                         <td class="botonera--tabla">
                             <button
-                                @click="openCityModal(item)"
+                                @click="openViewModal(item)"
                                 v-if="$page.props.user.permissions.includes('read city')"
                                 class="btn--tipo1"
                                 title="Ver información">
@@ -178,7 +143,7 @@
                                 </svg>
                             </button>
                             <button
-                                @click="openCityModalForEdit(item)"
+                                @click="openEditModal(item)"
                                 v-if="$page.props.user.permissions.includes('update city')"
                                 class="btn--tipo1"
                                 title="Editar campo">
@@ -219,16 +184,23 @@
         <CreateModal 
             :show="showCreateModal"
             :countries="countries"
-            @close="showCreateModal = false"
+            @close="closeCreateModal"
         />
 
         <!-- View City Modal -->
         <ViewModal 
-            :show="showCityModal"
+            :show="showViewModal"
             :city="selectedCity"
             :countries="countries"
-            :editMode="editMode"
-            @close="closeCityModal"
+            @close="closeViewModal"
+        />
+
+        <!-- Edit City Modal -->
+        <EditModal 
+            :show="showEditModal"
+            :city="selectedCity"
+            :countries="countries"
+            @close="closeEditModal"
         />
 
         <!-- Delete Confirmation Modal -->

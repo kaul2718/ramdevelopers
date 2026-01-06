@@ -7,6 +7,10 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    city: {
+        type: Object,
+        default: () => ({})
+    },
     countries: {
         type: Array,
         default: () => []
@@ -23,8 +27,7 @@ const handleSuccess = () => {
 <template>
     <DialogModal :show="show" @close="emit('close')">
         <template #content>
-            <CityForm :updating="false" :countries="countries" @success="handleSuccess" @cancel="emit('close')" />
+            <CityForm :updating="true" :city="city" :countries="countries" @success="handleSuccess" @cancel="emit('close')" />
         </template>
     </DialogModal>
 </template>
-
