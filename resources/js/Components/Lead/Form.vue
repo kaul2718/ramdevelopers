@@ -1,28 +1,28 @@
 <script setup>
-import FormSection from '@/Components/FormSection.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+    import FormSection from '@/Components/FormSection.vue'
+    import InputError from '@/Components/InputError.vue'
+    import InputLabel from '@/Components/InputLabel.vue'
+    import PrimaryButton from '@/Components/PrimaryButton.vue'
+    import TextInput from '@/Components/TextInput.vue'
 
-const props = defineProps({
-    form: {
-        type: Object,
-        required: true
-    },
-    developments: Array,
-    countries: Array,
-    sources: Array,
-    statuses: Array,
-    users: Array,
-    updating: {
-        type: Boolean,
-        required: false,
-        default: false
-    }
-})
+    const props = defineProps({
+        form: {
+            type: Object,
+            required: true
+        },
+        developments: Array,
+        countries: Array,
+        sources: Array,
+        statuses: Array,
+        users: Array,
+        updating: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    })
 
-defineEmits(['submit'])
+    defineEmits(['submit'])
 </script>
 
 <template>

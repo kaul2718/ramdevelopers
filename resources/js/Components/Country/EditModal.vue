@@ -1,23 +1,23 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
-import CountryForm from './Form.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
+    import CountryForm from './Form.vue'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    country: {
-        type: Object,
-        default: null,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+        country: {
+            type: Object,
+            default: null,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
-const handleSuccess = () => {
-    emit('close')
-}
+    const handleSuccess = () => {
+        emit('close')
+    }
 </script>
 
 <template>

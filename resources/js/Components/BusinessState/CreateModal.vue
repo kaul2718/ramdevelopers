@@ -1,19 +1,19 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
-import BusinessStateForm from './Form.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
+    import BusinessStateForm from './Form.vue'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
-const handleSuccess = () => {
-    emit('close')
-}
+    const handleSuccess = () => {
+        emit('close')
+    }
 </script>
 
 <template>

@@ -1,16 +1,16 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
 
-const props = defineProps({
-    show: Boolean,
-    leadSource: Object
-})
+    const props = defineProps({
+        show: Boolean,
+        leadSource: Object
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
-const closeModal = () => {
-    emit('close')
-}
+    const closeModal = () => {
+        emit('close')
+    }
 </script>
 
 <template>

@@ -1,21 +1,21 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
-import ApprovalStatusForm from './Form.vue'
-import { router } from '@inertiajs/vue3'
+    import DialogModal from '@/Components/DialogModal.vue'
+    import ApprovalStatusForm from './Form.vue'
+    import { router } from '@inertiajs/vue3'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
-const handleSuccess = () => {
-    emit('close')
-    router.visit(route('approvalstatus.index'))
-}
+    const handleSuccess = () => {
+        emit('close')
+        router.visit(route('approvalstatus.index'))
+    }
 </script>
 
 <template>
