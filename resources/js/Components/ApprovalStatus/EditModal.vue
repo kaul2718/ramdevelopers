@@ -8,6 +8,10 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    approvalStatus: {
+        type: Object,
+        default: null,
+    },
 })
 
 const emit = defineEmits(['close'])
@@ -21,7 +25,7 @@ const handleSuccess = () => {
 <template>
     <DialogModal :show="show" @close="emit('close')">
         <template #content>
-            <ApprovalStatusForm :updating="false" @success="handleSuccess" @cancel="emit('close')" />
+            <ApprovalStatusForm :updating="true" :approval-status="approvalStatus" @success="handleSuccess" @cancel="emit('close')" />
         </template>
     </DialogModal>
 </template>

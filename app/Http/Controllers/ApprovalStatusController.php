@@ -1,10 +1,12 @@
 <?php
+// filepath: app/Http/Controllers/ApprovalStatusController.php
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ApprovalStatusRequest;
 use App\Models\ApprovalStatus;
 use Illuminate\Http\Request;
-use inertia\Response;
+use Inertia\Inertia;
 
 class ApprovalStatusController extends Controller
 {
@@ -14,7 +16,7 @@ class ApprovalStatusController extends Controller
     public function index()
     {
         $approval_statuses = ApprovalStatus::latest()->paginate(10);
-        return inertia('ApprovalStatus/Index', ['approval_statuses' => $approval_statuses]);
+        return Inertia::render('ApprovalStatus/Index', ['approval_statuses' => $approval_statuses]);
     }
 
     /**
@@ -22,18 +24,15 @@ class ApprovalStatusController extends Controller
      */
     public function create()
     {
-        return inertia('ApprovalStatus/Create');
+        return Inertia::render('ApprovalStatus/Create');
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param App\Http\Request\ApprovalStatusRequest
-     * @return \Illuminate\Http\Response
      */
-
     public function store(ApprovalStatusRequest $request)
     {
-        ApprovalStatus::create(attributes: $request->validated());
+        ApprovalStatus::create($request->validated());
         return redirect()->route('approvalstatus.index');
     }
 
@@ -48,18 +47,15 @@ class ApprovalStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    // En tu método edit del controller, agrega temporalmente:
     public function edit(ApprovalStatus $approvalstatus)
     {
-        return inertia('ApprovalStatus/Edit', [
+        return Inertia::render('ApprovalStatus/Edit', [
             'approval_status' => $approvalstatus,
         ]);
     }
+
     /**
      * Update the specified resource in storage.
-     * @param App\Http\Request\ApprovalStatusRequest
-     * @param int apvSta_id
-     * @return \Illuminate\Http\Response
      */
     public function update(ApprovalStatusRequest $request, ApprovalStatus $approvalstatus)
     {
@@ -69,11 +65,10 @@ class ApprovalStatusController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param ApprovalStatus $approvalstatus
      */
     public function destroy(ApprovalStatus $approvalstatus)
     {
-        $approvalstatus -> delete();
+        $approvalstatus->delete();
         return redirect()->route('approvalstatus.index');
     }
 }

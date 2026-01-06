@@ -1,5 +1,4 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ApprovalStatusForm from '@/Components/ApprovalStatus/Form.vue';
 
@@ -10,21 +9,20 @@ const props = defineProps({
     }
 })
 
-console.log('Props recibidas:', props);
+const handleSuccess = () => {
+    window.location.href = route('approvalstatus.index');
+};
 
-const form = useForm({
-    apvSta_name: props.approval_status?.apvSta_name || '',
-    apvSta_code: props.approval_status?.apvSta_code || '',
-    apvSta_description: props.approval_status?.apvSta_description || '',
-    apvSta_active: props.approval_status?.apvSta_active ?? true,
-})
+const handleCancel = () => {
+    window.location.href = route('approvalstatus.index');
+};
 </script>
 
 <template>
-    <AppLayout title="Editar Estado Aprobación">
+    <AppLayout title="Editar Estado de Aprobación">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Estado Aprobación
+                Editar Estado de Aprobación
             </h1>
         </template>
 
@@ -34,8 +32,9 @@ const form = useForm({
                     <div class="p-6 bg-white border-b border-gray-200">
                         <ApprovalStatusForm 
                             :updating="true" 
-                            :form="form"
-                            @submit="form.put(route('approvalstatus.update', props.approval_status.apvSta_id))" 
+                            :approval-status="approval_status"
+                            @success="handleSuccess"
+                            @cancel="handleCancel" 
                         />
                     </div>
                 </div>

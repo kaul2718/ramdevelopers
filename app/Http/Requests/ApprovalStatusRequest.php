@@ -1,4 +1,6 @@
 <?php
+// filepath: app/Http/Requests/ApprovalStatusRequest.php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,22 +18,20 @@ class ApprovalStatusRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        $id = $this->route('approvalstatus'); // <-- aquí el fix
+        $id = $this->route('approvalstatus');
 
         return [
-            'apvSta_name'        => [
+            'apvSta_name' => [
                 'required',
                 'string',
                 'max:100',
                 Rule::unique('approval_statuses', 'apvSta_name')
                     ->ignore($id, 'apvSta_id'),
             ],
-            'apvSta_code'        => [
+            'apvSta_code' => [
                 'required',
                 'string',
                 'max:50',
@@ -39,29 +39,24 @@ class ApprovalStatusRequest extends FormRequest
                     ->ignore($id, 'apvSta_id'),
             ],
             'apvSta_description' => 'nullable|string',
-            'apvSta_active'      => ['required', 'boolean'],
-
+            'apvSta_active' => ['required', 'boolean'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            // NOMBRE
-            'apvSta_name.required'      => 'El nombre del estado es obligatorio.',
-            'apvSta_name.string'        => 'El nombre debe ser un texto válido.',
-            'apvSta_name.max'           => 'El nombre no puede exceder los 100 caracteres.',
-            'apvSta_name.unique'        => 'El estado ya existe.',
+            'apvSta_name.required' => 'El nombre del estado es obligatorio.',
+            'apvSta_name.string' => 'El nombre debe ser un texto válido.',
+            'apvSta_name.max' => 'El nombre no puede exceder los 100 caracteres.',
+            'apvSta_name.unique' => 'El estado ya existe.',
 
-            // CÓDIGO
-            'apvSta_code.required'      => 'El código es obligatorio.',
-            'apvSta_code.string'        => 'El código debe ser un texto válido.',
-            'apvSta_code.max'           => 'El código no puede exceder los 50 caracteres.',
-            'apvSta_code.unique'        => 'El código ya existe.',
+            'apvSta_code.required' => 'El código es obligatorio.',
+            'apvSta_code.string' => 'El código debe ser un texto válido.',
+            'apvSta_code.max' => 'El código no puede exceder los 50 caracteres.',
+            'apvSta_code.unique' => 'El código ya existe.',
 
-            // DESCRIPCIÓN
             'apvSta_description.string' => 'La descripción debe ser un texto.',
         ];
     }
-
 }

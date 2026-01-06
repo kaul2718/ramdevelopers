@@ -7,10 +7,11 @@
 <script setup>
     import AppLayout from '@/Layouts/AppLayout.vue';
     import { Link, router } from '@inertiajs/vue3';
-    import { ref, onMounted } from 'vue';
+    import { ref } from 'vue';
     import { useNotificationStore } from '@/stores/notificationStore';
     import CreateModal from '@/Components/ApprovalStatus/CreateModal.vue';
     import ViewModal from '@/Components/ApprovalStatus/ViewModal.vue';
+    import EditModal from '@/Components/ApprovalStatus/EditModal.vue';
     import ConfirmModal from '@/Components/ConfirmModal.vue';
     import HeaderBody from '@/Components/HeaderBody.vue';
     import Pagination from '@/Components/Pagination.vue'
@@ -26,6 +27,7 @@
 
     const showCreateModal = ref(false);
     const showApprovalStatusModal = ref(false);
+    const showEditModal = ref(false);
     const selectedApprovalStatus = ref(null);
     const editMode = ref(false);
     const showDeleteConfirm = ref(false);
@@ -40,11 +42,12 @@
     const openApprovalStatusModalForEdit = (approvalStatus) => {
         selectedApprovalStatus.value = approvalStatus;
         editMode.value = true;
-        showApprovalStatusModal.value = true;
+        showEditModal.value = true;
     };
 
     const closeApprovalStatusModal = () => {
         showApprovalStatusModal.value = false;
+        showEditModal.value = false;
         selectedApprovalStatus.value = null;
         editMode.value = false;
     };
@@ -88,44 +91,6 @@
         showDeleteConfirm.value = false;
         approvalStatusToDelete.value = null;
     };
-
-    onMounted(() => {
-        if (sessionStorage.getItem('showCreateApprovalStatusNotification')) {
-            setTimeout(() => {
-                notificationStore.success('Estado de aprobación creado exitosamente');
-                sessionStorage.removeItem('showCreateApprovalStatusNotification');
-                
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
-        }
-
-        if (sessionStorage.getItem('showUpdateApprovalStatusNotification')) {
-            setTimeout(() => {
-                notificationStore.success('Estado de aprobación actualizado exitosamente');
-                sessionStorage.removeItem('showUpdateApprovalStatusNotification');
-                
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }, 100);
-        }
-    });
 </script>
 
 <template>
@@ -194,7 +159,11 @@
         <ViewModal 
             :show="showApprovalStatusModal" 
             :approval-status="selectedApprovalStatus"
-            :edit-mode="editMode"
+            @close="closeApprovalStatusModal"
+        />
+        <EditModal 
+            :show="showEditModal" 
+            :approval-status="selectedApprovalStatus"
             @close="closeApprovalStatusModal"
         />
         <ConfirmModal
