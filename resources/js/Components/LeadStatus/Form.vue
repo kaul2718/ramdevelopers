@@ -1,134 +1,134 @@
 <script>
-export default {
-    name: 'LeadStatusForm'
-}
+    export default {
+        name: 'LeadStatusForm'
+    }
 </script>
 
 <script setup>
-import { useNotificationStore } from '@/stores/notificationStore'
-import FormSection from '@/Components/FormSection.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
-import axios from 'axios'
-import { ref, watch, onMounted } from 'vue'
+    import { useNotificationStore } from '@/stores/notificationStore'
+    import FormSection from '@/Components/FormSection.vue'
+    import InputError from '@/Components/InputError.vue'
+    import InputLabel from '@/Components/InputLabel.vue'
+    import PrimaryButton from '@/Components/PrimaryButton.vue'
+    import TextInput from '@/Components/TextInput.vue'
+    import axios from 'axios'
+    import { ref, watch, onMounted } from 'vue'
 
-const emit = defineEmits(['success', 'cancel'])
+    const emit = defineEmits(['success', 'cancel'])
 
-const props = defineProps({
-    updating: Boolean,
-    leadStatus: Object
-})
+    const props = defineProps({
+        updating: Boolean,
+        leadStatus: Object
+    })
 
-const notificationStore = useNotificationStore()
+    const notificationStore = useNotificationStore()
 
-const form = ref({
-    leadSta_code: '',
-    leadSta_name: '',
-    leadSta_description: '',
-    leadSta_active: true
-})
+    const form = ref({
+        leadSta_code: '',
+        leadSta_name: '',
+        leadSta_description: '',
+        leadSta_active: true
+    })
 
-const errors = ref({})
-const isSubmitting = ref(false)
+    const errors = ref({})
+    const isSubmitting = ref(false)
 
-// Inicializar formulario con datos del leadStatus si es modo edición
-onMounted(() => {
-    if (props.updating && props.leadStatus) {
-        form.value = {
-            leadSta_code: props.leadStatus.leadSta_code || '',
-            leadSta_name: props.leadStatus.leadSta_name || '',
-            leadSta_description: props.leadStatus.leadSta_description || '',
-            leadSta_active: Number(props.leadStatus.leadSta_active ?? 1)
+    // Inicializar formulario con datos del leadStatus si es modo edición
+    onMounted(() => {
+        if (props.updating && props.leadStatus) {
+            form.value = {
+                leadSta_code: props.leadStatus.leadSta_code || '',
+                leadSta_name: props.leadStatus.leadSta_name || '',
+                leadSta_description: props.leadStatus.leadSta_description || '',
+                leadSta_active: Number(props.leadStatus.leadSta_active ?? 1)
+            }
         }
-    }
-})
+    })
 
-// Watcher para reiniciar el formulario si cambian los props
-watch(() => props.leadStatus, (newLeadStatus) => {
-    if (props.updating && newLeadStatus) {
-        form.value = {
-            leadSta_code: newLeadStatus.leadSta_code || '',
-            leadSta_name: newLeadStatus.leadSta_name || '',
-            leadSta_description: newLeadStatus.leadSta_description || '',
-            leadSta_active: Number(newLeadStatus.leadSta_active ?? 1)
+    // Watcher para reiniciar el formulario si cambian los props
+    watch(() => props.leadStatus, (newLeadStatus) => {
+        if (props.updating && newLeadStatus) {
+            form.value = {
+                leadSta_code: newLeadStatus.leadSta_code || '',
+                leadSta_name: newLeadStatus.leadSta_name || '',
+                leadSta_description: newLeadStatus.leadSta_description || '',
+                leadSta_active: Number(newLeadStatus.leadSta_active ?? 1)
+            }
+            errors.value = {}
         }
+    }, { deep: true })
+
+    const validateForm = () => {
         errors.value = {}
-    }
-}, { deep: true })
 
-const validateForm = () => {
-    errors.value = {}
-
-    if (!form.value.leadSta_name?.trim()) {
-        errors.value.leadSta_name = 'El nombre es requerido'
-    }
-    if (!form.value.leadSta_code?.trim()) {
-        errors.value.leadSta_code = 'El código es requerido'
-    }
-
-    return Object.keys(errors.value).length === 0
-}
-
-const handleSubmit = async () => {
-    if (!validateForm()) return
-
-    isSubmitting.value = true
-    const formData = new FormData()
-
-    formData.append('leadSta_code', form.value.leadSta_code)
-    formData.append('leadSta_name', form.value.leadSta_name)
-    formData.append('leadSta_description', form.value.leadSta_description)
-    formData.append('leadSta_active', form.value.leadSta_active ? 1 : 0)
-
-    try {
-        let response
-        if (props.updating) {
-            // Para actualización, usar POST con _method=PUT
-            formData.append('_method', 'PUT')
-            response = await axios.post(
-                route('leadstatus.update', props.leadStatus.leadSta_id),
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            )
-        } else {
-            // Para creación, usar POST
-            response = await axios.post(
-                route('leadstatus.store'),
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            )
+        if (!form.value.leadSta_name?.trim()) {
+            errors.value.leadSta_name = 'El nombre es requerido'
+        }
+        if (!form.value.leadSta_code?.trim()) {
+            errors.value.leadSta_code = 'El código es requerido'
         }
 
-        const message = props.updating ? 'Estado de lead actualizado correctamente' : 'Estado de lead creado correctamente'
-        notificationStore.success(message)
-        emit('success')
-    } catch (e) {
-        console.error('Error details:', e.response?.data)
-        if (e.response?.data?.errors) {
-            errors.value = e.response.data.errors
-        } else {
-            notificationStore.error(e.response?.data?.message || 'Error al procesar estado de lead')
-        }
-    } finally {
-        isSubmitting.value = false
+        return Object.keys(errors.value).length === 0
     }
-}
 
-const getError = (field) => {
-    const error = errors.value[field]
-    if (!error) return null
-    return Array.isArray(error) ? error[0] : error
-}
+    const handleSubmit = async () => {
+        if (!validateForm()) return
+
+        isSubmitting.value = true
+        const formData = new FormData()
+
+        formData.append('leadSta_code', form.value.leadSta_code)
+        formData.append('leadSta_name', form.value.leadSta_name)
+        formData.append('leadSta_description', form.value.leadSta_description)
+        formData.append('leadSta_active', form.value.leadSta_active ? 1 : 0)
+
+        try {
+            let response
+            if (props.updating) {
+                // Para actualización, usar POST con _method=PUT
+                formData.append('_method', 'PUT')
+                response = await axios.post(
+                    route('leadstatus.update', props.leadStatus.leadSta_id),
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+            } else {
+                // Para creación, usar POST
+                response = await axios.post(
+                    route('leadstatus.store'),
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+            }
+
+            const message = props.updating ? 'Estado de lead actualizado correctamente' : 'Estado de lead creado correctamente'
+            notificationStore.success(message)
+            emit('success')
+        } catch (e) {
+            console.error('Error details:', e.response?.data)
+            if (e.response?.data?.errors) {
+                errors.value = e.response.data.errors
+            } else {
+                notificationStore.error(e.response?.data?.message || 'Error al procesar estado de lead')
+            }
+        } finally {
+            isSubmitting.value = false
+        }
+    }
+
+    const getError = (field) => {
+        const error = errors.value[field]
+        if (!error) return null
+        return Array.isArray(error) ? error[0] : error
+    }
 </script>
 
 <template>
@@ -190,7 +190,7 @@ const getError = (field) => {
 
         <template #actions>
             <PrimaryButton>
-                <template #texto--boton>{{ updating ? 'Actualizar' : 'Crear' }}</template>
+                <template #texto--boton>{{ isSubmitting ? 'Guardando...' : (updating ? 'Actualizar' : 'Crear') }}</template>
                 <template #icono--boton>
                     <path v-if="!updating" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     <path v-if="updating" stroke-linecap="round" stroke-linejoin="round"
