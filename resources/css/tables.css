@@ -32,12 +32,13 @@
 
 .caja--tabla tbody tr{
     background-color: white;
-    transition: all .2s ease-in-out;
     box-shadow: inset 0 0 .5em -.25em var(--medio);
+    overflow: hidden;
     border-radius: .5em;
+    cursor: pointer;
 }
 
-.caja--tabla tbody tr:hover{
+.caja--tabla tbody tr:hover td{
     background-color: var(--medio2);
 }
 
@@ -46,6 +47,7 @@
     white-space: nowrap;
     font-size: .9em;
     font-weight: 500;
+    transition: all .2s ease-in-out;
 }
 
 .caja--tabla tbody tr td:first-child {

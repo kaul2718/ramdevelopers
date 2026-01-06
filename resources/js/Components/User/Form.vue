@@ -1,99 +1,99 @@
 <script>
-export default {
-    name: 'UserForm'
-}
+    export default {
+        name: 'UserForm'
+    }
 </script>
 
 <script setup>
-import { useNotificationStore } from '@/stores/notificationStore'
-import FormSection from '@/Components/FormSection.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
-import axios from 'axios'
-import { ref, watch, onMounted } from 'vue'
+    import { useNotificationStore } from '@/stores/notificationStore'
+    import FormSection from '@/Components/FormSection.vue'
+    import InputError from '@/Components/InputError.vue'
+    import InputLabel from '@/Components/InputLabel.vue'
+    import PrimaryButton from '@/Components/PrimaryButton.vue'
+    import TextInput from '@/Components/TextInput.vue'
+    import axios from 'axios'
+    import { ref, watch, onMounted } from 'vue'
 
-const selectedPhotoName = ref('')
-const photoInput = ref(null)
+    const selectedPhotoName = ref('')
+    const photoInput = ref(null)
 
-const emit = defineEmits(['success', 'cancel'])
+    const emit = defineEmits(['success', 'cancel'])
 
-const props = defineProps({
-    countries: Array,
-    roles: Array,
-    permissions: Array,
-    updating: Boolean,
-    user: Object
-})
+    const props = defineProps({
+        countries: Array,
+        roles: Array,
+        permissions: Array,
+        updating: Boolean,
+        user: Object
+    })
 
-const notificationStore = useNotificationStore()
+    const notificationStore = useNotificationStore()
 
-const form = ref({
-    name: '',
-    lastname: '',
-    email: '',
-    phone: '',
-    idiomas: '',
-    usr_id_ctry: null,
-    usr_active: true,
-    password: '',
-    password_confirmation: '',
-    roles: '',
-    profile_photo_path: null
-})
+    const form = ref({
+        name: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        idiomas: '',
+        usr_id_ctry: null,
+        usr_active: true,
+        password: '',
+        password_confirmation: '',
+        roles: '',
+        profile_photo_path: null
+    })
 
-const errors = ref({})
-const isSubmitting = ref(false)
+    const errors = ref({})
+    const isSubmitting = ref(false)
 
-// Inicializar formulario con datos del usuario si es modo edición
-onMounted(() => {
-    if (props.updating && props.user) {
-        form.value = {
-            name: props.user.name || '',
-            lastname: props.user.lastname || '',
-            email: props.user.email || '',
-            phone: props.user.phone || '',
-            idiomas: props.user.idiomas || '',
-            usr_id_ctry: props.user.usr_id_ctry || null,
-            usr_active: Number(props.user.usr_active ?? 1),
-            password: '',
-            password_confirmation: '',
-            roles: props.user.roles?.[0]?.id || '',
-            profile_photo_path: null
+    // Inicializar formulario con datos del usuario si es modo edición
+    onMounted(() => {
+        if (props.updating && props.user) {
+            form.value = {
+                name: props.user.name || '',
+                lastname: props.user.lastname || '',
+                email: props.user.email || '',
+                phone: props.user.phone || '',
+                idiomas: props.user.idiomas || '',
+                usr_id_ctry: props.user.usr_id_ctry || null,
+                usr_active: Number(props.user.usr_active ?? 1),
+                password: '',
+                password_confirmation: '',
+                roles: props.user.roles?.[0]?.id || '',
+                profile_photo_path: null
+            }
+            selectedPhotoName.value = ''
         }
-        selectedPhotoName.value = ''
-    }
-})
+    })
 
-// Watcher para reiniciar el formulario si cambian los props
-watch(() => props.user, (newUser) => {
-    if (props.updating && newUser) {
-        form.value = {
-            name: newUser.name || '',
-            lastname: newUser.lastname || '',
-            email: newUser.email || '',
-            phone: newUser.phone || '',
-            idiomas: newUser.idiomas || '',
-            usr_id_ctry: newUser.usr_id_ctry || null,
-            usr_active: Number(newUser.usr_active ?? 1),
-            password: '',
-            password_confirmation: '',
-            roles: newUser.roles?.[0]?.id || '',
-            profile_photo_path: null
+    // Watcher para reiniciar el formulario si cambian los props
+    watch(() => props.user, (newUser) => {
+        if (props.updating && newUser) {
+            form.value = {
+                name: newUser.name || '',
+                lastname: newUser.lastname || '',
+                email: newUser.email || '',
+                phone: newUser.phone || '',
+                idiomas: newUser.idiomas || '',
+                usr_id_ctry: newUser.usr_id_ctry || null,
+                usr_active: Number(newUser.usr_active ?? 1),
+                password: '',
+                password_confirmation: '',
+                roles: newUser.roles?.[0]?.id || '',
+                profile_photo_path: null
+            }
+            selectedPhotoName.value = ''
+            errors.value = {}
         }
-        selectedPhotoName.value = ''
-        errors.value = {}
-    }
-}, { deep: true })
+    }, { deep: true })
 
-const handlePhotoChange = (event) => {
-    const file = event.target.files[0]
-    if (file) {
-        selectedPhotoName.value = file.name
-        form.value.profile_photo_path = file
+    const handlePhotoChange = (event) => {
+        const file = event.target.files[0]
+        if (file) {
+            selectedPhotoName.value = file.name
+            form.value.profile_photo_path = file
+        }
     }
-}
 
     const validateForm = () => {
         errors.value = {};
@@ -150,80 +150,80 @@ const handlePhotoChange = (event) => {
         return Object.keys(errors.value).length === 0;
     };
 
-const handleSubmit = async () => {
-    if (!validateForm()) return
+    const handleSubmit = async () => {
+        if (!validateForm()) return
 
-    isSubmitting.value = true
-    const formData = new FormData()
+        isSubmitting.value = true
+        const formData = new FormData()
 
-    // Preparar los datos según el tipo de operación
-    Object.entries(form.value).forEach(([key, value]) => {
-        if (key === 'roles' && value) {
-            // Enviar role como número único
-            formData.append('roles[0]', Number(value))
-        } else if (key === 'password' || key === 'password_confirmation') {
-            // Solo agregar contraseña si no está vacía
-            if (value && value.trim() !== '') {
+        // Preparar los datos según el tipo de operación
+        Object.entries(form.value).forEach(([key, value]) => {
+            if (key === 'roles' && value) {
+                // Enviar role como número único
+                formData.append('roles[0]', Number(value))
+            } else if (key === 'password' || key === 'password_confirmation') {
+                // Solo agregar contraseña si no está vacía
+                if (value && value.trim() !== '') {
+                    formData.append(key, value)
+                }
+            } else if (key === 'usr_id_ctry' && value) {
+                // usr_id_ctry debe ser número
+                formData.append(key, Number(value))
+            } else if (key === 'usr_active') {
+                // usr_active debe ser booleano o número
+                formData.append(key, value ? 1 : 0)
+            } else if (value !== null && value !== '') {
                 formData.append(key, value)
             }
-        } else if (key === 'usr_id_ctry' && value) {
-            // usr_id_ctry debe ser número
-            formData.append(key, Number(value))
-        } else if (key === 'usr_active') {
-            // usr_active debe ser booleano o número
-            formData.append(key, value ? 1 : 0)
-        } else if (value !== null && value !== '') {
-            formData.append(key, value)
-        }
-    })
+        })
 
-    try {
-        let response
-        if (props.updating) {
-            // Para actualización con FormData, usar POST con _method=PUT
-            formData.append('_method', 'PUT')
-            response = await axios.post(
-                route('users.update', props.user.id),
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
+        try {
+            let response
+            if (props.updating) {
+                // Para actualización con FormData, usar POST con _method=PUT
+                formData.append('_method', 'PUT')
+                response = await axios.post(
+                    route('users.update', props.user.id),
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     }
-                }
-            )
-        } else {
-            // Para creación, usar POST
-            response = await axios.post(
-                route('users.store'),
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
+                )
+            } else {
+                // Para creación, usar POST
+                response = await axios.post(
+                    route('users.store'),
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     }
-                }
-            )
+                )
+            }
+            
+            const message = props.updating ? 'Usuario actualizado correctamente' : 'Usuario creado correctamente'
+            notificationStore.success(message)
+            emit('success')
+        } catch (e) {
+            console.error('Error details:', e.response?.data)
+            if (e.response?.data?.errors) {
+                errors.value = e.response.data.errors
+            } else {
+                notificationStore.error(e.response?.data?.message || 'Error al procesar usuario')
+            }
+        } finally {
+            isSubmitting.value = false
         }
-        
-        const message = props.updating ? 'Usuario actualizado correctamente' : 'Usuario creado correctamente'
-        notificationStore.success(message)
-        emit('success')
-    } catch (e) {
-        console.error('Error details:', e.response?.data)
-        if (e.response?.data?.errors) {
-            errors.value = e.response.data.errors
-        } else {
-            notificationStore.error(e.response?.data?.message || 'Error al procesar usuario')
-        }
-    } finally {
-        isSubmitting.value = false
     }
-}
 
-const getError = (field) => {
-    const error = errors.value[field]
-    if (!error) return null
-    return Array.isArray(error) ? error[0] : error
-}
+    const getError = (field) => {
+        const error = errors.value[field]
+        if (!error) return null
+        return Array.isArray(error) ? error[0] : error
+    }
 
 </script>
 
@@ -353,9 +353,6 @@ const getError = (field) => {
                         file:bg-indigo-50 file:text-indigo-700
                         hover:file:bg-indigo-100">
                 </input>
-                <span v-if="selectedPhotoName" class="text-xs text-gray-600 mt-2 block">
-                    Archivo seleccionado: {{ selectedPhotoName }}
-                </span>
                 <InputLabel for="profile_photo_path" value="Foto de Perfil (Opcional)"></InputLabel>
                 <InputError :message="errors.profile_photo_path || $page.props.errors.profile_photo_path"
                     class="mt-2" />
