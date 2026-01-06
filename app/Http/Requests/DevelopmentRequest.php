@@ -132,8 +132,8 @@ class DevelopmentRequest extends FormRequest
             'devt_delivery_year.min' => 'El año de entrega no puede ser menor a 2020.',
             'devt_delivery_year.max' => 'El año de entrega no puede ser mayor a 2100.',
 
-            'devt_estimated_profit.numeric' => 'La ganancia estimada debe ser un número.',
-            'devt_estimated_profit.min' => 'La ganancia estimada no puede ser negativa.',
+            'devt_estimated_profit.numeric' => 'Los honorarios estimados deben ser un número.',
+            'devt_estimated_profit.min' => 'Los honorarios estimados no pueden ser negativos.',
 
             'devt_is_featured.boolean' => 'El campo destacado debe ser un valor booleano.',
 

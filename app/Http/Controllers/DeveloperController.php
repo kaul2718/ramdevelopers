@@ -32,10 +32,10 @@ class DeveloperController extends Controller
         }
         
         $developers = $query->latest()->paginate(10)->appends($request->query());
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'promotor');
-        })->where('usr_active', true)->get();
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
         return Inertia::render('Developer/Index', [
             'developers' => $developers,
             'countries' => $countries,
@@ -49,10 +49,10 @@ class DeveloperController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'promotor');
-        })->where('usr_active', true)->get();
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
         return Inertia::render('Developer/Create', [
             'countries' => $countries,
             'users' => $users,
@@ -84,10 +84,10 @@ class DeveloperController extends Controller
      */
     public function edit(Developer $developer)
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'promotor');
-        })->where('usr_active', true)->get();
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
         return Inertia::render('Developer/Edit', [
             'developer' => $developer,
             'countries' => $countries,

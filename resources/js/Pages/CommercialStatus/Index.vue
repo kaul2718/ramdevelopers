@@ -74,7 +74,7 @@
                     showDeleteConfirm.value = false;
                     itemToDelete.value = null;
                     
-                    notificationStore.success('Estado comercial eliminado exitosamente');
+                    notificationStore.success('Tipo de proyecto eliminado exitosamente');
                     
                     setTimeout(() => {
                         const notyfToasts = document.querySelectorAll('.notyf__toast');
@@ -89,7 +89,7 @@
                 },
                 onError: (error) => {
                     console.error('Error deleting commercial status:', error);
-                    notificationStore.error('Error al eliminar el estado comercial');
+                    notificationStore.error('Error al eliminar el tipo de proyecto');
                     showDeleteConfirm.value = false;
                     itemToDelete.value = null;
                 }
@@ -100,7 +100,7 @@
     onMounted(() => {
         if (sessionStorage.getItem('showCreateCommercialStatusNotification')) {
             setTimeout(() => {
-                notificationStore.success('Estado comercial creado exitosamente');
+                notificationStore.success('Tipo de proyecto creado exitosamente');
                 sessionStorage.removeItem('showCreateCommercialStatusNotification');
                 
                 setTimeout(() => {
@@ -118,7 +118,7 @@
 
         if (sessionStorage.getItem('showUpdateCommercialStatusNotification')) {
             setTimeout(() => {
-                notificationStore.success('Estado comercial actualizado exitosamente');
+                notificationStore.success('Tipo de proyecto actualizado exitosamente');
                 sessionStorage.removeItem('showUpdateCommercialStatusNotification');
                 
                 setTimeout(() => {
@@ -136,7 +136,7 @@
 
         if (sessionStorage.getItem('showDeleteCommercialStatusNotification')) {
             setTimeout(() => {
-                notificationStore.success('Estado comercial eliminado exitosamente');
+                notificationStore.success('Tipo de proyecto eliminado exitosamente');
                 sessionStorage.removeItem('showDeleteCommercialStatusNotification');
                 
                 setTimeout(() => {
@@ -155,8 +155,8 @@
 </script>
 
 <template>
-    <AppLayout title="Estado Comercial">
-        <HeaderBody titulo-body="Estado comercial - Proyectos" permisos="create commercial status" nombre-btn="Crear nuevo" @create="showCreateModal = true"/>
+    <AppLayout title="Tipo de Proyecto">
+        <HeaderBody titulo-body="Tipo de Proyectos" permisos="create commercial status" nombre-btn="Crear nuevo" @create="showCreateModal = true"/>
 
         <div class="caja--tabla">
             <table>
@@ -221,8 +221,8 @@
         <!-- Delete Confirmation Modal -->
         <ConfirmModal 
             :show="showDeleteConfirm"
-            title="Eliminar Estado Comercial"
-            message="¿Estás seguro de que deseas eliminar este estado comercial? Esta acción no se puede deshacer."
+            title="Eliminar Tipo de Proyecto"
+            message="¿Estás seguro de que deseas eliminar este tipo de proyecto? Esta acción no se puede deshacer."
             confirmText="Eliminar"
             cancelText="Cancelar"
             :isDangerous="true"

@@ -72,7 +72,7 @@ const handleSubmit = async () => {
             const errorMessages = Object.values(errors.value).flat().join(', ');
             notificationStore.error(errorMessages);
         } else {
-            notificationStore.error('Error al crear el estado comercial');
+            notificationStore.error('Error al crear el tipo de proyecto');
         }
     } finally {
         isSubmitting.value = false;
@@ -106,7 +106,7 @@ watch(() => props.show, (newVal) => {
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #title>
-            <h2 class="modal-title text-xl">Crear Nuevo Estado Comercial</h2>
+            <h2 class="modal-title text-xl">Crear Nuevo Tipo de Proyecto</h2>
         </template>
 
         <template #content>

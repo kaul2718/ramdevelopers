@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 // Ruta personalizada para el registro con datos adicionales
 Route::get('/register', function () {
-    $countries = Country::where('ctry_active', true)->get();
+    $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
     return Inertia::render('Auth/Register', [
         'countries' => $countries
     ]);

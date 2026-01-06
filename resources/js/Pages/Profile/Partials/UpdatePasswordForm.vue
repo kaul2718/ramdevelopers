@@ -54,7 +54,7 @@ const updatePassword = () => {
                     ref="currentPasswordInput"
                     v-model="form.current_password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="campo--input"
                     autocomplete="current-password"
                 />
                 <InputLabel for="current_password" value="Contraseña actual" />
@@ -69,7 +69,7 @@ const updatePassword = () => {
                     ref="passwordInput"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="campo--input"
                     autocomplete="new-password"
                 />
                 <InputLabel for="password" value="Nueva contraseña" />
@@ -81,7 +81,7 @@ const updatePassword = () => {
                     id="password_confirmation"
                     v-model="form.password_confirmation"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="campo--input"
                     autocomplete="new-password"
                 />
                 <InputLabel for="password_confirmation" value="Confirmar nueva contraseña" />

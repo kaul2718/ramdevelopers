@@ -22,10 +22,10 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Crear Estado de Negocio">
+    <AppLayout title="Crear Estado del Proyecto">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear Estado de Negocio
+                Crear Estado del Proyecto
             </h2>
         </template>
 

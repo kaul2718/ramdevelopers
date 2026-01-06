@@ -215,7 +215,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Portada</th><th>Título</th><th>Desarrollador</th><th>País</th><th>Ciudad</th><th>Estado Comercial</th><th>Aprobación</th><th>Acciones</th>
+                        <th>Portada</th><th>Título</th><th>Desarrollador</th><th>País</th><th>Ciudad</th><th>Tipo de Proyecto</th><th>Aprobación</th><th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>

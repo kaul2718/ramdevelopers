@@ -177,10 +177,6 @@
 
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
-        <template #title>
-            <h2 class="modal-title text-xl">Crear Nuevo Usuario</h2>
-        </template>
-
         <template #content>
             <UserForm 
                 :form="form"
@@ -190,8 +186,8 @@
                 :errors="errors"
                 @submit="handleSubmit"
             />
-        </template>
-
+        </template> 
+        <!--
         <template #footer>
             <button
                 @click="closeModal"
@@ -204,6 +200,6 @@
                 class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3 disabled:opacity-50">
                 {{ isSubmitting ? 'Guardando...' : 'Crear Usuario' }}
             </button>
-        </template>
+        </template>-->
     </DialogModal>
 </template>

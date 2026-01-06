@@ -62,7 +62,7 @@
                     businessStateToDelete.value = null;
                     
                     // Mostrar notificación inmediatamente
-                    notificationStore.success('Estado de negocio eliminado exitosamente');
+                    notificationStore.success('Estado del proyecto eliminado exitosamente');
                     
                     // Remover la notificación después de 5 segundos
                     setTimeout(() => {
@@ -78,7 +78,7 @@
                 },
                 onError: (error) => {
                     console.error('Error deleting business state:', error);
-                    notificationStore.error('Error al eliminar el estado de negocio');
+                    notificationStore.error('Error al eliminar el estado del proyecto');
                     showDeleteConfirm.value = false;
                     businessStateToDelete.value = null;
                 }
@@ -95,7 +95,7 @@
         // Notificación de creación exitosa
         if (sessionStorage.getItem('showCreateBusinessStateNotification')) {
             setTimeout(() => {
-                notificationStore.success('Estado de negocio creado exitosamente');
+                notificationStore.success('Estado del proyecto creado exitosamente');
                 sessionStorage.removeItem('showCreateBusinessStateNotification');
                 
                 // Remover la notificación después de 5 segundos
@@ -115,7 +115,7 @@
         // Notificación de actualización exitosa
         if (sessionStorage.getItem('showUpdateBusinessStateNotification')) {
             setTimeout(() => {
-                notificationStore.success('Estado de negocio actualizado exitosamente');
+                notificationStore.success('Estado del proyecto actualizado exitosamente');
                 sessionStorage.removeItem('showUpdateBusinessStateNotification');
                 
                 // Remover la notificación después de 5 segundos
@@ -135,8 +135,8 @@
 </script>
 
 <template>
-    <AppLayout title="Estados de negocio">
-        <HeaderBody titulo-body="Estados de negocio - Proyectos" permisos="create business state" nombre-btn="Crear nuevo" @create="showCreateModal = true"/>
+    <AppLayout title="Estados del proyecto">
+        <HeaderBody titulo-body="Estados del Proyecto" permisos="create business state" nombre-btn="Crear nuevo" @create="showCreateModal = true"/>
 
         <div class="caja--tabla">
             <table>
@@ -222,8 +222,8 @@
         <!-- ConfirmModal -->
         <ConfirmModal
             :show="showDeleteConfirm"
-            title="Eliminar Estado de Negocio"
-            message="¿Estás seguro de que deseas eliminar este estado de negocio? Esta acción no se puede deshacer."
+            title="Eliminar Estado del Proyecto"
+            message="¿Estás seguro de que deseas eliminar este estado del proyecto? Esta acción no se puede deshacer."
             confirmText="Eliminar"
             cancelText="Cancelar"
             :isDangerous="true"

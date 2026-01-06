@@ -27,11 +27,11 @@ defineProps({
                             <h2 class="text-3xl font-bold">{{ developer.devr_commercial_name }}</h2>
                             <p class="text-indigo-100 mt-1">{{ developer.devr_email_contact }}</p>
                             <div class="mt-3">
-                                <span v-if="developer.devr_active" 
+                                <span v-if="developer.devr_active"
                                     class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
                                     ✓ Activo
                                 </span>
-                                <span v-else 
+                                <span v-else
                                     class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800">
                                     ✗ Inactivo
                                 </span>
@@ -58,19 +58,22 @@ defineProps({
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Email</p>
                                     <p class="text-lg text-gray-900 mt-1">
-                                        <a :href="`mailto:${developer.devr_email_contact}`" class="text-indigo-600 hover:text-indigo-700">
+                                        <a :href="`mailto:${developer.devr_email_contact}`"
+                                            class="text-indigo-600 hover:text-indigo-700">
                                             {{ developer.devr_email_contact }}
                                         </a>
                                     </p>
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Teléfono</p>
-                                    <p class="text-lg text-gray-900 mt-1">{{ developer.devr_phone_contact || 'N/A' }}</p>
+                                    <p class="text-lg text-gray-900 mt-1">{{ developer.devr_phone_contact || 'N/A' }}
+                                    </p>
                                 </div>
                                 <div v-if="developer.devr_website">
                                     <p class="text-sm font-medium text-gray-500">Sitio Web</p>
                                     <p class="text-lg text-gray-900 mt-1">
-                                        <a :href="developer.devr_website" target="_blank" class="text-indigo-600 hover:text-indigo-700">
+                                        <a :href="developer.devr_website" target="_blank"
+                                            class="text-indigo-600 hover:text-indigo-700">
                                             {{ developer.devr_website }}
                                         </a>
                                     </p>
@@ -78,7 +81,7 @@ defineProps({
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">País</p>
                                     <p class="text-lg text-gray-900 mt-1">
-                                        <span v-if="developer.country" 
+                                        <span v-if="developer.country"
                                             class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700">
                                             {{ developer.country.ctry_name }}
                                         </span>
@@ -95,8 +98,10 @@ defineProps({
                             </h3>
                             <div v-if="developer.user">
                                 <p class="text-lg text-gray-900">
-                                    <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700">
-                                        {{ developer.user.name }}
+                                    <span
+                                        class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700">
+                                        {{ developer.user.name }} {{ developer.user.lastname }}
+
                                     </span>
                                 </p>
                             </div>
@@ -111,11 +116,19 @@ defineProps({
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Creado el</p>
-                                    <p class="text-lg text-gray-900 mt-1">{{ new Date(developer.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+                                    <p class="text-lg text-gray-900 mt-1">{{ new
+                                        Date(developer.created_at).toLocaleDateString('es-ES', {
+                                            year: 'numeric', month:
+                                        'long',
+                                        day: 'numeric' }) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Actualizado el</p>
-                                    <p class="text-lg text-gray-900 mt-1">{{ new Date(developer.updated_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+                                    <p class="text-lg text-gray-900 mt-1">{{ new
+                                        Date(developer.updated_at).toLocaleDateString('es-ES', {
+                                            year: 'numeric', month:
+                                        'long',
+                                        day: 'numeric' }) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -123,13 +136,11 @@ defineProps({
 
                     <!-- Botones de Acción -->
                     <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                        <Link 
-                            :href="route('developers.index')"
+                        <Link :href="route('developers.index')"
                             class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                             ← Volver al listado
                         </Link>
-                        <Link 
-                            v-if="$page.props.user.permissions.includes('update developer')"
+                        <Link v-if="$page.props.user.permissions.includes('update developer')"
                             :href="route('developers.edit', developer.devr_id)"
                             class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
                             ✏️ Editar Desarrollador

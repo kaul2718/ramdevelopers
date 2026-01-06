@@ -11,12 +11,17 @@ import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     user: Object,
+    countries: Array,
 });
 
 const form = useForm({
     _method: 'PUT',
     name: props.user.name,
+    lastname: props.user.lastname || '',
     email: props.user.email,
+    phone: props.user.phone || '',
+    idiomas: props.user.idiomas || '',
+    usr_id_ctry: props.user.usr_id_ctry || '',
     photo: null,
 });
 
@@ -25,7 +30,7 @@ const photoPreview = ref(null);
 const photoInput = ref(null);
 
 const updateProfileInformation = () => {
-    if (photoInput.value) {
+    if (photoInput.value && photoInput.value.files[0]) {
         form.photo = photoInput.value.files[0];
     }
 
@@ -87,7 +92,7 @@ const clearPhotoFileInput = () => {
 
         <template #form>
             <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input">
+            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input mb-6 pb-6 border-b">
                 <!-- Profile Photo File Input -->
                 <input
                     id="photo"
@@ -97,7 +102,7 @@ const clearPhotoFileInput = () => {
                     @change="updatePhotoPreview"
                 >
 
-                <InputLabel for="photo" value="Photo" />
+                <InputLabel for="photo" value="Foto de perfil" />
 
                 <!-- Current Profile Photo -->
                 <div v-show="! photoPreview" class="mt-2">
@@ -112,18 +117,19 @@ const clearPhotoFileInput = () => {
                     />
                 </div>
 
-                <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
-                    Seleccionar una nueva foto
-                </SecondaryButton>
+                <div class="mt-2 space-x-2">
+                    <SecondaryButton type="button" @click.prevent="selectNewPhoto">
+                        Seleccionar una nueva foto
+                    </SecondaryButton>
 
-                <SecondaryButton
-                    v-if="user.profile_photo_path"
-                    type="button"
-                    class="mt-2"
-                    @click.prevent="deletePhoto"
-                >
-                    Eliminar foto
-                </SecondaryButton>
+                    <SecondaryButton
+                        v-if="user.profile_photo_path"
+                        type="button"
+                        @click.prevent="deletePhoto"
+                    >
+                        Eliminar foto
+                    </SecondaryButton>
+                </div>
 
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
@@ -140,6 +146,20 @@ const clearPhotoFileInput = () => {
                 />
                 <InputLabel for="name" value="Nombre" />
                 <InputError :message="form.errors.name" class="mt-2" />
+            </div>
+
+            <!-- Last Name -->
+            <div class="contenedor--input">
+                <TextInput
+                    id="lastname"
+                    v-model="form.lastname"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="family-name"
+                />
+                <InputLabel for="lastname" value="Apellido" />
+                <InputError :message="form.errors.lastname" class="mt-2" />
             </div>
 
             <!-- Email -->
@@ -174,6 +194,48 @@ const clearPhotoFileInput = () => {
                         Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.
                     </div>
                 </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="contenedor--input">
+                <TextInput
+                    id="phone"
+                    v-model="form.phone"
+                    type="tel"
+                    class="mt-1 block w-full"
+                    autocomplete="tel"
+                />
+                <InputLabel for="phone" value="Teléfono" />
+                <InputError :message="form.errors.phone" class="mt-2" />
+            </div>
+
+            <!-- Languages -->
+            <div class="contenedor--input">
+                <TextInput
+                    id="idiomas"
+                    v-model="form.idiomas"
+                    type="text"
+                    class="mt-1 block w-full"
+                    placeholder="Ej: Español, Inglés, Portugués"
+                />
+                <InputLabel for="idiomas" value="Idiomas" />
+                <InputError :message="form.errors.idiomas" class="mt-2" />
+            </div>
+
+            <!-- Country -->
+            <div class="contenedor--input">
+                <select
+                    id="usr_id_ctry"
+                    v-model.number="form.usr_id_ctry"
+                    class="campo--input"
+                >
+                    <option value="">Selecciona un país</option>
+                    <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                        {{ country.ctry_name }}
+                    </option>
+                </select>
+                <InputLabel for="usr_id_ctry" value="País" />
+                <InputError :message="form.errors.usr_id_ctry" class="mt-2" />
             </div>
         </template>
 
