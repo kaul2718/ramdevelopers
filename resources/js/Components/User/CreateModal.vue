@@ -187,19 +187,5 @@
                 @submit="handleSubmit"
             />
         </template> 
-        <!--
-        <template #footer>
-            <button
-                @click="closeModal"
-                class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                Cancelar
-            </button>
-            <button
-                @click="handleSubmit"
-                :disabled="isSubmitting"
-                class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3 disabled:opacity-50">
-                {{ isSubmitting ? 'Guardando...' : 'Crear Usuario' }}
-            </button>
-        </template>-->
     </DialogModal>
 </template>
