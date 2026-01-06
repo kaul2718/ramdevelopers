@@ -1,109 +1,29 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue';
-import { ref, watch } from 'vue';
-import axios from 'axios';
-import { useNotificationStore } from '@/stores/notificationStore';
+    import DialogModal from '@/Components/DialogModal.vue';
+    import { ref, watch } from 'vue';
+    import axios from 'axios';
+    import { useNotificationStore } from '@/stores/notificationStore';
 
-const props = defineProps({
-    show: {
-        type: Boolean,
-        required: true
-    },
-    countries: {
-        type: Array,
-        default: () => []
-    },
-    users: {
-        type: Array,
-        default: () => []
-    }
-});
-
-const emit = defineEmits(['close']);
-
-const notificationStore = useNotificationStore();
-
-const form = ref({
-    devr_commercial_name: '',
-    devr_legal_name: '',
-    devr_email_contact: '',
-    devr_phone_contact: '',
-    devr_website: '',
-    ctry_id: '',
-    user_id: '',
-    devr_active: true
-});
-
-const isSubmitting = ref(false);
-const errors = ref({});
-
-const validateForm = () => {
-    errors.value = {};
-
-    if (!form.value.devr_commercial_name?.trim()) {
-        errors.value.devr_commercial_name = 'El nombre comercial es requerido';
-    }
-    if (!form.value.devr_legal_name?.trim()) {
-        errors.value.devr_legal_name = 'El nombre legal es requerido';
-    }
-    if (!form.value.devr_email_contact?.trim()) {
-        errors.value.devr_email_contact = 'El email es requerido';
-    }
-    if (!form.value.ctry_id) {
-        errors.value.ctry_id = 'El país es requerido';
-    }
-    if (!form.value.user_id) {
-        errors.value.user_id = 'El usuario es requerido';
-    }
-
-    return Object.keys(errors.value).length === 0;
-};
-
-const handleSubmit = async () => {
-    if (!validateForm()) {
-        notificationStore.error('Por favor completa todos los campos requeridos');
-        return;
-    }
-
-    isSubmitting.value = true;
-    const formData = new FormData();
-
-    if (form.value.devr_commercial_name) formData.append('devr_commercial_name', form.value.devr_commercial_name);
-    if (form.value.devr_legal_name) formData.append('devr_legal_name', form.value.devr_legal_name);
-    if (form.value.devr_email_contact) formData.append('devr_email_contact', form.value.devr_email_contact);
-    if (form.value.devr_phone_contact) formData.append('devr_phone_contact', form.value.devr_phone_contact);
-    if (form.value.devr_website) formData.append('devr_website', form.value.devr_website);
-    if (form.value.ctry_id) formData.append('ctry_id', form.value.ctry_id);
-    if (form.value.user_id) formData.append('user_id', form.value.user_id);
-    formData.append('devr_active', form.value.devr_active ? 1 : 0);
-
-    try {
-        await axios.post(route('developers.store'), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        });
-
-        sessionStorage.setItem('showCreateDeveloperNotification', 'true');
-        closeModal();
-        window.location.href = route('developers.index');
-    } catch (error) {
-        console.error('Error creating developer:', error);
-        if (error.response?.data?.errors) {
-            errors.value = error.response.data.errors;
-            const errorMessages = Object.values(errors.value).flat().join(', ');
-            notificationStore.error(errorMessages);
-        } else {
-            notificationStore.error('Error al crear el desarrollador');
+    const props = defineProps({
+        show: {
+            type: Boolean,
+            required: true
+        },
+        countries: {
+            type: Array,
+            default: () => []
+        },
+        users: {
+            type: Array,
+            default: () => []
         }
-    } finally {
-        isSubmitting.value = false;
-    }
-};
+    });
 
-const closeModal = () => {
-    // Resetear el formulario
-    form.value = {
+    const emit = defineEmits(['close']);
+
+    const notificationStore = useNotificationStore();
+
+    const form = ref({
         devr_commercial_name: '',
         devr_legal_name: '',
         devr_email_contact: '',
@@ -112,13 +32,77 @@ const closeModal = () => {
         ctry_id: '',
         user_id: '',
         devr_active: true
-    };
-    emit('close');
-};
+    });
 
-watch(() => props.show, (newVal) => {
-    if (newVal) {
-        // Resetear el formulario cuando se abre el modal
+    const isSubmitting = ref(false);
+    const errors = ref({});
+
+    const validateForm = () => {
+        errors.value = {};
+
+        if (!form.value.devr_commercial_name?.trim()) {
+            errors.value.devr_commercial_name = 'El nombre comercial es requerido';
+        }
+        if (!form.value.devr_legal_name?.trim()) {
+            errors.value.devr_legal_name = 'El nombre legal es requerido';
+        }
+        if (!form.value.devr_email_contact?.trim()) {
+            errors.value.devr_email_contact = 'El email es requerido';
+        }
+        if (!form.value.ctry_id) {
+            errors.value.ctry_id = 'El país es requerido';
+        }
+        if (!form.value.user_id) {
+            errors.value.user_id = 'El usuario es requerido';
+        }
+
+        return Object.keys(errors.value).length === 0;
+    };
+
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            notificationStore.error('Por favor completa todos los campos requeridos');
+            return;
+        }
+
+        isSubmitting.value = true;
+        const formData = new FormData();
+
+        if (form.value.devr_commercial_name) formData.append('devr_commercial_name', form.value.devr_commercial_name);
+        if (form.value.devr_legal_name) formData.append('devr_legal_name', form.value.devr_legal_name);
+        if (form.value.devr_email_contact) formData.append('devr_email_contact', form.value.devr_email_contact);
+        if (form.value.devr_phone_contact) formData.append('devr_phone_contact', form.value.devr_phone_contact);
+        if (form.value.devr_website) formData.append('devr_website', form.value.devr_website);
+        if (form.value.ctry_id) formData.append('ctry_id', form.value.ctry_id);
+        if (form.value.user_id) formData.append('user_id', form.value.user_id);
+        formData.append('devr_active', form.value.devr_active ? 1 : 0);
+
+        try {
+            await axios.post(route('developers.store'), formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+
+            sessionStorage.setItem('showCreateDeveloperNotification', 'true');
+            closeModal();
+            window.location.href = route('developers.index');
+        } catch (error) {
+            console.error('Error creating developer:', error);
+            if (error.response?.data?.errors) {
+                errors.value = error.response.data.errors;
+                const errorMessages = Object.values(errors.value).flat().join(', ');
+                notificationStore.error(errorMessages);
+            } else {
+                notificationStore.error('Error al crear el desarrollador');
+            }
+        } finally {
+            isSubmitting.value = false;
+        }
+    };
+
+    const closeModal = () => {
+        // Resetear el formulario
         form.value = {
             devr_commercial_name: '',
             devr_legal_name: '',
@@ -129,16 +113,28 @@ watch(() => props.show, (newVal) => {
             user_id: '',
             devr_active: true
         };
-    }
-});
+        emit('close');
+    };
+
+    watch(() => props.show, (newVal) => {
+        if (newVal) {
+            // Resetear el formulario cuando se abre el modal
+            form.value = {
+                devr_commercial_name: '',
+                devr_legal_name: '',
+                devr_email_contact: '',
+                devr_phone_contact: '',
+                devr_website: '',
+                ctry_id: '',
+                user_id: '',
+                devr_active: true
+            };
+        }
+    });
 </script>
 
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
-        <template #title>
-            <h2 class="modal-title text-xl">Crear Nuevo Desarrollador</h2>
-        </template>
-
         <template #content>
             <div class="space-y-6">
                 <div>

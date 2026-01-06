@@ -4,6 +4,7 @@
 @import "login.css";
 @import "dash.css";
 @import "tables.css";
+@import "modal.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

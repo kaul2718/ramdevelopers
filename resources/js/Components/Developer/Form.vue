@@ -1,53 +1,52 @@
-<!-- filepath: resources/js/Components/Developer/Form.vue -->
 <script>
-export default {
-    name: 'DeveloperForm'
-}
+    export default {
+        name: 'DeveloperForm'
+    }
 </script>
 
 <script setup>
-import FormSection from '@/Components/FormSection.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+    import FormSection from '@/Components/FormSection.vue'
+    import InputError from '@/Components/InputError.vue'
+    import InputLabel from '@/Components/InputLabel.vue'
+    import PrimaryButton from '@/Components/PrimaryButton.vue'
+    import TextInput from '@/Components/TextInput.vue'
 
-defineProps({
-    form: {
-        type: Object,
-        required: true
-    },
-    countries: {
-        type: Array,
-        required: true
-    },
-    users: {
-        type: Array,
-        required: true
-    },
-    updating: {
-        type: Boolean,
-        required: false,
-        default: false
-    },
-    isModal: {
-        type: Boolean,
-        required: false,
-        default: false
-    }
-})
+    defineProps({
+        form: {
+            type: Object,
+            required: true
+        },
+        countries: {
+            type: Array,
+            required: true
+        },
+        users: {
+            type: Array,
+            required: true
+        },
+        updating: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isModal: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    })
 
-defineEmits(['submit'])
+    defineEmits(['submit'])
 </script>
 
 <template>
     <!-- Si es modal, sin FormSection -->
     <div v-if="isModal" class="space-y-6">
         <div>
-            <InputLabel for="devr_commercial_name" value="Nombre Comercial"></InputLabel>
             <TextInput id="devr_commercial_name" v-model="form.devr_commercial_name" type="text" autocomplete="off"
                 class="mt-1 block w-full" placeholder="Ej: TechDev Solutions">
             </TextInput>
+            <InputLabel for="devr_commercial_name" value="Nombre Comercial"></InputLabel>
             <InputError :message="$page.props.errors.devr_commercial_name" class="mt-2" />
         </div>
 

@@ -1,102 +1,140 @@
 <!-- filepath: resources/js/Components/User/ViewModal.vue -->
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue';
-import UserForm from './Form.vue';
-import { Link, router } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
-import axios from 'axios';
-import { useNotificationStore } from '@/stores/notificationStore';
+    import DialogModal from '@/Components/DialogModal.vue';
+    import UserForm from './Form.vue';
+    import { Link, router } from '@inertiajs/vue3';
+    import { ref, watch, computed } from 'vue';
+    import axios from 'axios';
+    import { useNotificationStore } from '@/stores/notificationStore';
 
-const notificationStore = useNotificationStore();
+    const notificationStore = useNotificationStore();
 
-const props = defineProps({
-    show: {
-        type: Boolean,
-        required: true
-    },
-    user: {
-        type: Object,
-        default: null
-    },
-    countries: {
-        type: Array,
-        default: () => []
-    },
-    roles: {
-        type: Array,
-        default: () => []
-    },
-    userRoles: {
-        type: Array,
-        default: () => []
-    },
-    permissions: {
-        type: Array,
-        default: () => []
-    },
-    userDirectPermissions: {
-        type: Array,
-        default: () => []
-    },
-    isEditingInitial: {
-        type: Boolean,
-        default: false
-    }
-});
+    const props = defineProps({
+        show: {
+            type: Boolean,
+            required: true
+        },
+        user: {
+            type: Object,
+            default: null
+        },
+        countries: {
+            type: Array,
+            default: () => []
+        },
+        roles: {
+            type: Array,
+            default: () => []
+        },
+        userRoles: {
+            type: Array,
+            default: () => []
+        },
+        permissions: {
+            type: Array,
+            default: () => []
+        },
+        userDirectPermissions: {
+            type: Array,
+            default: () => []
+        },
+        isEditingInitial: {
+            type: Boolean,
+            default: false
+        }
+    });
 
-const emit = defineEmits(['close']);
+    const emit = defineEmits(['close']);
 
-const isEditing = ref(false);
-const form = ref({
-    name: '',
-    lastname: '',
-    email: '',
-    phone: '',
-    password: '',
-    idiomas: '',
-    profile_photo_path: null,
-    usr_id_ctry: '',
-    usr_active: 0,
-    roles: [],
-    permissions: [],
-});
+    const isEditing = ref(false);
+    const form = ref({
+        name: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        password: '',
+        idiomas: '',
+        profile_photo_path: null,
+        usr_id_ctry: '',
+        usr_active: 0,
+        roles: [],
+        permissions: [],
+    });
 
-// Almacenar los datos originales para detectar cambios
-const originalForm = ref({
-    name: '',
-    lastname: '',
-    email: '',
-    phone: '',
-    password: '',
-    idiomas: '',
-    profile_photo_path: null,
-    usr_id_ctry: '',
-    usr_active: 0,
-    roles: [],
-    permissions: [],
-});
+    // Almacenar los datos originales para detectar cambios
+    const originalForm = ref({
+        name: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        password: '',
+        idiomas: '',
+        profile_photo_path: null,
+        usr_id_ctry: '',
+        usr_active: 0,
+        roles: [],
+        permissions: [],
+    });
 
-// Computed para detectar si hay cambios
-const hasChanges = computed(() => {
-    return (
-        form.value.name !== originalForm.value.name ||
-        form.value.lastname !== originalForm.value.lastname ||
-        form.value.email !== originalForm.value.email ||
-        form.value.phone !== originalForm.value.phone ||
-        form.value.idiomas !== originalForm.value.idiomas ||
-        form.value.usr_id_ctry !== originalForm.value.usr_id_ctry ||
-        form.value.usr_active !== originalForm.value.usr_active ||
-        JSON.stringify(form.value.roles) !== JSON.stringify(originalForm.value.roles) ||
-        form.value.profile_photo_path !== null // Si se seleccionó una foto
-    );
-});
+    // Computed para detectar si hay cambios
+    const hasChanges = computed(() => {
+        return (
+            form.value.name !== originalForm.value.name ||
+            form.value.lastname !== originalForm.value.lastname ||
+            form.value.email !== originalForm.value.email ||
+            form.value.phone !== originalForm.value.phone ||
+            form.value.idiomas !== originalForm.value.idiomas ||
+            form.value.usr_id_ctry !== originalForm.value.usr_id_ctry ||
+            form.value.usr_active !== originalForm.value.usr_active ||
+            JSON.stringify(form.value.roles) !== JSON.stringify(originalForm.value.roles) ||
+            form.value.profile_photo_path !== null // Si se seleccionó una foto
+        );
+    });
 
-// Watcher para inicializar en modo edición o vista cuando el modal se abre
-watch(() => props.show, (newVal) => {
-    if (newVal) {
-        // Modal se está abriendo
-        if (props.isEditingInitial) {
-            // Abrir directamente en modo edición
+    // Watcher para inicializar en modo edición o vista cuando el modal se abre
+    watch(() => props.show, (newVal) => {
+        if (newVal) {
+            // Modal se está abriendo
+            if (props.isEditingInitial) {
+                // Abrir directamente en modo edición
+                if (props.user) {
+                    // Extraer los IDs de los roles del objeto roles anidado
+                    const roleIds = props.userRoles.map(role => {
+                        return typeof role === 'object' ? role.id : role;
+                    });
+                    
+                    const formData = {
+                        name: props.user.name || '',
+                        lastname: props.user.lastname || '',
+                        email: props.user.email || '',
+                        phone: props.user.phone || '',
+                        password: '',
+                        idiomas: props.user.idiomas || '',
+                        profile_photo_path: null,
+                        usr_id_ctry: props.user.usr_id_ctry || '',
+                        usr_active: props.user.usr_active ? 1 : 0,
+                        roles: roleIds,
+                        permissions: props.userDirectPermissions || [],
+                    };
+                    
+                    form.value = formData;
+                    // Guardar los datos originales
+                    originalForm.value = JSON.parse(JSON.stringify(formData));
+                }
+                isEditing.value = true;
+            } else {
+                // Abrir en modo vista
+                isEditing.value = false;
+            }
+        }
+    });
+
+    const toggleEdit = () => {
+        if (isEditing.value) {
+            // Si estaba editando, volver a vista
+            isEditing.value = false;
+        } else {
+            // Si estaba viendo, preparar para editar
             if (props.user) {
                 // Extraer los IDs de los roles del objeto roles anidado
                 const roleIds = props.userRoles.map(role => {
@@ -122,122 +160,80 @@ watch(() => props.show, (newVal) => {
                 originalForm.value = JSON.parse(JSON.stringify(formData));
             }
             isEditing.value = true;
-        } else {
-            // Abrir en modo vista
-            isEditing.value = false;
         }
-    }
-});
+    };
 
-const toggleEdit = () => {
-    if (isEditing.value) {
-        // Si estaba editando, volver a vista
-        isEditing.value = false;
-    } else {
-        // Si estaba viendo, preparar para editar
-        if (props.user) {
-            // Extraer los IDs de los roles del objeto roles anidado
-            const roleIds = props.userRoles.map(role => {
-                return typeof role === 'object' ? role.id : role;
+    const isSubmitting = ref(false);
+
+    const handleSubmit = async () => {
+        // Validar si hay cambios
+        if (!hasChanges.value) {
+            notificationStore.error('No has realizado cambios');
+            return;
+        }
+        
+        isSubmitting.value = true;
+        const formData = new FormData();
+        
+        if (form.value.name) formData.append('name', form.value.name);
+        if (form.value.lastname) formData.append('lastname', form.value.lastname);
+        if (form.value.email) formData.append('email', form.value.email);
+        if (form.value.phone) formData.append('phone', form.value.phone);
+        if (form.value.password) formData.append('password', form.value.password);
+        if (form.value.idiomas) formData.append('idiomas', form.value.idiomas);
+        if (form.value.usr_id_ctry) formData.append('usr_id_ctry', form.value.usr_id_ctry);
+        formData.append('usr_active', form.value.usr_active || 0);
+        
+        if (form.value.roles && form.value.roles.length > 0) {
+            form.value.roles.forEach((role, index) => {
+                formData.append(`roles[${index}]`, role);
+            });
+        }
+        
+        if (form.value.permissions && form.value.permissions.length > 0) {
+            form.value.permissions.forEach((permission, index) => {
+                formData.append(`permissions[${index}]`, permission);
+            });
+        }
+        
+        if (form.value.profile_photo_path instanceof File) {
+            formData.append('profile_photo_path', form.value.profile_photo_path);
+        }
+        
+        formData.append('_method', 'PUT');
+        
+        try {
+            await axios.post(route('users.update', props.user.id), formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
             });
             
-            const formData = {
-                name: props.user.name || '',
-                lastname: props.user.lastname || '',
-                email: props.user.email || '',
-                phone: props.user.phone || '',
-                password: '',
-                idiomas: props.user.idiomas || '',
-                profile_photo_path: null,
-                usr_id_ctry: props.user.usr_id_ctry || '',
-                usr_active: props.user.usr_active ? 1 : 0,
-                roles: roleIds,
-                permissions: props.userDirectPermissions || [],
-            };
+            // Cerrar la modal
+            closeModal();
+            // Guardar flag en sessionStorage para mostrar notificación después
+            sessionStorage.setItem('showSuccessNotification', 'true');
+            // Refrescar la página usando Inertia para ver los cambios
+            router.visit(route('users.index'));
             
-            form.value = formData;
-            // Guardar los datos originales
-            originalForm.value = JSON.parse(JSON.stringify(formData));
-        }
-        isEditing.value = true;
-    }
-};
-
-const isSubmitting = ref(false);
-
-const handleSubmit = async () => {
-    // Validar si hay cambios
-    if (!hasChanges.value) {
-        notificationStore.error('No has realizado cambios');
-        return;
-    }
-    
-    isSubmitting.value = true;
-    const formData = new FormData();
-    
-    if (form.value.name) formData.append('name', form.value.name);
-    if (form.value.lastname) formData.append('lastname', form.value.lastname);
-    if (form.value.email) formData.append('email', form.value.email);
-    if (form.value.phone) formData.append('phone', form.value.phone);
-    if (form.value.password) formData.append('password', form.value.password);
-    if (form.value.idiomas) formData.append('idiomas', form.value.idiomas);
-    if (form.value.usr_id_ctry) formData.append('usr_id_ctry', form.value.usr_id_ctry);
-    formData.append('usr_active', form.value.usr_active || 0);
-    
-    if (form.value.roles && form.value.roles.length > 0) {
-        form.value.roles.forEach((role, index) => {
-            formData.append(`roles[${index}]`, role);
-        });
-    }
-    
-    if (form.value.permissions && form.value.permissions.length > 0) {
-        form.value.permissions.forEach((permission, index) => {
-            formData.append(`permissions[${index}]`, permission);
-        });
-    }
-    
-    if (form.value.profile_photo_path instanceof File) {
-        formData.append('profile_photo_path', form.value.profile_photo_path);
-    }
-    
-    formData.append('_method', 'PUT');
-    
-    try {
-        await axios.post(route('users.update', props.user.id), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
+        } catch (error) {
+            isSubmitting.value = false;
+            console.error('Error updating user:', error.response?.data || error.message);
+            notificationStore.error('Error al actualizar el usuario');
+            if (error.response?.data?.errors) {
+                console.error('Validation errors:', error.response.data.errors);
             }
-        });
-        
-        // Cerrar la modal
-        closeModal();
-        // Guardar flag en sessionStorage para mostrar notificación después
-        sessionStorage.setItem('showSuccessNotification', 'true');
-        // Refrescar la página usando Inertia para ver los cambios
-        router.visit(route('users.index'));
-        
-    } catch (error) {
-        isSubmitting.value = false;
-        console.error('Error updating user:', error.response?.data || error.message);
-        notificationStore.error('Error al actualizar el usuario');
-        if (error.response?.data?.errors) {
-            console.error('Validation errors:', error.response.data.errors);
         }
-    }
-};
+    };
 
-const closeModal = () => {
-    isEditing.value = false;
-    emit('close');
-};
+    const closeModal = () => {
+        isEditing.value = false;
+        emit('close');
+    };
 </script>
 
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
-        <template #title v-if="user">
-            {{ isEditing ? 'Editar Usuario' : 'Información del Usuario' }}
-        </template>
-
         <template #content v-if="user">
             <!-- Vista -->
             <div v-if="!isEditing" class="space-y-4">
@@ -322,7 +318,7 @@ const closeModal = () => {
                 />
             </div>
         </template>
-
+<!--
         <template #footer v-if="user">
             <button
                 @click="closeModal"
@@ -343,7 +339,7 @@ const closeModal = () => {
                 <span v-if="isSubmitting" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                 {{ isSubmitting ? 'Guardando...' : 'Guardar Cambios' }}
             </button>
-        </template>
+        </template>-->
     </DialogModal>
 </template>
 
