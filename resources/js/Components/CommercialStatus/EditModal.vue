@@ -4,7 +4,8 @@ import CommercialStatusForm from '@/Components/CommercialStatus/Form.vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    show: Boolean
+    show: Boolean,
+    commercialStatus: Object
 })
 
 const emit = defineEmits(['close'])
@@ -22,7 +23,7 @@ const handleSuccess = () => {
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #content>
-            <CommercialStatusForm :updating="false" @success="handleSuccess" @cancel="closeModal" />
+            <CommercialStatusForm :updating="true" :commercial-status="commercialStatus" @success="handleSuccess" @cancel="closeModal" />
         </template>
     </DialogModal>
 </template>

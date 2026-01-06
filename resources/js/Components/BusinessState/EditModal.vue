@@ -7,6 +7,10 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    businessState: {
+        type: Object,
+        default: null,
+    },
 })
 
 const emit = defineEmits(['close'])
@@ -19,7 +23,7 @@ const handleSuccess = () => {
 <template>
     <DialogModal :show="show" @close="emit('close')">
         <template #content>
-            <BusinessStateForm :updating="false" @success="handleSuccess" @cancel="emit('close')" />
+            <BusinessStateForm :updating="true" :businessState="businessState" @success="handleSuccess" @cancel="emit('close')" />
         </template>
     </DialogModal>
 </template>
