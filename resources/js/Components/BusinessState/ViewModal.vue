@@ -1,18 +1,18 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    businessState: {
-        type: Object,
-        default: null,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+        businessState: {
+            type: Object,
+            default: null,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 </script>
 
 <template>

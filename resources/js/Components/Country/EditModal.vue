@@ -3,18 +3,18 @@ import DialogModal from '@/Components/DialogModal.vue'
 import CountryForm from './Form.vue'
 import { router } from '@inertiajs/vue3'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    country: {
-        type: Object,
-        default: null,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+        country: {
+            type: Object,
+            default: null,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
 const handleSuccess = () => {
     emit('close')

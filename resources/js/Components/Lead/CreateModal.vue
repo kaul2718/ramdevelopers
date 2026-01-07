@@ -1,124 +1,41 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue';
-import { ref, watch } from 'vue';
-import axios from 'axios';
-import { useNotificationStore } from '@/stores/notificationStore';
+    import DialogModal from '@/Components/DialogModal.vue';
+    import { ref, watch } from 'vue';
+    import axios from 'axios';
+    import { useNotificationStore } from '@/stores/notificationStore';
 
-const props = defineProps({
-    show: {
-        type: Boolean,
-        required: true
-    },
-    countries: {
-        type: Array,
-        default: () => []
-    },
-    developments: {
-        type: Array,
-        default: () => []
-    },
-    sources: {
-        type: Array,
-        default: () => []
-    },
-    statuses: {
-        type: Array,
-        default: () => []
-    },
-    users: {
-        type: Array,
-        default: () => []
-    }
-});
-
-const emit = defineEmits(['close']);
-
-const notificationStore = useNotificationStore();
-
-const form = ref({
-    lead_client_name: '',
-    lead_client_email: '',
-    lead_client_phone: '',
-    lead_language: '',
-    ctry_id: '',
-    devt_id: '',
-    leadSou_id: '',
-    leadSta_id: '',
-    user_id: '',
-    lead_message: ''
-});
-
-const isSubmitting = ref(false);
-const errors = ref({});
-
-const validateForm = () => {
-    errors.value = {};
-    
-    if (!form.value.lead_client_name?.trim()) {
-        errors.value.lead_client_name = 'El nombre del cliente es requerido';
-    }
-    if (!form.value.lead_client_email?.trim()) {
-        errors.value.lead_client_email = 'El email es requerido';
-    } else if (!isValidEmail(form.value.lead_client_email)) {
-        errors.value.lead_client_email = 'El email no es válido';
-    }
-    if (!form.value.ctry_id) {
-        errors.value.ctry_id = 'Debe seleccionar un país';
-    }
-    
-    return Object.keys(errors.value).length === 0;
-};
-
-const isValidEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-};
-
-const handleSubmit = async () => {
-    if (!validateForm()) {
-        return;
-    }
-    
-    isSubmitting.value = true;
-    const formData = new FormData();
-    
-    formData.append('lead_client_name', form.value.lead_client_name);
-    formData.append('lead_client_email', form.value.lead_client_email);
-    if (form.value.lead_client_phone) formData.append('lead_client_phone', form.value.lead_client_phone);
-    if (form.value.lead_language) formData.append('lead_language', form.value.lead_language);
-    if (form.value.ctry_id) formData.append('ctry_id', form.value.ctry_id);
-    if (form.value.devt_id) formData.append('devt_id', form.value.devt_id);
-    if (form.value.leadSou_id) formData.append('leadSou_id', form.value.leadSou_id);
-    if (form.value.leadSta_id) formData.append('leadSta_id', form.value.leadSta_id);
-    if (form.value.user_id) formData.append('user_id', form.value.user_id);
-    if (form.value.lead_message) formData.append('lead_message', form.value.lead_message);
-    
-    try {
-        await axios.post(route('lead.store'), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        });
-        
-        sessionStorage.setItem('showCreateLeadNotification', 'true');
-        closeModal();
-        window.location.href = route('lead.index');
-    } catch (error) {
-        console.error('Error creating lead:', error);
-        if (error.response?.data?.errors) {
-            errors.value = error.response.data.errors;
-            const errorMessages = Object.values(errors.value).flat().join(', ');
-            notificationStore.error(errorMessages);
-        } else {
-            notificationStore.error('Error al crear el lead');
+    const props = defineProps({
+        show: {
+            type: Boolean,
+            required: true
+        },
+        countries: {
+            type: Array,
+            default: () => []
+        },
+        developments: {
+            type: Array,
+            default: () => []
+        },
+        sources: {
+            type: Array,
+            default: () => []
+        },
+        statuses: {
+            type: Array,
+            default: () => []
+        },
+        users: {
+            type: Array,
+            default: () => []
         }
-    } finally {
-        isSubmitting.value = false;
-    }
-};
+    });
 
-const closeModal = () => {
-    form.value = {
+    const emit = defineEmits(['close']);
+
+    const notificationStore = useNotificationStore();
+
+    const form = ref({
         lead_client_name: '',
         lead_client_email: '',
         lead_client_phone: '',
@@ -129,13 +46,78 @@ const closeModal = () => {
         leadSta_id: '',
         user_id: '',
         lead_message: ''
-    };
-    errors.value = {};
-    emit('close');
-};
+    });
 
-watch(() => props.show, (newVal) => {
-    if (newVal) {
+    const isSubmitting = ref(false);
+    const errors = ref({});
+
+    const validateForm = () => {
+        errors.value = {};
+        
+        if (!form.value.lead_client_name?.trim()) {
+            errors.value.lead_client_name = 'El nombre del cliente es requerido';
+        }
+        if (!form.value.lead_client_email?.trim()) {
+            errors.value.lead_client_email = 'El email es requerido';
+        } else if (!isValidEmail(form.value.lead_client_email)) {
+            errors.value.lead_client_email = 'El email no es válido';
+        }
+        if (!form.value.ctry_id) {
+            errors.value.ctry_id = 'Debe seleccionar un país';
+        }
+        
+        return Object.keys(errors.value).length === 0;
+    };
+
+    const isValidEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
+        }
+        
+        isSubmitting.value = true;
+        const formData = new FormData();
+        
+        formData.append('lead_client_name', form.value.lead_client_name);
+        formData.append('lead_client_email', form.value.lead_client_email);
+        if (form.value.lead_client_phone) formData.append('lead_client_phone', form.value.lead_client_phone);
+        if (form.value.lead_language) formData.append('lead_language', form.value.lead_language);
+        if (form.value.ctry_id) formData.append('ctry_id', form.value.ctry_id);
+        if (form.value.devt_id) formData.append('devt_id', form.value.devt_id);
+        if (form.value.leadSou_id) formData.append('leadSou_id', form.value.leadSou_id);
+        if (form.value.leadSta_id) formData.append('leadSta_id', form.value.leadSta_id);
+        if (form.value.user_id) formData.append('user_id', form.value.user_id);
+        if (form.value.lead_message) formData.append('lead_message', form.value.lead_message);
+        
+        try {
+            await axios.post(route('lead.store'), formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+            
+            sessionStorage.setItem('showCreateLeadNotification', 'true');
+            closeModal();
+            window.location.href = route('lead.index');
+        } catch (error) {
+            console.error('Error creating lead:', error);
+            if (error.response?.data?.errors) {
+                errors.value = error.response.data.errors;
+                const errorMessages = Object.values(errors.value).flat().join(', ');
+                notificationStore.error(errorMessages);
+            } else {
+                notificationStore.error('Error al crear el lead');
+            }
+        } finally {
+            isSubmitting.value = false;
+        }
+    };
+
+    const closeModal = () => {
         form.value = {
             lead_client_name: '',
             lead_client_email: '',
@@ -149,8 +131,26 @@ watch(() => props.show, (newVal) => {
             lead_message: ''
         };
         errors.value = {};
-    }
-});
+        emit('close');
+    };
+
+    watch(() => props.show, (newVal) => {
+        if (newVal) {
+            form.value = {
+                lead_client_name: '',
+                lead_client_email: '',
+                lead_client_phone: '',
+                lead_language: '',
+                ctry_id: '',
+                devt_id: '',
+                leadSou_id: '',
+                leadSta_id: '',
+                user_id: '',
+                lead_message: ''
+            };
+            errors.value = {};
+        }
+    });
 </script>
 
 <template>

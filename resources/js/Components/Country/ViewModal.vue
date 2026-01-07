@@ -1,18 +1,18 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    country: {
-        type: Object,
-        default: null,
-    },
-})
+    defineProps({
+        show: {
+            type: Boolean,
+            default: false,
+        },
+        country: {
+            type: Object,
+            default: null,
+        },
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 </script>
 
 <template>
@@ -45,14 +45,6 @@ const emit = defineEmits(['close'])
                     </div>
                 </div>
             </div>
-        </template>
-
-        <template #footer>
-            <button
-                @click="emit('close')"
-                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                Cerrar
-            </button>
         </template>
     </DialogModal>
 </template>

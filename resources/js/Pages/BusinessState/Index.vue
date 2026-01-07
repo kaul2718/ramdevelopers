@@ -1,102 +1,102 @@
 <script>
-export default {
-    name: 'BusinessStateIndex',
-}
+    export default {
+        name: 'BusinessStateIndex',
+    }
 </script>
 
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { Link, router } from '@inertiajs/vue3'
-import { ref } from 'vue'
-import { useNotificationStore } from '@/stores/notificationStore'
-import CreateModal from '@/Components/BusinessState/CreateModal.vue'
-import EditModal from '@/Components/BusinessState/EditModal.vue'
-import ViewModal from '@/Components/BusinessState/ViewModal.vue'
-import ConfirmModal from '@/Components/ConfirmModal.vue'
-import HeaderBody from '@/Components/HeaderBody.vue'
-import Pagination from '@/Components/Pagination.vue'
+    import AppLayout from '@/Layouts/AppLayout.vue'
+    import { router } from '@inertiajs/vue3'
+    import { ref } from 'vue'
+    import { useNotificationStore } from '@/stores/notificationStore'
+    import CreateModal from '@/Components/BusinessState/CreateModal.vue'
+    import EditModal from '@/Components/BusinessState/EditModal.vue'
+    import ViewModal from '@/Components/BusinessState/ViewModal.vue'
+    import ConfirmModal from '@/Components/ConfirmModal.vue'
+    import HeaderBody from '@/Components/HeaderBody.vue'
+    import Pagination from '@/Components/Pagination.vue'
 
-const notificationStore = useNotificationStore()
+    const notificationStore = useNotificationStore()
 
-defineProps({
-    business_states: {
-        type: Object,
-        required: true,
-    },
-})
+    defineProps({
+        business_states: {
+            type: Object,
+            required: true,
+        },
+    })
 
-const showCreateModal = ref(false)
-const showViewModal = ref(false)
-const showEditModal = ref(false)
-const selectedBusinessState = ref(null)
-const showDeleteConfirm = ref(false)
-const businessStateToDelete = ref(null)
+    const showCreateModal = ref(false)
+    const showViewModal = ref(false)
+    const showEditModal = ref(false)
+    const selectedBusinessState = ref(null)
+    const showDeleteConfirm = ref(false)
+    const businessStateToDelete = ref(null)
 
-const closeCreateModal = () => {
-    showCreateModal.value = false
-    router.get(route('businessstate.index'))
-}
-
-const openViewModal = (businessState) => {
-    selectedBusinessState.value = businessState
-    showViewModal.value = true
-}
-
-const openEditModal = (businessState) => {
-    selectedBusinessState.value = businessState
-    showEditModal.value = true
-}
-
-const closeViewModal = () => {
-    showViewModal.value = false
-    selectedBusinessState.value = null
-}
-
-const closeEditModal = () => {
-    showEditModal.value = false
-    selectedBusinessState.value = null
-    router.get(route('businessstate.index'))
-}
-
-const openDeleteConfirm = (businessState) => {
-    businessStateToDelete.value = businessState
-    showDeleteConfirm.value = true
-}
-
-const confirmDelete = () => {
-    if (businessStateToDelete.value) {
-        router.delete(route('businessstate.destroy', businessStateToDelete.value.busiSta_id), {
-            onSuccess: () => {
-                showDeleteConfirm.value = false
-                businessStateToDelete.value = null
-
-                notificationStore.success('Estado del proyecto eliminado exitosamente')
-
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast')
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0'
-                        toast.style.transition = 'opacity 0.3s ease-out'
-                        setTimeout(() => {
-                            toast.remove()
-                        }, 300)
-                    })
-                }, 3000)
-            },
-            onError: (error) => {
-                console.error('Error deleting business state:', error)
-                notificationStore.error('Error al eliminar el estado del proyecto')
-                showDeleteConfirm.value = false
-                businessStateToDelete.value = null
-            }
-        })
+    const closeCreateModal = () => {
+        showCreateModal.value = false
+        router.get(route('businessstate.index'))
     }
-}
 
-const cancelDelete = () => {
-    showDeleteConfirm.value = false
-    businessStateToDelete.value = null
-}
+    const openViewModal = (businessState) => {
+        selectedBusinessState.value = businessState
+        showViewModal.value = true
+    }
+
+    const openEditModal = (businessState) => {
+        selectedBusinessState.value = businessState
+        showEditModal.value = true
+    }
+
+    const closeViewModal = () => {
+        showViewModal.value = false
+        selectedBusinessState.value = null
+    }
+
+    const closeEditModal = () => {
+        showEditModal.value = false
+        selectedBusinessState.value = null
+        router.get(route('businessstate.index'))
+    }
+
+    const openDeleteConfirm = (businessState) => {
+        businessStateToDelete.value = businessState
+        showDeleteConfirm.value = true
+    }
+
+    const confirmDelete = () => {
+        if (businessStateToDelete.value) {
+            router.delete(route('businessstate.destroy', businessStateToDelete.value.busiSta_id), {
+                onSuccess: () => {
+                    showDeleteConfirm.value = false
+                    businessStateToDelete.value = null
+
+                    notificationStore.success('Estado del proyecto eliminado exitosamente')
+
+                    setTimeout(() => {
+                        const notyfToasts = document.querySelectorAll('.notyf__toast')
+                        notyfToasts.forEach(toast => {
+                            toast.style.opacity = '0'
+                            toast.style.transition = 'opacity 0.3s ease-out'
+                            setTimeout(() => {
+                                toast.remove()
+                            }, 300)
+                        })
+                    }, 3000)
+                },
+                onError: (error) => {
+                    console.error('Error deleting business state:', error)
+                    notificationStore.error('Error al eliminar el estado del proyecto')
+                    showDeleteConfirm.value = false
+                    businessStateToDelete.value = null
+                }
+            })
+        }
+    }
+
+    const cancelDelete = () => {
+        showDeleteConfirm.value = false
+        businessStateToDelete.value = null
+    }
 </script>
 
 <template>
@@ -117,7 +117,7 @@ const cancelDelete = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in business_states.data" :key="item.busiSta_id">
+                    <tr v-for="item in business_states.data" :key="item.busiSta_id" @click="openViewModal(item)">
                         <td>{{ item.busiSta_id }}</td>
                         <td>{{ item.busiSta_name }}</td>
                         <td>{{ item.busiSta_code }}</td>
@@ -135,17 +135,7 @@ const cancelDelete = () => {
                         </td>
 
                         <td class="botonera--tabla">
-                            <button @click="openViewModal(item)"
-                                v-if="$page.props.user.permissions.includes('read business state')" class="btn--tipo1"
-                                title="Ver información">
-                                <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M10 3C5.5817 3 1.87987 5.95297 1.07386 10C1.87987 14.047 5.5817 17 10 17C14.4183 17 18.1201 14.047 18.9261 10C18.1201 5.95297 14.4183 3 10 3ZM10 15.5C6.86538 15.5 4.25623 13.5261 3.56877 10.9987C4.24924 8.4713 6.86538 6.5 10 6.5C13.1346 6.5 15.7508 8.4713 16.4312 10.9987C15.7438 13.5261 13.1346 15.5 10 15.5ZM10 7.75C8.48122 7.75 7.25 8.98122 7.25 10.5C7.25 12.0188 8.48122 13.25 10 13.25C11.5188 13.25 12.75 12.0188 12.75 10.5C12.75 8.98122 11.5188 7.75 10 7.75Z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button @click="openEditModal(item)"
+                            <button @click.stop="openEditModal(item)"
                                 v-if="$page.props.user.permissions.includes('update business state')"
                                 class="btn--tipo1">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
@@ -155,7 +145,7 @@ const cancelDelete = () => {
                                     </path>
                                 </svg>
                             </button>
-                            <button @click="openDeleteConfirm(item)"
+                            <button @click.stop="openDeleteConfirm(item)"
                                 v-if="$page.props.user.permissions.includes('delete business state')"
                                 class="btn--tipo2">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"

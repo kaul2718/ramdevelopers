@@ -1,23 +1,23 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
-import DocumentTypeForm from '@/Components/DocumentType/Form.vue'
-import { router } from '@inertiajs/vue3'
+    import DialogModal from '@/Components/DialogModal.vue'
+    import DocumentTypeForm from '@/Components/DocumentType/Form.vue'
+    import { router } from '@inertiajs/vue3'
 
-const props = defineProps({
-    show: Boolean,
-    documentType: Object
-})
+    const props = defineProps({
+        show: Boolean,
+        documentType: Object
+    })
 
-const emit = defineEmits(['close'])
+    const emit = defineEmits(['close'])
 
-const closeModal = () => {
-    emit('close')
-}
+    const closeModal = () => {
+        emit('close')
+    }
 
-const handleSuccess = () => {
-    closeModal()
-    router.visit(route('documenttype.index'))
-}
+    const handleSuccess = () => {
+        closeModal()
+        router.visit(route('documenttype.index'))
+    }
 </script>
 
 <template>
