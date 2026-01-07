@@ -13,6 +13,9 @@ import { Link, router } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import { watch, ref } from 'vue'
 import axios from 'axios'
+import { useNotificationStore } from '@/stores/notificationStore'
+
+const notificationStore = useNotificationStore()
 
 const props = defineProps({
     development: {
@@ -118,23 +121,35 @@ const deleteItem = async (itemId, type) => {
             }
         });
         
+        // Mostrar notificación de éxito
+        const successMessage = type === 'file' 
+            ? 'Archivo eliminado correctamente' 
+            : 'Imagen eliminada correctamente';
+        notificationStore.success(successMessage);
+        
         // Recargar la página después de eliminar
         setTimeout(() => {
             router.reload();
-        }, 500);
+        }, 1000);
     } catch (error) {
-        alert('Hubo un error al eliminar. Por favor, intenta de nuevo.');
+        notificationStore.error('Hubo un error al eliminar. Por favor, intenta de nuevo.');
     }
 };
 
 const handleFilesSaved = () => {
     showFileModal.value = false;
-    router.reload();
+    notificationStore.success('Archivo agregado correctamente')
+    setTimeout(() => {
+        router.reload();
+    }, 1000)
 };
 
 const handleImagesSaved = () => {
     showImageModal.value = false;
-    router.reload();
+    notificationStore.success('Imagen agregada correctamente')
+    setTimeout(() => {
+        router.reload();
+    }, 1000)
 };
 
 const openImagePreview = (image) => {
@@ -145,6 +160,15 @@ const openImagePreview = (image) => {
 const closeImagePreview = () => {
     showImagePreview.value = false;
     selectedImage.value = null;
+};
+
+const handleSave = async () => {
+    try {
+        await form.put(route('development.update', props.development.devt_id))
+        notificationStore.success('Desarrollo actualizado correctamente')
+    } catch (error) {
+        notificationStore.error('Error al actualizar el desarrollo')
+    }
 };
 
 </script>
@@ -168,6 +192,7 @@ const closeImagePreview = () => {
                             :businessStates="businessStates"
                             :commercialStatuses="commercialStatuses"
                             :updating="true"
+                            :show-submit-button="false"
                             @submit="form.put(route('development.update', props.development.devt_id))" 
                         />
                     </div>
@@ -245,6 +270,17 @@ const closeImagePreview = () => {
                     </div>
                 </div>
 
+                <!-- Botón de guardar cambios -->
+                <div class="mt-8 flex justify-end">
+                    <button 
+                        @click="handleSave"
+                        :disabled="form.processing"
+                        class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 font-semibold"
+                    >
+                        {{ form.processing ? 'Guardando...' : 'Guardar Cambios' }}
+                    </button>
+                </div>
+
                 <!-- Modales -->
                 <FileModal 
                     :show="showFileModal"
@@ -261,16 +297,6 @@ const closeImagePreview = () => {
                     @saved="handleImagesSaved"
                 />
 
-                <!-- Botón de guardar cambios -->
-                <div class="mt-8 flex justify-end">
-                    <button 
-                        @click="form.put(route('development.update', props.development.devt_id))"
-                        :disabled="form.processing"
-                        class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 font-semibold"
-                    >
-                        {{ form.processing ? 'Guardando...' : 'Guardar Cambios' }}
-                    </button>
-                </div>
 
                 <!-- Modal de preview de imagen -->
                 <div v-if="showImagePreview" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">

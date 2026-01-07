@@ -8,6 +8,10 @@
             type: Boolean,
             required: true
         },
+        lead: {
+            type: Object,
+            default: null
+        },
         countries: {
             type: Array,
             default: () => []
@@ -30,7 +34,7 @@
         }
     });
 
-    const emit = defineEmits(['close', 'saved']);
+    const emit = defineEmits(['close']);
 
     const closeModal = () => {
         emit('close');
@@ -45,11 +49,13 @@
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #content>
             <Form
+                :lead="lead"
                 :countries="countries"
                 :developments="developments"
                 :sources="sources"
                 :statuses="statuses"
                 :users="users"
+                :updating="true"
                 @success="handleSuccess"
                 @cancel="closeModal"
             />

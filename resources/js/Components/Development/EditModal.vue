@@ -4,6 +4,7 @@ import DevelopmentForm from '@/Components/Development/Form.vue'
 
 const props = defineProps({
     show: Boolean,
+    development: { type: Object, default: null },
     developers: { type: Array, default: () => [] },
     countries: { type: Array, default: () => [] },
     cities: { type: Array, default: () => [] },
@@ -23,7 +24,8 @@ const handleSaved = (development) => {
     <DialogModal :show="show" @close="emit('close')">
         <template #content>
             <DevelopmentForm
-                :updating="false"
+                :updating="true"
+                :development="development"
                 :developers="developers"
                 :countries="countries"
                 :cities="cities"
@@ -36,4 +38,3 @@ const handleSaved = (development) => {
         </template>
     </DialogModal>
 </template>
-

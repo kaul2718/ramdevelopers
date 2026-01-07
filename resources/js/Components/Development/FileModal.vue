@@ -40,6 +40,12 @@ const closeModal = () => {
 };
 
 const handleFileSelect = (event) => {
+    if (!selectedDocType.value) {
+        notificationStore.error('Por favor selecciona un tipo de documento primero');
+        fileInput.value.value = '';
+        return;
+    }
+    
     const selectedFiles = event.target.files;
     if (selectedFiles.length > 0) {
         // Procesar múltiples archivos
@@ -63,30 +69,58 @@ const removeFile = (index) => {
 };
 
 const submit = async () => {
-    if (files.value.length > 0) {
-        isSubmitting.value = true;
-        const formData = new FormData();
-        formData.append('development_id', props.development.devt_id);
-        
-        files.value.forEach((f, index) => {
-            formData.append(`files[${index}][docTyp_id]`, f.docTyp_id);
-            formData.append(`files[${index}][devFile_name]`, f.devFile_name);
-            formData.append(`files[${index}][file]`, f.file);
-        });
+    if (!files.value.length) {
+        notificationStore.error('Por favor selecciona al menos un archivo para cargar');
+        return;
+    }
+    
+    // Validar que todos los archivos tengan tipo de documento
+    const hasInvalidFiles = files.value.some(f => !f.docTyp_id);
+    if (hasInvalidFiles) {
+        notificationStore.error('Todos los archivos deben tener un tipo de documento asignado');
+        return;
+    }
+    
+    if (!props.development) {
+        notificationStore.error('Error: No se encontró el desarrollo');
+        return;
+    }
+    
+    isSubmitting.value = true;
+    const formData = new FormData();
+    
+    // Obtener el ID del desarrollo correctamente
+    const devtId = props.development.devt_id || props.development.id
+    
+    if (!devtId) {
+        notificationStore.error('Error: No se pudo obtener el ID del desarrollo');
+        isSubmitting.value = false;
+        return;
+    }
+    
+    formData.append('development_id', devtId);
+    
+    files.value.forEach((f, index) => {
+        formData.append(`files[${index}][docTyp_id]`, f.docTyp_id);
+        formData.append(`files[${index}][devFile_name]`, f.devFile_name);
+        formData.append(`files[${index}][file]`, f.file);
+    });
 
-        try {
-            await axios.post(route('developmentfile.store'), formData);
-            // Guardar flag en sessionStorage para mostrar notificación
-            sessionStorage.setItem('showFileUploadNotification', 'true');
-            emit('saved');
-            closeModal();
-        } catch (error) {
-            console.error('Error:', error);
-            notificationStore.initNotyf();
-            notificationStore.error('Error al subir archivos: ' + (error.response?.data?.message || error.message));
-        } finally {
-            isSubmitting.value = false;
-        }
+    try {
+        await axios.post(route('developmentfile.store'), formData);
+        sessionStorage.setItem('showFileUploadNotification', 'true');
+        emit('saved');
+        closeModal();
+    } catch (error) {
+        console.error('Error:', error);
+        const errorMessage = typeof error.response?.data?.message === 'string'
+            ? error.response.data.message
+            : Array.isArray(error.response?.data?.errors)
+                ? Object.values(error.response.data.errors).flat().join(', ')
+                : error.message;
+        notificationStore.error('Error al subir archivos: ' + errorMessage);
+    } finally {
+        isSubmitting.value = false;
     }
 };
 

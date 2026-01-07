@@ -5,8 +5,9 @@
     import axios from 'axios';
     import CreateModal from '@/Components/Lead/CreateModal.vue';
     import ViewModal from '@/Components/Lead/ViewModal.vue';
+    import EditModal from '@/Components/Lead/EditModal.vue';
+    import NotesModal from '@/Components/Lead/NotesModal.vue';
     import ConfirmModal from '@/Components/ConfirmModal.vue';
-    import LeadNoteFormModal from '@/Components/LeadNote/FormModal.vue';
     import { useNotificationStore } from '@/stores/notificationStore';
     import HeaderBody from '@/Components/HeaderBody.vue';
     import Pagination from '@/Components/Pagination.vue'
@@ -24,17 +25,12 @@
 
     const showCreateModal = ref(false);
     const showViewModal = ref(false);
+    const showEditModal = ref(false);
     const showConfirmModal = ref(false);
     const showNotesModal = ref(false);
-    const showNoteFormModal = ref(false);
-    const showNoteDeleteModal = ref(false);
-    const isEditingInitial = ref(false);
 
     const selectedLead = ref(null);
     const leadToDelete = ref(null);
-    const selectedNote = ref(null);
-    const noteToDelete = ref(null);
-    const noteModalMode = ref('create');
 
     const closeCreateModal = () => {
         showCreateModal.value = false;
@@ -42,20 +38,29 @@
 
     const openViewModal = (lead) => {
         selectedLead.value = lead;
-        isEditingInitial.value = false;
         showViewModal.value = true;
     };
 
     const openEditModal = (lead) => {
         selectedLead.value = lead;
-        isEditingInitial.value = true;
-        showViewModal.value = true;
+        showEditModal.value = true;
     };
 
     const closeViewModal = () => {
         showViewModal.value = false;
         selectedLead.value = null;
-        isEditingInitial.value = false;
+    };
+
+    const closeEditModal = () => {
+        showEditModal.value = false;
+        selectedLead.value = null;
+    };
+
+    const handleViewModalEdit = () => {
+        closeViewModal();
+        setTimeout(() => {
+            openEditModal(selectedLead.value);
+        }, 300);
     };
 
     const openNotesModal = (lead) => {
@@ -66,102 +71,6 @@
     const closeNotesModal = () => {
         showNotesModal.value = false;
         selectedLead.value = null;
-    };
-
-    const openCreateNoteModal = () => {
-        selectedNote.value = null;
-        noteModalMode.value = 'create';
-        showNoteFormModal.value = true;
-    };
-
-    const openEditNoteModal = (note) => {
-        selectedNote.value = note;
-        noteModalMode.value = 'edit';
-        showNoteFormModal.value = true;
-    };
-
-    const closeNoteFormModal = () => {
-        showNoteFormModal.value = false;
-        selectedNote.value = null;
-        noteModalMode.value = 'create';
-    };
-
-    const openDeleteNoteModal = (note) => {
-        noteToDelete.value = note;
-        showNoteDeleteModal.value = true;
-    };
-
-    const closeNoteDeleteModal = () => {
-        showNoteDeleteModal.value = false;
-        noteToDelete.value = null;
-    };
-
-    const confirmDeleteNote = async () => {
-        if (noteToDelete.value && selectedLead.value) {
-            try {
-                const formData = new FormData();
-                formData.append('_method', 'DELETE');
-
-                await axios.post(route('leadnote.destroy', noteToDelete.value.leadNot_id), formData);
-
-                closeNoteDeleteModal();
-                // Recargar las notas del lead
-                router.get(route('lead.index'), {}, {
-                    preserveState: true,
-                    onSuccess: (page) => {
-                        // Actualizar el lead seleccionado con las nuevas notas
-                        const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
-                        if (updatedLead) {
-                            selectedLead.value = updatedLead;
-                        }
-                        notificationStore.success('Nota eliminada exitosamente');
-
-                        // Remover la notificación después de 3 segundos
-                        setTimeout(() => {
-                            const notyfToasts = document.querySelectorAll('.notyf__toast');
-                            notyfToasts.forEach(toast => {
-                                toast.style.opacity = '0';
-                                toast.style.transition = 'opacity 0.3s ease-out';
-                                setTimeout(() => {
-                                    toast.remove();
-                                }, 300);
-                            });
-                        }, 3000);
-                    }
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                notificationStore.error('Error al eliminar la nota');
-            }
-        }
-    };
-
-    const handleNoteSaved = (mode) => {
-        closeNoteFormModal();
-        // Recargar las notas del lead
-        router.get(route('lead.index'), {}, {
-            preserveState: true,
-            onSuccess: (page) => {
-                // Actualizar el lead seleccionado con las nuevas notas
-                const updatedLead = page.props.leads.data.find(l => l.lead_id === selectedLead.value.lead_id);
-                if (updatedLead) {
-                    selectedLead.value = updatedLead;
-                }
-                notificationStore.success(mode === 'create' ? 'Nota creada exitosamente' : 'Nota actualizada exitosamente');
-
-                // Remover la notificación después de 3 segundos
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            }
-        });
     };
 
     const openConfirmModal = (lead) => {
@@ -197,15 +106,9 @@
         }
     };
 
-    const formatDate = (date) => {
-        if (!date) return '';
-        return new Date(date).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    const handleNotesUpdated = (updatedLead) => {
+        // Actualizar el lead seleccionado con las nuevas notas
+        selectedLead.value = updatedLead;
     };
 
     const formatDateOnly = (date) => {
@@ -341,91 +244,22 @@
         <!-- Paginación -->
         <Pagination :objPage="leads" />
 
-        <!-- Modal de Notas -->
-        <div v-if="showNotesModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-96 flex flex-col">
-                <!-- Header del Modal -->
-                <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        Notas de {{ selectedLead?.lead_client_name }}
-                    </h3>
-                    <button @click="closeNotesModal" class="text-gray-400 hover:text-gray-600 transition">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Acciones del Modal -->
-                <div class="flex gap-2 p-6 border-b border-gray-200">
-                    <button @click="openCreateNoteModal"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
-                        Agregar Nota
-                    </button>
-                </div>
-
-                <!-- Contenido del Modal -->
-                <div class="overflow-y-auto flex-1 p-6">
-                    <div v-if="selectedLead?.notes && selectedLead.notes.length > 0" class="space-y-4">
-                        <div v-for="note in selectedLead.notes" :key="note.leadNot_id"
-                            class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 transition">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-gray-900">{{ note.leadNot_title }}</h4>
-                                </div>
-                                <div class="flex gap-2 ml-4">
-                                    <button @click="openEditNoteModal(note)"
-                                        class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-medium">
-                                        Editar
-                                    </button>
-                                    <button @click="openDeleteNoteModal(note)"
-                                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs font-medium">
-                                        Eliminar
-                                    </button>
-                                </div>
-                                <span v-if="note.leadNot_active"
-                                    class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ml-2">
-                                    Activa
-                                </span>
-                                <span v-else
-                                    class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ml-2">
-                                    Inactiva
-                                </span>
-                            </div>
-                            <p class="text-gray-600 text-sm mb-2">{{ note.leadNot_description }}</p>
-                            <div class="flex justify-between text-xs text-gray-500">
-                                <span>{{ note.user?.name }} {{ note.user?.lastname }}</span>
-                                <span>{{ formatDate(note.created_at) }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else class="text-center py-8">
-                        <p class="text-gray-500">No hay notas asociadas a este lead</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Modales -->
         <CreateModal :show="showCreateModal" :countries="countries" :developments="developments" :sources="sources"
             :statuses="statuses" :users="users" @close="closeCreateModal" />
 
         <ViewModal :show="showViewModal" :lead="selectedLead" :countries="countries" :developments="developments"
-            :sources="sources" :statuses="statuses" :users="users" :is-editing-initial="isEditingInitial"
-            @close="closeViewModal" />
+            :sources="sources" :statuses="statuses" :users="users"
+            @close="closeViewModal" @edit="handleViewModalEdit" />
+
+        <EditModal :show="showEditModal" :lead="selectedLead" :countries="countries" :developments="developments"
+            :sources="sources" :statuses="statuses" :users="users" @close="closeEditModal" />
+
+        <NotesModal :show="showNotesModal" :lead="selectedLead" @close="closeNotesModal" @updated="handleNotesUpdated" />
 
         <ConfirmModal :show="showConfirmModal" title="Eliminar Lead"
             message="¿Está seguro de que desea eliminar este lead? Esta acción no se puede deshacer."
             confirm-text="Eliminar" cancel-text="Cancelar" :isDangerous="true" @confirm="confirmDelete"
             @close="closeConfirmModal" />
-
-        <LeadNoteFormModal :show="showNoteFormModal" :mode="noteModalMode" :note="selectedNote" :lead="selectedLead"
-            @close="closeNoteFormModal" @saved="handleNoteSaved" />
-
-        <ConfirmModal :show="showNoteDeleteModal" title="Eliminar Nota"
-            message="¿Está seguro de que desea eliminar esta nota? Esta acción no se puede deshacer."
-            confirm-text="Eliminar" cancel-text="Cancelar" :isDangerous="true" @confirm="confirmDeleteNote"
-            @close="closeNoteDeleteModal" />
     </AppLayout>
 </template>

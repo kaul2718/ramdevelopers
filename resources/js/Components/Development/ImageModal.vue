@@ -75,30 +75,49 @@ const setCoverImage = (index) => {
 };
 
 const submit = async () => {
-    if (images.value.length > 0) {
-        isSubmitting.value = true;
-        const formData = new FormData();
-        formData.append('development_id', props.development.devt_id);
-        
-        images.value.forEach((img, index) => {
-            formData.append(`images[${index}][devImg_title]`, img.devImg_title);
-            formData.append(`images[${index}][devImg_is_cover]`, img.devImg_is_cover ? 1 : 0);
-            formData.append(`images[${index}][file]`, img.file);
-        });
+    if (!images.value.length) {
+        notificationStore.error('Por favor selecciona al menos una imagen');
+        return;
+    }
+    
+    if (!props.development) {
+        notificationStore.error('Error: No se encontró el desarrollo');
+        return;
+    }
+    
+    isSubmitting.value = true;
+    const formData = new FormData();
+    
+    const devtId = props.development.devt_id || props.development.id;
+    if (!devtId) {
+        notificationStore.error('Error: No se pudo obtener el ID del desarrollo');
+        isSubmitting.value = false;
+        return;
+    }
+    
+    formData.append('development_id', devtId);
+    
+    images.value.forEach((img, index) => {
+        formData.append(`images[${index}][devImg_title]`, img.devImg_title);
+        formData.append(`images[${index}][devImg_is_cover]`, img.devImg_is_cover ? 1 : 0);
+        formData.append(`images[${index}][file]`, img.file);
+    });
 
-        try {
-            await axios.post(route('developmentimages.store'), formData);
-            // Guardar flag en sessionStorage para mostrar notificación
-            sessionStorage.setItem('showImageUploadNotification', 'true');
-            emit('saved');
-            closeModal();
-        } catch (error) {
-            console.error('Error:', error);
-            notificationStore.initNotyf();
-            notificationStore.error('Error al subir imágenes: ' + (error.response?.data?.message || error.message));
-        } finally {
-            isSubmitting.value = false;
-        }
+    try {
+        await axios.post(route('developmentimages.store'), formData);
+        sessionStorage.setItem('showImageUploadNotification', 'true');
+        emit('saved');
+        closeModal();
+    } catch (error) {
+        console.error('Error:', error);
+        const errorMessage = typeof error.response?.data?.message === 'string'
+            ? error.response.data.message
+            : Array.isArray(error.response?.data?.errors)
+                ? Object.values(error.response.data.errors).flat().join(', ')
+                : error.message;
+        notificationStore.error('Error al subir imágenes: ' + errorMessage);
+    } finally {
+        isSubmitting.value = false;
     }
 };
 
