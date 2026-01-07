@@ -30,7 +30,7 @@ class UserController extends Controller
                 'phone' => $user->phone,
                 'usr_id_ctry' => $user->usr_id_ctry,
                 'usr_active' => $user->usr_active,
-                'profile_photo_url' => $user->profile_photo_url,
+                'profile_photo_path' => $user->profile_photo_path,
                 'country' => $user->country,
                 'roles' => $user->roles,
                 'idiomas' => $user->idiomas,

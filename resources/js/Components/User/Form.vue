@@ -225,7 +225,7 @@
         return Array.isArray(error) ? error[0] : error
     }
 
-</script>
+</script>   
 
 <template>
     <FormSection @submitted="handleSubmit">
@@ -336,25 +336,23 @@
             </div>
 
             <div class="contenedor--input">
-                <!-- Mostrar foto actual si está editando y el usuario tiene foto -->
-                <div v-if="updating && user?.profile_photo_url" class="mb-4">
-                    <p class="text-sm text-gray-600 mb-2">Foto Actual:</p>
-                    <img :src="user.profile_photo_url" :alt="user.name"
-                        class="w-24 h-24 rounded-lg object-cover border border-gray-200">
-                </div>
-
                 <input ref="photoInput" id="profile_photo_path" type="file" accept="image/*" @change="handlePhotoChange"
                     class="campo--input text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
+                        file:mr-4 file:py-2.5 file:px-4
                         file:rounded-md file:border-0
                         file:text-sm file:font-semibold
                         file:bg-indigo-50 file:text-indigo-700
                         hover:file:bg-indigo-100">
                 </input>
-                <InputLabel for="profile_photo_path" value="Foto de Perfil (Opcional)"></InputLabel>
+                <InputLabel for="profile_photo_path" :value="updating ? 'Actualizar foto (Opcional)' : 'Subir foto (Opcional)'"></InputLabel>
                 <InputError :message="errors.profile_photo_path || $page.props.errors.profile_photo_path"
                     class="mt-2" />
                 <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, GIF (máx. 5MB)</p>
+            </div>
+
+            <div v-if="updating && user?.profile_photo_path" class="contenedor--input">
+                <img :src="'/storage/' + user.profile_photo_path" :alt="user.name" class="size-20 rounded-full object-cover border border-gray-200">
+                <InputLabel value="Foto actual" style="transform: translateY(-6.4em);"/>
             </div>
         </template>
 

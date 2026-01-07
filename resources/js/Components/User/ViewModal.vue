@@ -27,8 +27,7 @@
             <div class="space-y-6">
                 <!-- Foto y Nombre -->
                 <div class="flex items-center gap-4 pb-4 border-b">
-                    <img v-if="user.profile_photo_url" :src="user.profile_photo_url" :alt="user.name"
-                        class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500">
+                    <img v-if="user.profile_photo_path" :src="'/storage/' + user.profile_photo_path" :alt="user.name" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500">
                     <div v-else
                         class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-semibold text-gray-700 border-2 border-indigo-500">
                         {{ user.name.charAt(0) }}
