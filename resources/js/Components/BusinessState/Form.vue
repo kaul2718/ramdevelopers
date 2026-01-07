@@ -172,11 +172,11 @@
             </div>
 
             <div class="contenedor--input">
-                <textarea
+                <TextInput
                     id="busiSta_description"
                     v-model="form.busiSta_description"
+                    type="text"
                     class="campo--input"
-                    rows="3"
                     placeholder="Ingresa una descripción (opcional)"
                 />
                 <InputLabel for="busiSta_description" value="Descripción" />

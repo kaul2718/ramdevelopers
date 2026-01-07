@@ -1,113 +1,113 @@
 <script>
-export default {
-    name: 'DeveloperIndex'
-}
+    export default {
+        name: 'DeveloperIndex'
+    }
 </script>
 
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3'
-import CreateModal from '@/Components/Developer/CreateModal.vue';
-import ViewModal from '@/Components/Developer/ViewModal.vue';
-import EditModal from '@/Components/Developer/EditModal.vue';
-import ConfirmModal from '@/Components/ConfirmModal.vue';
-import { ref } from 'vue';
-import { useNotificationStore } from '@/stores/notificationStore';
-import HeaderBody from '@/Components/HeaderBody.vue';
-import Pagination from '@/Components/Pagination.vue'
+    import AppLayout from '@/Layouts/AppLayout.vue';
+    import { Link, router } from '@inertiajs/vue3'
+    import CreateModal from '@/Components/Developer/CreateModal.vue';
+    import ViewModal from '@/Components/Developer/ViewModal.vue';
+    import EditModal from '@/Components/Developer/EditModal.vue';
+    import ConfirmModal from '@/Components/ConfirmModal.vue';
+    import { ref } from 'vue';
+    import { useNotificationStore } from '@/stores/notificationStore';
+    import HeaderBody from '@/Components/HeaderBody.vue';
+    import Pagination from '@/Components/Pagination.vue'
 
-const notificationStore = useNotificationStore();
+    const notificationStore = useNotificationStore();
 
-defineProps({
-    developers: {
-        type: Object,
-        required: true
-    },
-    countries: {
-        type: Array,
-        default: () => []
-    },
-    users: {
-        type: Array,
-        default: () => []
-    }
-});
+    defineProps({
+        developers: {
+            type: Object,
+            required: true
+        },
+        countries: {
+            type: Array,
+            default: () => []
+        },
+        users: {
+            type: Array,
+            default: () => []
+        }
+    });
 
-const showDeleteConfirm = ref(false);
-const developerToDelete = ref(null);
-const showCreateModal = ref(false);
-const showViewModal = ref(false);
-const showEditModal = ref(false);
-const selectedDeveloper = ref(null);
-const searchQuery = ref('');
+    const showDeleteConfirm = ref(false);
+    const developerToDelete = ref(null);
+    const showCreateModal = ref(false);
+    const showViewModal = ref(false);
+    const showEditModal = ref(false);
+    const selectedDeveloper = ref(null);
+    const searchQuery = ref('');
 
-const handleSearch = () => {
-    router.get(route('developers.index'), { search: searchQuery.value });
-};
+    const handleSearch = () => {
+        router.get(route('developers.index'), { search: searchQuery.value });
+    };
 
-const openViewModal = (developer) => {
-    selectedDeveloper.value = developer;
-    showViewModal.value = true;
-};
+    const openViewModal = (developer) => {
+        selectedDeveloper.value = developer;
+        showViewModal.value = true;
+    };
 
-const openEditModal = (developer) => {
-    selectedDeveloper.value = developer;
-    showEditModal.value = true;
-};
+    const openEditModal = (developer) => {
+        selectedDeveloper.value = developer;
+        showEditModal.value = true;
+    };
 
-const closeViewModal = () => {
-    showViewModal.value = false;
-    selectedDeveloper.value = null;
-};
+    const closeViewModal = () => {
+        showViewModal.value = false;
+        selectedDeveloper.value = null;
+    };
 
-const closeEditModal = () => {
-    showEditModal.value = false;
-    selectedDeveloper.value = null;
-};
+    const closeEditModal = () => {
+        showEditModal.value = false;
+        selectedDeveloper.value = null;
+    };
 
-const closeCreateModal = () => {
-    showCreateModal.value = false;
-};
+    const closeCreateModal = () => {
+        showCreateModal.value = false;
+    };
 
-const openDeleteConfirm = (developer) => {
-    developerToDelete.value = developer;
-    showDeleteConfirm.value = true;
-};
+    const openDeleteConfirm = (developer) => {
+        developerToDelete.value = developer;
+        showDeleteConfirm.value = true;
+    };
 
-const confirmDelete = () => {
-    if (developerToDelete.value) {
-        router.delete(route('developers.destroy', developerToDelete.value.devr_id), {
-            onSuccess: () => {
-                showDeleteConfirm.value = false;
-                developerToDelete.value = null;
+    const confirmDelete = () => {
+        if (developerToDelete.value) {
+            router.delete(route('developers.destroy', developerToDelete.value.devr_id), {
+                onSuccess: () => {
+                    showDeleteConfirm.value = false;
+                    developerToDelete.value = null;
 
-                notificationStore.success('Desarrollador eliminado exitosamente');
+                    notificationStore.success('Desarrollador eliminado exitosamente');
 
-                setTimeout(() => {
-                    const notyfToasts = document.querySelectorAll('.notyf__toast');
-                    notyfToasts.forEach(toast => {
-                        toast.style.opacity = '0';
-                        toast.style.transition = 'opacity 0.3s ease-out';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 300);
-                    });
-                }, 3000);
-            },
-            onError: (error) => {
-                console.error('Error deleting developer:', error);
-                notificationStore.error('Error al eliminar el desarrollador');
-                showDeleteConfirm.value = false;
-                developerToDelete.value = null;
-            }
-        });
-    }
-};
+                    setTimeout(() => {
+                        const notyfToasts = document.querySelectorAll('.notyf__toast');
+                        notyfToasts.forEach(toast => {
+                            toast.style.opacity = '0';
+                            toast.style.transition = 'opacity 0.3s ease-out';
+                            setTimeout(() => {
+                                toast.remove();
+                            }, 300);
+                        });
+                    }, 3000);
+                },
+                onError: (error) => {
+                    console.error('Error deleting developer:', error);
+                    notificationStore.error('Error al eliminar el desarrollador');
+                    showDeleteConfirm.value = false;
+                    developerToDelete.value = null;
+                }
+            });
+        }
+    };
 
-const cancelDelete = () => {
-    showDeleteConfirm.value = false;
-    developerToDelete.value = null;
-};
+    const cancelDelete = () => {
+        showDeleteConfirm.value = false;
+        developerToDelete.value = null;
+    };
 </script>
 
 <template>
@@ -152,51 +152,36 @@ const cancelDelete = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in developers.data" :key="item.devr_id">
+                    <tr v-for="item in developers.data" :key="item.devr_id" @click="openViewModal(item)">
                         <td>{{ item.devr_id }}</td>
                         <td>{{ item.devr_commercial_name }}</td>
                         <td>{{ item.devr_legal_name }}</td>
-                        <td>
-                            <a :href="`mailto:${item.devr_email_contact}`"
-                                class="text-indigo-600 hover:text-indigo-900">
-                                {{ item.devr_email_contact }}
-                            </a>
-                        </td>
+                        <td>{{ item.devr_email_contact }}</td>
                         <td>
                             <span
-                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                                class="inline-flex items-center rounded-md bg-blue-50 px-2 text-blue-700">
                                 {{ item.country?.ctry_name || 'Sin país' }}
                             </span>
                         </td>
                         <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                             <span
-                                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
+                                class="inline-flex items-center rounded-md bg-green-50 px-2 text-green-700">
                                 {{ item.user ? `${item.user.name} ${item.user.lastname}` : 'Sin usuario' }}
 
                             </span>
                         </td>
                         <td>
                             <div
-                                :class="['py-1.5 px-2.5 rounded-full flex justify-center w-24 items-center gap-2', item.devr_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600']">
+                                :class="['px-2 rounded-md flex justify-center w-fit items-center gap-2', item.devr_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600']">
                                 <svg width="6" height="6" viewBox="0 0 6 6" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="3" cy="3" r="3" :fill="item.devr_active ? '#059669' : '#dc2626'" />
                                 </svg>
-                                <span class="font-semibold text-xs">{{ item.devr_active ? 'Activo' : 'Inactivo'
-                                    }}</span>
+                                <span>{{ item.devr_active ? 'Activo' : 'Inactivo'}}</span>
                             </div>
                         </td>
                         <td class="botonera--tabla">
-                            <button @click="openViewModal(item)" class="btn--tipo1" title="Ver información"
-                                v-if="$page.props.user.permissions.includes('read developer')">
-                                <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M10 3C5.5817 3 1.87987 5.95297 1.07386 10C1.87987 14.047 5.5817 17 10 17C14.4183 17 18.1201 14.047 18.9261 10C18.1201 5.95297 14.4183 3 10 3ZM10 15.5C6.86538 15.5 4.25623 13.5261 3.56877 10.9987C4.24924 8.4713 6.86538 6.5 10 6.5C13.1346 6.5 15.7508 8.4713 16.4312 10.9987C15.7438 13.5261 13.1346 15.5 10 15.5ZM10 7.75C8.48122 7.75 7.25 8.98122 7.25 10.5C7.25 12.0188 8.48122 13.25 10 13.25C11.5188 13.25 12.75 12.0188 12.75 10.5C12.75 8.98122 11.5188 7.75 10 7.75Z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button @click="openEditModal(item)" class="btn--tipo1" title="Editar campo"
+                            <button @click.stop="openEditModal(item)" class="btn--tipo1" title="Editar campo"
                                 v-if="$page.props.user.permissions.includes('update developer')">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +190,7 @@ const cancelDelete = () => {
                                     </path>
                                 </svg>
                             </button>
-                            <button @click="openDeleteConfirm(item)" class="btn--tipo2" title="Eliminar campo"
+                            <button @click.stop="openDeleteConfirm(item)" class="btn--tipo2" title="Eliminar campo"
                                 v-if="$page.props.user.permissions.includes('delete developer')">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
                                     xmlns="http://www.w3.org/2000/svg">

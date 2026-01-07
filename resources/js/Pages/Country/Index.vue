@@ -114,11 +114,11 @@
                         <td>{{ item.ctry_name }}</td>
                         <td>{{ item.ctry_code }}</td>
                         <td>                            
-                            <div :class="['py-1.5 px-2.5 rounded-full flex justify-center w-24 items-center gap-2', item.ctry_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600']">
+                            <div :class="['px-2 rounded-md flex justify-center w-fit items-center gap-2', item.ctry_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600']">
                                 <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="3" cy="3" r="3" :fill="item.ctry_active ? '#059669' : '#dc2626'" />
                                 </svg>
-                                <span class="font-semibold text-xs">{{ item.ctry_active ? 'Activo' : 'Inactivo' }}</span>
+                                <span>{{ item.ctry_active ? 'Activo' : 'Inactivo' }}</span>
                             </div>
                         </td>
                         <td class="botonera--tabla">

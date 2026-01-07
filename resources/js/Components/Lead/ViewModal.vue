@@ -416,26 +416,5 @@ watch(() => props.show, (newVal) => {
                 </div>
             </div>
         </template>
-
-        <template #footer>
-            <button
-                @click="closeModal"
-                class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                {{ isEditing ? 'Cancelar' : 'Cerrar' }}
-            </button>
-            <button
-                v-if="!isEditing"
-                @click="toggleEdit"
-                class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3">
-                Editar
-            </button>
-            <button
-                v-else
-                @click="handleSubmit"
-                :disabled="!hasChanges || isSubmitting"
-                class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition ml-3 disabled:opacity-50">
-                {{ isSubmitting ? 'Guardando...' : 'Guardar Cambios' }}
-            </button>
-        </template>
     </DialogModal>
 </template>

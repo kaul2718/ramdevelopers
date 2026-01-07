@@ -1,20 +1,20 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
 
-const props = defineProps({
-    show: Boolean,
-    city: Object,
-    countries: {
-        type: Array,
-        default: () => []
+    const props = defineProps({
+        show: Boolean,
+        city: Object,
+        countries: {
+            type: Array,
+            default: () => []
+        }
+    })
+
+    const emit = defineEmits(['close'])
+
+    const closeModal = () => {
+        emit('close')
     }
-})
-
-const emit = defineEmits(['close'])
-
-const closeModal = () => {
-    emit('close')
-}
 </script>
 
 <template>

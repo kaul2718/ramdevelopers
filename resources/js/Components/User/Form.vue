@@ -227,8 +227,6 @@
 
 </script>
 
-
-
 <template>
     <FormSection @submitted="handleSubmit">
         <template #title>
