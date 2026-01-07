@@ -3,10 +3,17 @@ import DialogModal from '@/Components/DialogModal.vue'
 import DeveloperForm from '@/Components/Developer/Form.vue'
 import { router } from '@inertiajs/vue3'
 
-defineProps({
+const props = defineProps({
     show: Boolean,
-    countries: { type: Array, default: () => [] },
-    users: { type: Array, default: () => [] }
+    developer: Object,
+    countries: {
+        type: Array,
+        default: () => []
+    },
+    users: {
+        type: Array,
+        default: () => []
+    }
 })
 
 const emit = defineEmits(['close'])
@@ -17,12 +24,12 @@ const handleSuccess = () => {
 }
 </script>
 
-
 <template>
     <DialogModal :show="show" @close="emit('close')">
         <template #content>
             <DeveloperForm
-                :updating="false"
+                :updating="true"
+                :developer="developer"
                 :countries="countries"
                 :users="users"
                 @success="handleSuccess"

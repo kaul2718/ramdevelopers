@@ -9,8 +9,9 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3'
 import CreateModal from '@/Components/Developer/CreateModal.vue';
 import ViewModal from '@/Components/Developer/ViewModal.vue';
+import EditModal from '@/Components/Developer/EditModal.vue';
 import ConfirmModal from '@/Components/ConfirmModal.vue';
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { ref } from 'vue';
 import { useNotificationStore } from '@/stores/notificationStore';
 import HeaderBody from '@/Components/HeaderBody.vue';
 import Pagination from '@/Components/Pagination.vue'
@@ -29,76 +30,56 @@ defineProps({
     users: {
         type: Array,
         default: () => []
-    },
-    search: {
-        type: String,
-        default: ''
     }
 });
 
 const showDeleteConfirm = ref(false);
-const itemToDelete = ref(null);
+const developerToDelete = ref(null);
 const showCreateModal = ref(false);
-const showDeveloperModal = ref(false);
+const showViewModal = ref(false);
+const showEditModal = ref(false);
 const selectedDeveloper = ref(null);
-const editMode = ref(false);
 const searchQuery = ref('');
-let searchTimeout = null;
 
-const openDeleteConfirm = (item) => {
-    itemToDelete.value = item;
-    showDeleteConfirm.value = true;
+const handleSearch = () => {
+    router.get(route('developers.index'), { search: searchQuery.value });
 };
 
-const cancelDelete = () => {
-    showDeleteConfirm.value = false;
-    itemToDelete.value = null;
+const openViewModal = (developer) => {
+    selectedDeveloper.value = developer;
+    showViewModal.value = true;
 };
 
-const openCreateModal = () => {
-    showCreateModal.value = true;
+const openEditModal = (developer) => {
+    selectedDeveloper.value = developer;
+    showEditModal.value = true;
+};
+
+const closeViewModal = () => {
+    showViewModal.value = false;
+    selectedDeveloper.value = null;
+};
+
+const closeEditModal = () => {
+    showEditModal.value = false;
+    selectedDeveloper.value = null;
 };
 
 const closeCreateModal = () => {
     showCreateModal.value = false;
 };
 
-const openDeveloperModalForView = async (item) => {
-    // Cerrar modal anterior si estaba abierta
-    if (showDeveloperModal.value) {
-        showDeveloperModal.value = false;
-        await nextTick();
-    }
-    selectedDeveloper.value = item;
-    editMode.value = false;
-    await nextTick();
-    showDeveloperModal.value = true;
-};
-
-const openDeveloperModalForEdit = async (item) => {
-    // Cerrar modal anterior si estaba abierta
-    if (showDeveloperModal.value) {
-        showDeveloperModal.value = false;
-        await nextTick();
-    }
-    selectedDeveloper.value = item;
-    editMode.value = true;
-    await nextTick();
-    showDeveloperModal.value = true;
-};
-
-const closeDeveloperModal = () => {
-    showDeveloperModal.value = false;
-    selectedDeveloper.value = null;
-    editMode.value = false;
+const openDeleteConfirm = (developer) => {
+    developerToDelete.value = developer;
+    showDeleteConfirm.value = true;
 };
 
 const confirmDelete = () => {
-    if (itemToDelete.value) {
-        router.delete(route('developers.destroy', itemToDelete.value.devr_id), {
+    if (developerToDelete.value) {
+        router.delete(route('developers.destroy', developerToDelete.value.devr_id), {
             onSuccess: () => {
                 showDeleteConfirm.value = false;
-                itemToDelete.value = null;
+                developerToDelete.value = null;
 
                 notificationStore.success('Desarrollador eliminado exitosamente');
 
@@ -117,68 +98,16 @@ const confirmDelete = () => {
                 console.error('Error deleting developer:', error);
                 notificationStore.error('Error al eliminar el desarrollador');
                 showDeleteConfirm.value = false;
-                itemToDelete.value = null;
+                developerToDelete.value = null;
             }
         });
     }
 };
 
-const handleSearch = (e) => {
-    router.get(route('developers.index'), { search: searchQuery.value }, {
-        replace: true,
-        preserveScroll: true
-    });
+const cancelDelete = () => {
+    showDeleteConfirm.value = false;
+    developerToDelete.value = null;
 };
-
-onMounted(() => {
-    searchQuery.value = route().params.search || '';
-
-    // Watch para búsqueda en tiempo real con debounce
-    watch(searchQuery, () => {
-        if (searchTimeout) {
-            clearTimeout(searchTimeout);
-        }
-        searchTimeout = setTimeout(() => {
-            handleSearch();
-        }, 500);
-    });
-
-    if (sessionStorage.getItem('showCreateDeveloperNotification')) {
-        setTimeout(() => {
-            notificationStore.success('Desarrollador creado exitosamente');
-            sessionStorage.removeItem('showCreateDeveloperNotification');
-
-            setTimeout(() => {
-                const notyfToasts = document.querySelectorAll('.notyf__toast');
-                notyfToasts.forEach(toast => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.3s ease-out';
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 300);
-                });
-            }, 3000);
-        }, 100);
-    }
-
-    if (sessionStorage.getItem('showUpdateDeveloperNotification')) {
-        setTimeout(() => {
-            notificationStore.success('Desarrollador actualizado exitosamente');
-            sessionStorage.removeItem('showUpdateDeveloperNotification');
-
-            setTimeout(() => {
-                const notyfToasts = document.querySelectorAll('.notyf__toast');
-                notyfToasts.forEach(toast => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.3s ease-out';
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 300);
-                });
-            }, 3000);
-        }, 100);
-    }
-});
 </script>
 
 <template>
@@ -193,11 +122,15 @@ onMounted(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <input v-model="searchQuery" type="text" placeholder="Buscar por nombre, email, ID..."
+                <input v-model="searchQuery" @keyup.enter="handleSearch" type="text" placeholder="Buscar por nombre, email, ID..."
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             </div>
-            <div class="flex gap-2">
-                <button v-if="searchQuery" @click="searchQuery = ''"
+            <div class="flex gap-2 ml-4">
+                <button @click="handleSearch"
+                    class="text-white bg-indigo-600 hover:bg-indigo-700 py-2 px-4 rounded transition-colors">
+                    Buscar
+                </button>
+                <button v-if="searchQuery" @click="searchQuery = ''; handleSearch()"
                     class="text-gray-700 bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded transition-colors">
                     Limpiar
                 </button>
@@ -254,7 +187,7 @@ onMounted(() => {
                             </div>
                         </td>
                         <td class="botonera--tabla">
-                            <button @click="openDeveloperModalForView(item)" class="btn--tipo1" title="Ver información"
+                            <button @click="openViewModal(item)" class="btn--tipo1" title="Ver información"
                                 v-if="$page.props.user.permissions.includes('read developer')">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -263,7 +196,7 @@ onMounted(() => {
                                     </path>
                                 </svg>
                             </button>
-                            <button @click="openDeveloperModalForEdit(item)" class="btn--tipo1" title="Editar campo"
+                            <button @click="openEditModal(item)" class="btn--tipo1" title="Editar campo"
                                 v-if="$page.props.user.permissions.includes('update developer')">
                                 <svg class="size-5" viewBox="0 0 20 20" fill="CurrentColor"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -281,17 +214,6 @@ onMounted(() => {
                                     </path>
                                 </svg>
                             </button>
-                            <!--<button
-                                class="p-2 rounded-full bg-white group transition-all duration-500 hover:bg-black flex item-center">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path class="stroke-black group-hover:stroke-white"
-                                        d="M10.0161 14.9897V15.0397M10.0161 9.97598V10.026M10.0161 4.96231V5.01231"
-                                        stroke="black" stroke-width="2.5"
-                                        stroke-linecap="round">
-                                    </path>
-                                </svg>
-                            </button>-->
                         </td>
                     </tr>
                 </tbody>
@@ -301,14 +223,21 @@ onMounted(() => {
         <!-- Paginación -->
         <Pagination :objPage="developers" />
 
+        <!-- Confirm Delete Modal -->
         <ConfirmModal :show="showDeleteConfirm" title="Eliminar Desarrollador"
             message="¿Estás seguro de que deseas eliminar este desarrollador? Esta acción no se puede deshacer."
             confirmText="Eliminar" cancelText="Cancelar" :isDangerous="true" @confirm="confirmDelete"
             @close="cancelDelete" />
 
+        <!-- Create Developer Modal -->
         <CreateModal :show="showCreateModal" :countries="countries" :users="users" @close="closeCreateModal" />
 
-        <ViewModal :show="showDeveloperModal" :developer="selectedDeveloper" :countries="countries" :users="users"
-            :editMode="editMode" @close="closeDeveloperModal" />
+        <!-- View Developer Modal -->
+        <ViewModal :show="showViewModal" :developer="selectedDeveloper" :countries="countries" :users="users"
+            @close="closeViewModal" />
+
+        <!-- Edit Developer Modal -->
+        <EditModal :show="showEditModal" :developer="selectedDeveloper" :countries="countries" :users="users"
+            @close="closeEditModal" />
     </AppLayout>
 </template>

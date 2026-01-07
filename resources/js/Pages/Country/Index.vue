@@ -34,7 +34,6 @@
 
     const closeCreateModal = () => {
         showCreateModal.value = false;
-        router.get(route('countries.index'));
     };
 
     const openViewModal = (country) => {
@@ -55,7 +54,6 @@
     const closeEditModal = () => {
         showEditModal.value = false;
         selectedCountry.value = null;
-        router.get(route('countries.index'));
     };
 
     const openDeleteConfirm = (country) => {

@@ -38,7 +38,6 @@
 
     const closeCreateModal = () => {
         showCreateModal.value = false;
-        router.get(route('cities.index'));
     };
 
     const openViewModal = (city) => {
@@ -59,7 +58,6 @@
     const closeEditModal = () => {
         showEditModal.value = false;
         selectedCity.value = null;
-        router.get(route('cities.index'));
     };
 
     const openDeleteConfirm = (city) => {

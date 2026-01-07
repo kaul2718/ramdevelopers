@@ -1,6 +1,7 @@
 <script setup>
 import DialogModal from '@/Components/DialogModal.vue'
 import CityForm from './Form.vue'
+import { router } from '@inertiajs/vue3'
 
 defineProps({
     show: {
@@ -17,6 +18,8 @@ const emit = defineEmits(['close'])
 
 const handleSuccess = () => {
     emit('close')
+    router.get(route('cities.index'))
+
 }
 </script>
 
@@ -27,4 +30,3 @@ const handleSuccess = () => {
         </template>
     </DialogModal>
 </template>
-
