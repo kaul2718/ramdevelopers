@@ -22,7 +22,7 @@ const form = useForm({
     phone: props.user.phone || '',
     idiomas: props.user.idiomas || '',
     usr_id_ctry: props.user.usr_id_ctry || '',
-    photo: null,
+    photo: props.user.profile_photo_path || null,
 });
 
 const verificationLinkSent = ref(null);
@@ -91,49 +91,6 @@ const clearPhotoFileInput = () => {
         </template>
 
         <template #form>
-            <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input mb-6 pb-6 border-b">
-                <!-- Profile Photo File Input -->
-                <input
-                    id="photo"
-                    ref="photoInput"
-                    type="file"
-                    class="hidden"
-                    @change="updatePhotoPreview"
-                >
-
-                <InputLabel for="photo" value="Foto de perfil" />
-
-                <!-- Current Profile Photo -->
-                <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full size-20 object-cover">
-                </div>
-
-                <!-- New Profile Photo Preview -->
-                <div v-show="photoPreview" class="mt-2">
-                    <span
-                        class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
-                        :style="'background-image: url(\'' + photoPreview + '\');'"
-                    />
-                </div>
-
-                <div class="mt-2 space-x-2">
-                    <SecondaryButton type="button" @click.prevent="selectNewPhoto">
-                        Seleccionar una nueva foto
-                    </SecondaryButton>
-
-                    <SecondaryButton
-                        v-if="user.profile_photo_path"
-                        type="button"
-                        @click.prevent="deletePhoto"
-                    >
-                        Eliminar foto
-                    </SecondaryButton>
-                </div>
-
-                <InputError :message="form.errors.photo" class="mt-2" />
-            </div>
-
             <!-- Name -->
             <div class="contenedor--input">
                 <TextInput
@@ -237,13 +194,46 @@ const clearPhotoFileInput = () => {
                 <InputLabel for="usr_id_ctry" value="País" />
                 <InputError :message="form.errors.usr_id_ctry" class="mt-2" />
             </div>
+
+            <!-- Profile Photo -->
+            <div v-if="$page.props.jetstream.managesProfilePhotos" class="contenedor--input" style="display: flex; align-items: center; gap: 1em;">                
+                <div>
+                    <input id="photo" ref="photoInput" type="file" class="hidden" @change="updatePhotoPreview" >
+                        
+                    <!-- Current Profile Photo -->
+                    <div v-show="!photoPreview" class="size-20">
+                        <img v-if="user.profile_photo_path" :src="'/storage/' + user.profile_photo_path" :alt="user.name" class="rounded-full size-20 object-cover">
+                        <div v-else class="size-20 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-semibold text-gray-700 border-2 border-indigo-500">
+                            {{ user.name.charAt(0) }}
+                        </div>
+                    </div>
+                    
+                    <!-- New Profile Photo Preview -->
+                    <div v-show="photoPreview">
+                        <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center" :style="'background-image: url(\'' + photoPreview + '\');'"/>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <SecondaryButton type="button" @click.prevent="selectNewPhoto">
+                        Actualizar foto
+                    </SecondaryButton>
+
+                    <SecondaryButton v-if="user.profile_photo_path" type="button" @click.prevent="deletePhoto">
+                        Eliminar foto
+                    </SecondaryButton>
+                </div>
+
+                <InputError :message="form.errors.photo" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+
+            </div>
+
         </template>
 
         <template #actions>
-            <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Guardado.
-            </ActionMessage>
-
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 <template #texto--boton>Guardar</template>
                 <template #icono--boton>
