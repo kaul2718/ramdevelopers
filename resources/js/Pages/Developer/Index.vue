@@ -11,7 +11,7 @@
     import ViewModal from '@/Components/Developer/ViewModal.vue';
     import EditModal from '@/Components/Developer/EditModal.vue';
     import ConfirmModal from '@/Components/ConfirmModal.vue';
-    import { ref } from 'vue';
+    import { ref, watch, onMounted } from 'vue';
     import { useNotificationStore } from '@/stores/notificationStore';
     import HeaderBody from '@/Components/HeaderBody.vue';
     import Pagination from '@/Components/Pagination.vue'
@@ -40,9 +40,13 @@
     const showEditModal = ref(false);
     const selectedDeveloper = ref(null);
     const searchQuery = ref('');
+    let searchTimeout = null;
 
     const handleSearch = () => {
-        router.get(route('developers.index'), { search: searchQuery.value });
+        router.get(route('developers.index'), { search: searchQuery.value }, {
+            replace: true,
+            preserveScroll: true
+        });
     };
 
     const openViewModal = (developer) => {
@@ -108,6 +112,20 @@
         showDeleteConfirm.value = false;
         developerToDelete.value = null;
     };
+
+    onMounted(() => {
+        searchQuery.value = route().params.search || '';
+        
+        // Watch para búsqueda en tiempo real con debounce
+        watch(searchQuery, () => {
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            searchTimeout = setTimeout(() => {
+                handleSearch();
+            }, 500);
+        });
+    });
 </script>
 
 <template>
@@ -122,15 +140,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <input v-model="searchQuery" @keyup.enter="handleSearch" type="text" placeholder="Buscar por nombre, email, ID..."
+                <input v-model="searchQuery" type="text" placeholder="Buscar por nombre, email, ID..."
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
             </div>
-            <div class="flex gap-2 ml-4">
-                <button @click="handleSearch"
-                    class="text-white bg-indigo-600 hover:bg-indigo-700 py-2 px-4 rounded transition-colors">
-                    Buscar
-                </button>
-                <button v-if="searchQuery" @click="searchQuery = ''; handleSearch()"
+            <div class="flex gap-2">
+                <button v-if="searchQuery"
+                    @click="searchQuery = ''"
                     class="text-gray-700 bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded transition-colors">
                     Limpiar
                 </button>

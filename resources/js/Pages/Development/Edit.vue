@@ -80,6 +80,7 @@ const form = useForm({
     devt_price_to: '',
     devt_delivery_year: '',
     devt_estimated_profit: '',
+    devt_estimated_profit_is_percentage: false,
     devt_is_featured: false,
     devt_active: true,
     devt_storage_rooms: '0',
@@ -117,6 +118,7 @@ watch(() => props.development, (newDevelopment) => {
     form.devt_price_to = String(newDevelopment.devt_price_to)
     form.devt_delivery_year = String(newDevelopment.devt_delivery_year)
     form.devt_estimated_profit = String(newDevelopment.devt_estimated_profit)
+    form.devt_estimated_profit_is_percentage = Boolean(newDevelopment.devt_estimated_profit_is_percentage)
     form.devt_is_featured = Boolean(newDevelopment.devt_is_featured)
     form.devt_active = Boolean(newDevelopment.devt_active)
     form.devt_storage_rooms = String(newDevelopment.devt_storage_rooms || '0')
@@ -195,9 +197,21 @@ const closeImagePreview = () => {
 };
 
 const handleSave = async () => {
+    // Validar honorarios antes de guardar
+    if (form.devt_estimated_profit_is_percentage && form.devt_estimated_profit !== '') {
+        const profit = parseFloat(form.devt_estimated_profit)
+        if (isNaN(profit) || profit < 1 || profit > 100) {
+            notificationStore.error('Si es porcentaje, el valor debe estar entre 1 y 100')
+            return
+        }
+    }
+
     try {
         await form.put(route('development.update', props.development.devt_id))
         notificationStore.success('Desarrollo actualizado correctamente')
+        setTimeout(() => {
+            router.reload()
+        }, 1000)
     } catch (error) {
         notificationStore.error('Error al actualizar el desarrollo')
     }

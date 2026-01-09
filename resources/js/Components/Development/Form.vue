@@ -88,6 +88,7 @@ const form = props.form ? computed(() => props.form) : ref({
     devt_price_to: '',
     devt_delivery_year: '',
     devt_estimated_profit: '',
+    devt_estimated_profit_is_percentage: false,
     devt_is_featured: false,
     devt_storage_rooms: '0',
     devt_parking_spaces: '0',
@@ -133,6 +134,7 @@ onMounted(() => {
             devt_price_to: String(props.development.devt_price_to || ''),
             devt_delivery_year: String(props.development.devt_delivery_year || ''),
             devt_estimated_profit: String(props.development.devt_estimated_profit || ''),
+            devt_estimated_profit_is_percentage: Boolean(props.development.devt_estimated_profit_is_percentage),
             devt_is_featured: Boolean(props.development.devt_is_featured),
             devt_storage_rooms: String(props.development.devt_storage_rooms || '0'),
             devt_parking_spaces: String(props.development.devt_parking_spaces || '0'),
@@ -152,6 +154,29 @@ onMounted(() => {
 watch(() => form.value.ctry_id, () => {
     if (!isInitialLoad) {
         form.value.city_id = ''
+    }
+})
+
+// Validar honorarios en tiempo real cuando cambia el tipo o el valor
+watch(() => [form.value.devt_estimated_profit_is_percentage, form.value.devt_estimated_profit], () => {
+    if (form.value.devt_estimated_profit_is_percentage) {
+        if (form.value.devt_estimated_profit !== '') {
+            const profit = parseFloat(form.value.devt_estimated_profit)
+            if (isNaN(profit) || profit < 1 || profit > 100) {
+                errors.value.devt_estimated_profit = 'Si es porcentaje, el valor debe estar entre 1 y 100'
+            } else {
+                delete errors.value.devt_estimated_profit
+            }
+        } else {
+            delete errors.value.devt_estimated_profit
+        }
+    } else {
+        // Para monto fijo
+        if (form.value.devt_estimated_profit !== '' && parseFloat(form.value.devt_estimated_profit) < 0) {
+            errors.value.devt_estimated_profit = 'Los honorarios no pueden ser negativos'
+        } else {
+            delete errors.value.devt_estimated_profit
+        }
     }
 })
 
@@ -194,6 +219,19 @@ const validateForm = () => {
 
     if (form.value.devt_estimated_profit !== '' && parseFloat(form.value.devt_estimated_profit) < 0) {
         errors.value.devt_estimated_profit = 'Los honorarios no pueden ser negativos'
+    }
+
+    if (form.value.devt_estimated_profit_is_percentage) {
+        if (form.value.devt_estimated_profit === '') {
+            // Si es porcentaje pero está vacío, no requiere validación
+        } else {
+            const profit = parseFloat(form.value.devt_estimated_profit)
+            if (isNaN(profit) || profit < 1 || profit > 100) {
+                errors.value.devt_estimated_profit = 'Si es porcentaje, el valor debe estar entre 1 y 100'
+            }
+        }
+    } else {
+        // Para monto fijo, permitir cualquier valor >= 0 (ya validado arriba)
     }
 
     return Object.keys(errors.value).length === 0
@@ -411,11 +449,29 @@ const handleSubmit = async () => {
                 <InputError :message="errors.curr_id" class="mt-2" />
             </div>
             
+            <!-- Tipo de Honorarios -->
+            <div class="contenedor--input">
+                <select id="devt_estimated_profit_is_percentage" v-model.boolean="form.devt_estimated_profit_is_percentage" class="campo--input">
+                    <option :value="false">Monto Fijo</option>
+                    <option :value="true">Porcentaje</option>
+                </select>
+                <InputLabel for="devt_estimated_profit_is_percentage" value="Tipo de Honorarios" />
+                <InputError :message="errors.devt_estimated_profit_is_percentage" class="mt-2" />
+            </div>
+            
             <!-- Honorarios Estimados -->
             <div class="contenedor--input">
-                <TextInput id="devt_estimated_profit" v-model="form.devt_estimated_profit" type="number" min="0"
-                    step="0.01" class="campo--input" placeholder="Ej: 20000" />
-                <InputLabel for="devt_estimated_profit" value="Honorarios Estimados" />
+                <TextInput 
+                    id="devt_estimated_profit" 
+                    v-model="form.devt_estimated_profit" 
+                    type="number" 
+                    :min="form.devt_estimated_profit_is_percentage ? 1 : 0"
+                    :max="form.devt_estimated_profit_is_percentage ? 100 : undefined"
+                    step="0.01" 
+                    class="campo--input" 
+                    :placeholder="form.devt_estimated_profit_is_percentage ? 'Ej: 25 (1-100)' : 'Ej: 20000'" 
+                />
+                <InputLabel for="devt_estimated_profit" :value="form.devt_estimated_profit_is_percentage ? 'Honorarios (%)' : 'Honorarios ($)'" />
                 <InputError :message="errors.devt_estimated_profit" class="mt-2" />
             </div>
 
