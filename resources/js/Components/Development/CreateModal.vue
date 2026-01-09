@@ -10,7 +10,8 @@ const props = defineProps({
     approvalStatuses: { type: Array, default: () => [] },
     businessStates: { type: Array, default: () => [] },
     commercialStatuses: { type: Array, default: () => [] },
-    housingTypes: { type: Array, default: () => [] }
+    housingTypes: { type: Array, default: () => [] },
+    currencies: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['close', 'saved'])
@@ -32,6 +33,7 @@ const handleSaved = (development) => {
                 :businessStates="businessStates"
                 :commercialStatuses="commercialStatuses"
                 :housingTypes="housingTypes"
+                :currencies="currencies"
                 @saved="handleSaved"
                 @cancel="emit('close')"
             />

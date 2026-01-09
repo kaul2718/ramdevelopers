@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\ApprovalStatus;
 use App\Models\BusinessState;
 use App\Models\CommercialStatus;
+use App\Models\Currency;
 use App\Models\HousingType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -65,6 +66,7 @@ class DevelopmentController extends Controller
         $commercialStatuses = CommercialStatus::all();
         $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
         $documentTypes = DocumentType::all();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
         
         return Inertia::render('Development/Index', [
             'developments' => $developments,
@@ -76,6 +78,7 @@ class DevelopmentController extends Controller
             'commercialStatuses' => $commercialStatuses,
             'housingTypes' => $housingTypes,
             'documentTypes' => $documentTypes,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -93,6 +96,7 @@ class DevelopmentController extends Controller
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
         $housingTypes = HousingType::orderBy('houTyp_name')->get();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
         
         \Log::info('=== DEVELOPMENT CREATE METHOD ===');
         \Log::info('HousingTypes count: ' . $housingTypes->count());
@@ -106,6 +110,7 @@ class DevelopmentController extends Controller
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
             'housingTypes' => $housingTypes,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -134,7 +139,7 @@ class DevelopmentController extends Controller
      */
     public function show(Development $development)
     {
-        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'files', 'images']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'currency', 'files', 'images']);
         
         return Inertia::render('Development/Show', [
             'development' => $development,
@@ -155,9 +160,10 @@ class DevelopmentController extends Controller
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
         $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
         $documentTypes = DocumentType::all();
         
-        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'files', 'images']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'currency', 'files', 'images']);
         
         return Inertia::render('Development/Edit', [
             'development' => $development,
@@ -168,6 +174,7 @@ class DevelopmentController extends Controller
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
             'housingTypes' => $housingTypes,
+            'currencies' => $currencies,
             'documentTypes' => $documentTypes,
         ]);
     }

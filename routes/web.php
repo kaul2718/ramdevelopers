@@ -5,6 +5,7 @@ use App\Http\Controllers\BusinessStateController;
 use App\Http\Controllers\CommercialStatusController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DevelopmentController;
@@ -43,6 +44,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('commercialstatus', CommercialStatusController::class);
     Route::resource('cities', CityController::class);
     Route::resource('countries', CountryController::class);
+    Route::resource('currency', CurrencyController::class);
     Route::resource('developers', DeveloperController::class);
     Route::resource('developmentimages', DevelopmentImageController::class);
     Route::resource('development', DevelopmentController::class);

@@ -50,6 +50,10 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    currencies: {
+        type: Array,
+        required: true
+    },
     documentTypes: {
         type: Array,
         required: true
@@ -64,6 +68,7 @@ const form = useForm({
     busiSta_id: '',
     commSta_id: '',
     houTyp_id: '',
+    curr_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -100,6 +105,7 @@ watch(() => props.development, (newDevelopment) => {
     form.busiSta_id = newDevelopment.busiSta_id
     form.commSta_id = newDevelopment.commSta_id
     form.houTyp_id = newDevelopment.houTyp_id
+    form.curr_id = newDevelopment.curr_id || ''
     form.devt_title = newDevelopment.devt_title
     form.devt_slug = newDevelopment.devt_slug
     form.devt_address = newDevelopment.devt_address
@@ -216,6 +222,7 @@ const handleSave = async () => {
                             :businessStates="businessStates"
                             :commercialStatuses="commercialStatuses"
                             :housingTypes="housingTypes"
+                            :currencies="currencies"
                             :updating="true"
                             :show-submit-button="false"
                             @submit="form.put(route('development.update', props.development.devt_id))" 

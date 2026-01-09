@@ -31,6 +31,7 @@ class DevelopmentRequest extends FormRequest
             'busiSta_id' => ['required', 'exists:business_state,busiSta_id'],
             'commSta_id' => ['required', 'exists:commercial_statuses,commSta_id'],
             'houTyp_id' => ['required', 'exists:housing_types,houTyp_id'],
+            'curr_id' => ['nullable', 'exists:currencies,curr_id'],
             'devt_title' => [
                 'required',
                 'string',

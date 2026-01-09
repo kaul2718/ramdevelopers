@@ -49,6 +49,10 @@
         documentTypes: {
             type: Array,
             required: true
+        },
+        currencies: {
+            type: Array,
+            required: true
         }
     })
 
@@ -369,6 +373,7 @@
             :business-states="businessStates"
             :commercial-statuses="commercialStatuses"
             :housing-types="housingTypes"
+            :currencies="currencies"
             @close="closeCreateModal"
             @saved="handleDevelopmentCreated"
         />

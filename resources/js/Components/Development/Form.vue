@@ -1,7 +1,7 @@
 <script>
-    export default {
-        name: 'DevelopmentForm'
-    }
+export default {
+    name: 'DevelopmentForm'
+}
 </script>
 
 <script setup>
@@ -57,6 +57,10 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    currencies: {
+        type: Array,
+        default: () => []
+    },
     showSubmitButton: {
         type: Boolean,
         default: true
@@ -74,6 +78,7 @@ const form = props.form ? computed(() => props.form) : ref({
     busiSta_id: '',
     commSta_id: '',
     houTyp_id: '',
+    curr_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -152,7 +157,7 @@ watch(() => form.value.ctry_id, () => {
 
 const validateForm = () => {
     errors.value = {}
-    
+
     const requiredFields = {
         devr_id: 'Desarrollador',
         ctry_id: 'País',
@@ -202,16 +207,16 @@ const handleSubmit = async () => {
     isLoading.value = true
 
     try {
-        const endpoint = props.updating 
+        const endpoint = props.updating
             ? route('development.update', props.development.devt_id)
             : route('development.store')
-        
+
         const method = props.updating ? 'put' : 'post'
 
         const response = await axios[method](endpoint, form.value)
 
         notificationStore.success(
-            props.updating 
+            props.updating
                 ? 'Desarrollo actualizado correctamente'
                 : 'Desarrollo creado correctamente'
         )
@@ -271,7 +276,8 @@ const handleSubmit = async () => {
             <!-- Ciudad -->
             <div class="contenedor--input">
                 <select id="city_id" v-model="form.city_id" :disabled="!form.ctry_id" class="campo--input">
-                    <option value="">{{ form.ctry_id ? 'Selecciona una ciudad' : 'Primero selecciona un país' }}</option>
+                    <option value="">{{ form.ctry_id ? 'Selecciona una ciudad' : 'Primero selecciona un país' }}
+                    </option>
                     <option v-for="city in filteredCities" :key="city.city_id" :value="String(city.city_id)">
                         {{ city.city_name }}
                     </option>
@@ -284,7 +290,8 @@ const handleSubmit = async () => {
             <div class="contenedor--input">
                 <select id="apvSta_id" v-model="form.apvSta_id" class="campo--input">
                     <option value="">Selecciona un estado</option>
-                    <option v-for="status in approvalStatuses" :key="status.apvSta_id" :value="String(status.apvSta_id)">
+                    <option v-for="status in approvalStatuses" :key="status.apvSta_id"
+                        :value="String(status.apvSta_id)">
                         {{ status.apvSta_name }}
                     </option>
                 </select>
@@ -308,7 +315,8 @@ const handleSubmit = async () => {
             <div class="contenedor--input">
                 <select id="commSta_id" v-model="form.commSta_id" class="campo--input">
                     <option value="">Selecciona un tipo</option>
-                    <option v-for="status in commercialStatuses" :key="status.commSta_id" :value="String(status.commSta_id)">
+                    <option v-for="status in commercialStatuses" :key="status.commSta_id"
+                        :value="String(status.commSta_id)">
                         {{ status.commSta_name }}
                     </option>
                 </select>
@@ -327,246 +335,151 @@ const handleSubmit = async () => {
                 <InputLabel for="houTyp_id" value="Tipo de Vivienda" />
                 <InputError :message="errors.houTyp_id" class="mt-2" />
             </div>
-
             <!-- Título -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_title"
-                    v-model="form.devt_title"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: Proyecto Residencial Downtown"
-                />
+                <TextInput id="devt_title" v-model="form.devt_title" type="text" class="campo--input"
+                    placeholder="Ej: Proyecto Residencial Downtown" />
                 <InputLabel for="devt_title" value="Título del Desarrollo" />
                 <InputError :message="errors.devt_title" class="mt-2" />
             </div>
 
             <!-- Slug -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_slug"
-                    v-model="form.devt_slug"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: proyecto-residencial-downtown"
-                />
+                <TextInput id="devt_slug" v-model="form.devt_slug" type="text" class="campo--input"
+                    placeholder="Ej: proyecto-residencial-downtown" />
                 <InputLabel for="devt_slug" value="Slug" />
                 <InputError :message="errors.devt_slug" class="mt-2" />
             </div>
 
             <!-- Dirección -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_address"
-                    v-model="form.devt_address"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: Calle Principal 123, Zona 10"
-                />
+                <TextInput id="devt_address" v-model="form.devt_address" type="text" class="campo--input"
+                    placeholder="Ej: Calle Principal 123, Zona 10" />
                 <InputLabel for="devt_address" value="Dirección" />
                 <InputError :message="errors.devt_address" class="mt-2" />
             </div>
 
             <!-- Resumen Corto -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_short_description"
-                    v-model="form.devt_short_description"
-                    class="campo--input"
-                    placeholder="Resumen breve del proyecto"
-                    rows="3"
-                />
+                <TextInput id="devt_short_description" v-model="form.devt_short_description" class="campo--input"
+                    placeholder="Resumen breve del proyecto" rows="3" />
                 <InputLabel for="devt_short_description" value="Resumen" />
                 <InputError :message="errors.devt_short_description" class="mt-2" />
             </div>
 
             <!-- Descripción Larga -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_long_description"
-                    v-model="form.devt_long_description"
-                    class="campo--input"
-                    placeholder="Descripción detallada del proyecto"
-                    rows="4"
-                />
+                <TextInput id="devt_long_description" v-model="form.devt_long_description" class="campo--input"
+                    placeholder="Descripción detallada del proyecto" rows="4" />
                 <InputLabel for="devt_long_description" value="Descripción" />
                 <InputError :message="errors.devt_long_description" class="mt-2" />
             </div>
 
             <!-- Año de Entrega -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_delivery_year"
-                    v-model="form.devt_delivery_year"
-                    type="number"
-                    min="2020"
-                    class="campo--input"
-                    placeholder="Ej: 2025"
-                />
+                <TextInput id="devt_delivery_year" v-model="form.devt_delivery_year" type="number" min="2020"
+                    class="campo--input" placeholder="Ej: 2025" />
                 <InputLabel for="devt_delivery_year" value="Año de Entrega" />
                 <InputError :message="errors.devt_delivery_year" class="mt-2" />
             </div>
 
             <!-- Precio Desde -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_price_from"
-                    v-model="form.devt_price_from"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    class="campo--input"
-                    placeholder="Ej: 50000"
-                />
+                <TextInput id="devt_price_from" v-model="form.devt_price_from" type="number" min="0" step="0.01"
+                    class="campo--input" placeholder="Ej: 50000" />
                 <InputLabel for="devt_price_from" value="Precio Desde" />
                 <InputError :message="errors.devt_price_from" class="mt-2" />
             </div>
 
             <!-- Precio Hasta -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_price_to"
-                    v-model="form.devt_price_to"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    class="campo--input"
-                    placeholder="Ej: 150000"
-                />
+                <TextInput id="devt_price_to" v-model="form.devt_price_to" type="number" min="0" step="0.01"
+                    class="campo--input" placeholder="Ej: 150000" />
                 <InputLabel for="devt_price_to" value="Precio Hasta" />
                 <InputError :message="errors.devt_price_to" class="mt-2" />
             </div>
 
+            <!-- Moneda -->
+            <div class="contenedor--input">
+                <select id="curr_id" v-model="form.curr_id" class="campo--input">
+                    <option value="">Selecciona una moneda</option>
+                    <option v-for="currency in currencies" :key="currency.curr_id" :value="String(currency.curr_id)">
+                        {{ currency.curr_symbol }} {{ currency.curr_name }}
+                    </option>
+                </select>
+                <InputLabel for="curr_id" value="Moneda" />
+                <InputError :message="errors.curr_id" class="mt-2" />
+            </div>
+            
             <!-- Honorarios Estimados -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_estimated_profit"
-                    v-model="form.devt_estimated_profit"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    class="campo--input"
-                    placeholder="Ej: 20000"
-                />
+                <TextInput id="devt_estimated_profit" v-model="form.devt_estimated_profit" type="number" min="0"
+                    step="0.01" class="campo--input" placeholder="Ej: 20000" />
                 <InputLabel for="devt_estimated_profit" value="Honorarios Estimados" />
                 <InputError :message="errors.devt_estimated_profit" class="mt-2" />
             </div>
 
             <!-- Número de Dormitorios -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_bedrooms"
-                    v-model="form.devt_bedrooms"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 3"
-                />
+                <TextInput id="devt_bedrooms" v-model="form.devt_bedrooms" type="number" min="0" class="campo--input"
+                    placeholder="Ej: 3" />
                 <InputLabel for="devt_bedrooms" value="Número de Dormitorios" />
                 <InputError :message="errors.devt_bedrooms" class="mt-2" />
             </div>
 
             <!-- Comodidades -->
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_storage_rooms"
-                    v-model="form.devt_storage_rooms"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 2"
-                />
+                <TextInput id="devt_storage_rooms" v-model="form.devt_storage_rooms" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 2" />
                 <InputLabel for="devt_storage_rooms" value="Trasteros" />
                 <InputError :message="errors.devt_storage_rooms" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_parking_spaces"
-                    v-model="form.devt_parking_spaces"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 2"
-                />
+                <TextInput id="devt_parking_spaces" v-model="form.devt_parking_spaces" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 2" />
                 <InputLabel for="devt_parking_spaces" value="Parking" />
                 <InputError :message="errors.devt_parking_spaces" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_terraces"
-                    v-model="form.devt_terraces"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 1"
-                />
+                <TextInput id="devt_terraces" v-model="form.devt_terraces" type="number" min="0" class="campo--input"
+                    placeholder="Ej: 1" />
                 <InputLabel for="devt_terraces" value="Terraza" />
                 <InputError :message="errors.devt_terraces" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_swimming_pools"
-                    v-model="form.devt_swimming_pools"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 1"
-                />
+                <TextInput id="devt_swimming_pools" v-model="form.devt_swimming_pools" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 1" />
                 <InputLabel for="devt_swimming_pools" value="Piscina" />
                 <InputError :message="errors.devt_swimming_pools" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_children_areas"
-                    v-model="form.devt_children_areas"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 1"
-                />
+                <TextInput id="devt_children_areas" v-model="form.devt_children_areas" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 1" />
                 <InputLabel for="devt_children_areas" value="Área Infantil" />
                 <InputError :message="errors.devt_children_areas" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_green_zones"
-                    v-model="form.devt_green_zones"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 2"
-                />
+                <TextInput id="devt_green_zones" v-model="form.devt_green_zones" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 2" />
                 <InputLabel for="devt_green_zones" value="Zonas Verdes" />
                 <InputError :message="errors.devt_green_zones" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_elevators"
-                    v-model="form.devt_elevators"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 2"
-                />
+                <TextInput id="devt_elevators" v-model="form.devt_elevators" type="number" min="0" class="campo--input"
+                    placeholder="Ej: 2" />
                 <InputLabel for="devt_elevators" value="Ascensor" />
                 <InputError :message="errors.devt_elevators" class="mt-2" />
             </div>
 
             <div class="contenedor--input">
-                <TextInput
-                    id="devt_golf_courses"
-                    v-model="form.devt_golf_courses"
-                    type="number"
-                    min="0"
-                    class="campo--input"
-                    placeholder="Ej: 1"
-                />
+                <TextInput id="devt_golf_courses" v-model="form.devt_golf_courses" type="number" min="0"
+                    class="campo--input" placeholder="Ej: 1" />
                 <InputLabel for="devt_golf_courses" value="Golf" />
                 <InputError :message="errors.devt_golf_courses" class="mt-2" />
             </div>
@@ -584,7 +497,8 @@ const handleSubmit = async () => {
 
         <template #actions>
             <PrimaryButton v-if="showSubmitButton" :disabled="isLoading">
-                <template #texto--boton>{{ isLoading ? 'Guardando...' : (updating ? 'Actualizar' : 'Crear') }}</template>
+                <template #texto--boton>{{ isLoading ? 'Guardando...' : (updating ? 'Actualizar' : 'Crear')
+                    }}</template>
                 <template #icono--boton>
                     <path v-if="!updating" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     <path v-if="updating" stroke-linecap="round" stroke-linejoin="round"
@@ -594,4 +508,3 @@ const handleSubmit = async () => {
         </template>
     </FormSection>
 </template>
-

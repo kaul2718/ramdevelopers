@@ -38,6 +38,10 @@ const props = defineProps({
     housingTypes: {
         type: Array,
         required: true
+    },
+    currencies: {
+        type: Array,
+        required: true
     }
 })
 
@@ -49,6 +53,7 @@ const form = useForm({
     busiSta_id: '',
     commSta_id: '',
     houTyp_id: '',
+    curr_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -95,6 +100,7 @@ const form = useForm({
                             :businessStates="businessStates"
                             :commercialStatuses="commercialStatuses"
                             :housingTypes="housingTypes"
+                            :currencies="currencies"
                             :updating="false"
                             @submit="form.post(route('development.store'))" 
                         />

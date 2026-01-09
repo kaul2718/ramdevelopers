@@ -115,18 +115,22 @@ const closeImagePreview = () => {
                 <div class="bg-white rounded-lg shadow p-6 mb-6">
                     <h2 class="text-2xl font-bold mb-6 text-gray-900">Información Financiera</h2>
                     
-                    <div class="grid grid-cols-3 gap-6">
+                    <div class="grid grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Moneda</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.currency?.curr_symbol }} {{ development.currency?.curr_name || 'N/A' }}</p>
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Precio Desde</label>
-                            <p class="text-lg font-semibold text-gray-900">${{ development.devt_price_from?.toLocaleString() || 'N/A' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.currency?.curr_symbol }} {{ development.devt_price_from?.toLocaleString() || 'N/A' }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Precio Hasta</label>
-                            <p class="text-lg font-semibold text-gray-900">${{ development.devt_price_to?.toLocaleString() || 'N/A' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.currency?.curr_symbol }} {{ development.devt_price_to?.toLocaleString() || 'N/A' }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Honorarios</label>
-                            <p class="text-lg font-semibold text-green-600">${{ development.devt_estimated_profit?.toLocaleString() || '0 %' }}</p>
+                            <p class="text-lg font-semibold text-green-600">{{ development.devt_estimated_profit?.toLocaleString() || '0 %' }}</p>
                         </div>
                     </div>
                 </div>

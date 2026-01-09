@@ -15,6 +15,7 @@ class Development extends Model
         'busiSta_id',
         'commSta_id',
         'houTyp_id',
+        'curr_id',
         'devt_title',
         'devt_slug',
         'devt_address',
@@ -70,6 +71,11 @@ class Development extends Model
     public function housingType()
     {
         return $this->belongsTo(HousingType::class, 'houTyp_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'curr_id');
     }
 
     // Relación: Un Development tiene muchos DevelopmentFiles
