@@ -53,6 +53,10 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    housingTypes: {
+        type: Array,
+        default: () => []
+    },
     showSubmitButton: {
         type: Boolean,
         default: true
@@ -69,6 +73,7 @@ const form = props.form ? computed(() => props.form) : ref({
     apvSta_id: '',
     busiSta_id: '',
     commSta_id: '',
+    houTyp_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -78,12 +83,22 @@ const form = props.form ? computed(() => props.form) : ref({
     devt_price_to: '',
     devt_delivery_year: '',
     devt_estimated_profit: '',
-    devt_is_featured: false
+    devt_is_featured: false,
+    devt_storage_rooms: '0',
+    devt_parking_spaces: '0',
+    devt_terraces: '0',
+    devt_swimming_pools: '0',
+    devt_children_areas: '0',
+    devt_green_zones: '0',
+    devt_elevators: '0',
+    devt_golf_courses: '0',
+    devt_bedrooms: '0'
 })
 
 const errors = ref({})
 const isLoading = ref(false)
 let isInitialLoad = true
+
 
 // Filtrar ciudades según el país seleccionado
 const filteredCities = computed(() => {
@@ -103,6 +118,7 @@ onMounted(() => {
             apvSta_id: String(props.development.apvSta_id || ''),
             busiSta_id: String(props.development.busiSta_id || ''),
             commSta_id: String(props.development.commSta_id || ''),
+            houTyp_id: String(props.development.houTyp_id || ''),
             devt_title: props.development.devt_title || '',
             devt_slug: props.development.devt_slug || '',
             devt_address: props.development.devt_address || '',
@@ -112,7 +128,16 @@ onMounted(() => {
             devt_price_to: String(props.development.devt_price_to || ''),
             devt_delivery_year: String(props.development.devt_delivery_year || ''),
             devt_estimated_profit: String(props.development.devt_estimated_profit || ''),
-            devt_is_featured: Boolean(props.development.devt_is_featured)
+            devt_is_featured: Boolean(props.development.devt_is_featured),
+            devt_storage_rooms: String(props.development.devt_storage_rooms || '0'),
+            devt_parking_spaces: String(props.development.devt_parking_spaces || '0'),
+            devt_terraces: String(props.development.devt_terraces || '0'),
+            devt_swimming_pools: String(props.development.devt_swimming_pools || '0'),
+            devt_children_areas: String(props.development.devt_children_areas || '0'),
+            devt_green_zones: String(props.development.devt_green_zones || '0'),
+            devt_elevators: String(props.development.devt_elevators || '0'),
+            devt_golf_courses: String(props.development.devt_golf_courses || '0'),
+            devt_bedrooms: String(props.development.devt_bedrooms || '0')
         }
     }
     isInitialLoad = false
@@ -135,6 +160,7 @@ const validateForm = () => {
         apvSta_id: 'Estado de Aprobación',
         busiSta_id: 'Estado del Proyecto',
         commSta_id: 'Tipo de Proyecto',
+        houTyp_id: 'Tipo de Vivienda',
         devt_title: 'Título del Desarrollo',
         devt_slug: 'Slug',
         devt_address: 'Dirección',
@@ -290,6 +316,18 @@ const handleSubmit = async () => {
                 <InputError :message="errors.commSta_id" class="mt-2" />
             </div>
 
+            <!-- Tipo de Vivienda -->
+            <div class="contenedor--input">
+                <select id="houTyp_id" v-model="form.houTyp_id" class="campo--input">
+                    <option value="">Selecciona un tipo de vivienda</option>
+                    <option v-for="type in housingTypes" :key="type.houTyp_id" :value="String(type.houTyp_id)">
+                        {{ type.houTyp_name }}
+                    </option>
+                </select>
+                <InputLabel for="houTyp_id" value="Tipo de Vivienda" />
+                <InputError :message="errors.houTyp_id" class="mt-2" />
+            </div>
+
             <!-- Título -->
             <div class="contenedor--input">
                 <TextInput
@@ -412,6 +450,125 @@ const handleSubmit = async () => {
                 />
                 <InputLabel for="devt_estimated_profit" value="Honorarios Estimados" />
                 <InputError :message="errors.devt_estimated_profit" class="mt-2" />
+            </div>
+
+            <!-- Número de Dormitorios -->
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_bedrooms"
+                    v-model="form.devt_bedrooms"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 3"
+                />
+                <InputLabel for="devt_bedrooms" value="Número de Dormitorios" />
+                <InputError :message="errors.devt_bedrooms" class="mt-2" />
+            </div>
+
+            <!-- Comodidades -->
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_storage_rooms"
+                    v-model="form.devt_storage_rooms"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 2"
+                />
+                <InputLabel for="devt_storage_rooms" value="Trasteros" />
+                <InputError :message="errors.devt_storage_rooms" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_parking_spaces"
+                    v-model="form.devt_parking_spaces"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 2"
+                />
+                <InputLabel for="devt_parking_spaces" value="Parking" />
+                <InputError :message="errors.devt_parking_spaces" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_terraces"
+                    v-model="form.devt_terraces"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 1"
+                />
+                <InputLabel for="devt_terraces" value="Terraza" />
+                <InputError :message="errors.devt_terraces" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_swimming_pools"
+                    v-model="form.devt_swimming_pools"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 1"
+                />
+                <InputLabel for="devt_swimming_pools" value="Piscina" />
+                <InputError :message="errors.devt_swimming_pools" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_children_areas"
+                    v-model="form.devt_children_areas"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 1"
+                />
+                <InputLabel for="devt_children_areas" value="Área Infantil" />
+                <InputError :message="errors.devt_children_areas" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_green_zones"
+                    v-model="form.devt_green_zones"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 2"
+                />
+                <InputLabel for="devt_green_zones" value="Zonas Verdes" />
+                <InputError :message="errors.devt_green_zones" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_elevators"
+                    v-model="form.devt_elevators"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 2"
+                />
+                <InputLabel for="devt_elevators" value="Ascensor" />
+                <InputError :message="errors.devt_elevators" class="mt-2" />
+            </div>
+
+            <div class="contenedor--input">
+                <TextInput
+                    id="devt_golf_courses"
+                    v-model="form.devt_golf_courses"
+                    type="number"
+                    min="0"
+                    class="campo--input"
+                    placeholder="Ej: 1"
+                />
+                <InputLabel for="devt_golf_courses" value="Golf" />
+                <InputError :message="errors.devt_golf_courses" class="mt-2" />
             </div>
 
             <!-- Destacado -->

@@ -11,6 +11,7 @@ use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\DevelopmentFileController;
 use App\Http\Controllers\DevelopmentImageController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\HousingTypeController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadNoteController;
 use App\Http\Controllers\LeadSourcesController;
@@ -47,6 +48,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('development', DevelopmentController::class);
     Route::resource('developmentfile', DevelopmentFileController::class);
     Route::resource('documenttype', DocumentTypeController::class);
+    Route::resource('housingtype', HousingTypeController::class);
     Route::resource('lead', LeadController::class);
     Route::resource('leadnote', LeadNoteController::class);
     Route::resource('leadsources', LeadSourcesController::class);

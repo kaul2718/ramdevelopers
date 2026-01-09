@@ -8,8 +8,9 @@ export default {
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Form from '@/Components/Development/Form.vue'
+import { onMounted } from 'vue'
 
-defineProps({
+const props = defineProps({
     developers: {
         type: Array,
         required: true
@@ -33,6 +34,10 @@ defineProps({
     commercialStatuses: {
         type: Array,
         required: true
+    },
+    housingTypes: {
+        type: Array,
+        required: true
     }
 })
 
@@ -43,6 +48,7 @@ const form = useForm({
     apvSta_id: '',
     busiSta_id: '',
     commSta_id: '',
+    houTyp_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -53,7 +59,17 @@ const form = useForm({
     devt_delivery_year: '',
     devt_estimated_profit: '',
     devt_is_featured: false,
+    devt_storage_rooms: 0,
+    devt_parking_spaces: 0,
+    devt_terraces: 0,
+    devt_swimming_pools: 0,
+    devt_children_areas: 0,
+    devt_green_zones: 0,
+    devt_elevators: 0,
+    devt_golf_courses: 0,
+    devt_bedrooms: 0
 })
+
 </script>
 
 <template>
@@ -78,6 +94,7 @@ const form = useForm({
                             :approvalStatuses="approvalStatuses"
                             :businessStates="businessStates"
                             :commercialStatuses="commercialStatuses"
+                            :housingTypes="housingTypes"
                             :updating="false"
                             @submit="form.post(route('development.store'))" 
                         />

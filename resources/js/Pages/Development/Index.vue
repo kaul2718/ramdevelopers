@@ -42,6 +42,10 @@
             type: Array,
             required: true
         },
+        housingTypes: {
+            type: Array,
+            required: true
+        },
         documentTypes: {
             type: Array,
             required: true
@@ -364,6 +368,7 @@
             :approval-statuses="approvalStatuses"
             :business-states="businessStates"
             :commercial-statuses="commercialStatuses"
+            :housing-types="housingTypes"
             @close="closeCreateModal"
             @saved="handleDevelopmentCreated"
         />
@@ -377,6 +382,7 @@
             :approval-statuses="approvalStatuses"
             :business-states="businessStates"
             :commercial-statuses="commercialStatuses"
+            :housing-types="housingTypes"
             @close="closeEditModal"
             @saved="handleDevelopmentEdited"
         />

@@ -102,6 +102,12 @@ const closeImagePreview = () => {
                                 {{ development.commercial_status?.commSta_name || 'N/A' }}
                             </span>
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Vivienda</label>
+                            <span class="inline-flex items-center rounded-md bg-orange-50 px-3 py-1 text-sm font-medium text-orange-700 border border-orange-200">
+                                {{ development.housing_type?.houTyp_name || 'N/A' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -121,6 +127,50 @@ const closeImagePreview = () => {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Honorarios</label>
                             <p class="text-lg font-semibold text-green-600">${{ development.devt_estimated_profit?.toLocaleString() || '0 %' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Características de la Propiedad -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-900">Características de la Propiedad</h2>
+                    
+                    <div class="grid grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Dormitorios</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_bedrooms === 0 ? 'No' : `Sí (${development.devt_bedrooms})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Trasteros</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_storage_rooms === 0 ? 'No' : `Sí (${development.devt_storage_rooms})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Parking</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_parking_spaces === 0 ? 'No' : `Sí (${development.devt_parking_spaces})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Terraza</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_terraces === 0 ? 'No' : `Sí (${development.devt_terraces})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Piscina</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_swimming_pools === 0 ? 'No' : `Sí (${development.devt_swimming_pools})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Área Infantil</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_children_areas === 0 ? 'No' : `Sí (${development.devt_children_areas})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Zonas Verdes</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_green_zones === 0 ? 'No' : `Sí (${development.devt_green_zones})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ascensor</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_elevators === 0 ? 'No' : `Sí (${development.devt_elevators})` }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Golf</label>
+                            <p class="text-lg font-semibold text-gray-900">{{ development.devt_golf_courses === 0 ? 'No' : `Sí (${development.devt_golf_courses})` }}</p>
                         </div>
                     </div>
                 </div>

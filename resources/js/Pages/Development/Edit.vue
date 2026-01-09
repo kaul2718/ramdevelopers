@@ -46,6 +46,10 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    housingTypes: {
+        type: Array,
+        required: true
+    },
     documentTypes: {
         type: Array,
         required: true
@@ -59,6 +63,7 @@ const form = useForm({
     apvSta_id: '',
     busiSta_id: '',
     commSta_id: '',
+    houTyp_id: '',
     devt_title: '',
     devt_slug: '',
     devt_address: '',
@@ -70,6 +75,15 @@ const form = useForm({
     devt_estimated_profit: '',
     devt_is_featured: false,
     devt_active: true,
+    devt_storage_rooms: '0',
+    devt_parking_spaces: '0',
+    devt_terraces: '0',
+    devt_swimming_pools: '0',
+    devt_children_areas: '0',
+    devt_green_zones: '0',
+    devt_elevators: '0',
+    devt_golf_courses: '0',
+    devt_bedrooms: '0'
 })
 
 const showFileModal = ref(false);
@@ -85,6 +99,7 @@ watch(() => props.development, (newDevelopment) => {
     form.apvSta_id = newDevelopment.apvSta_id
     form.busiSta_id = newDevelopment.busiSta_id
     form.commSta_id = newDevelopment.commSta_id
+    form.houTyp_id = newDevelopment.houTyp_id
     form.devt_title = newDevelopment.devt_title
     form.devt_slug = newDevelopment.devt_slug
     form.devt_address = newDevelopment.devt_address
@@ -96,6 +111,15 @@ watch(() => props.development, (newDevelopment) => {
     form.devt_estimated_profit = String(newDevelopment.devt_estimated_profit)
     form.devt_is_featured = Boolean(newDevelopment.devt_is_featured)
     form.devt_active = Boolean(newDevelopment.devt_active)
+    form.devt_storage_rooms = String(newDevelopment.devt_storage_rooms || '0')
+    form.devt_parking_spaces = String(newDevelopment.devt_parking_spaces || '0')
+    form.devt_terraces = String(newDevelopment.devt_terraces || '0')
+    form.devt_swimming_pools = String(newDevelopment.devt_swimming_pools || '0')
+    form.devt_children_areas = String(newDevelopment.devt_children_areas || '0')
+    form.devt_green_zones = String(newDevelopment.devt_green_zones || '0')
+    form.devt_elevators = String(newDevelopment.devt_elevators || '0')
+    form.devt_golf_courses = String(newDevelopment.devt_golf_courses || '0')
+    form.devt_bedrooms = String(newDevelopment.devt_bedrooms || '0')
 }, { immediate: true })
 
 const confirmDelete = (itemId, type) => {
@@ -191,6 +215,7 @@ const handleSave = async () => {
                             :approvalStatuses="approvalStatuses"
                             :businessStates="businessStates"
                             :commercialStatuses="commercialStatuses"
+                            :housingTypes="housingTypes"
                             :updating="true"
                             :show-submit-button="false"
                             @submit="form.put(route('development.update', props.development.devt_id))" 

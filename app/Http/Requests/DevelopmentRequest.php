@@ -30,6 +30,7 @@ class DevelopmentRequest extends FormRequest
             'apvSta_id' => ['required', 'exists:approval_statuses,apvSta_id'],
             'busiSta_id' => ['required', 'exists:business_state,busiSta_id'],
             'commSta_id' => ['required', 'exists:commercial_statuses,commSta_id'],
+            'houTyp_id' => ['required', 'exists:housing_types,houTyp_id'],
             'devt_title' => [
                 'required',
                 'string',
@@ -79,6 +80,15 @@ class DevelopmentRequest extends FormRequest
                 'numeric',
                 'min:0',
             ],
+            'devt_storage_rooms' => ['nullable', 'integer', 'min:0'],
+            'devt_parking_spaces' => ['nullable', 'integer', 'min:0'],
+            'devt_terraces' => ['nullable', 'integer', 'min:0'],
+            'devt_swimming_pools' => ['nullable', 'integer', 'min:0'],
+            'devt_children_areas' => ['nullable', 'integer', 'min:0'],
+            'devt_green_zones' => ['nullable', 'integer', 'min:0'],
+            'devt_elevators' => ['nullable', 'integer', 'min:0'],
+            'devt_golf_courses' => ['nullable', 'integer', 'min:0'],
+            'devt_bedrooms' => ['nullable', 'integer', 'min:0'],
             'devt_is_featured' => ['nullable', 'boolean'],
             'devt_active' => ['nullable', 'boolean'],
         ];

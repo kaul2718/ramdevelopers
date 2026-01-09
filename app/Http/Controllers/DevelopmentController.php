@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\ApprovalStatus;
 use App\Models\BusinessState;
 use App\Models\CommercialStatus;
+use App\Models\HousingType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -62,6 +63,7 @@ class DevelopmentController extends Controller
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
+        $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
         $documentTypes = DocumentType::all();
         
         return Inertia::render('Development/Index', [
@@ -72,6 +74,7 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
             'documentTypes' => $documentTypes,
         ]);
     }
@@ -89,6 +92,11 @@ class DevelopmentController extends Controller
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
+        $housingTypes = HousingType::orderBy('houTyp_name')->get();
+        
+        \Log::info('=== DEVELOPMENT CREATE METHOD ===');
+        \Log::info('HousingTypes count: ' . $housingTypes->count());
+        \Log::info('HousingTypes: ' . json_encode($housingTypes));
         
         return Inertia::render('Development/Create', [
             'developers' => $developers,
@@ -97,6 +105,7 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
         ]);
     }
 
@@ -125,7 +134,7 @@ class DevelopmentController extends Controller
      */
     public function show(Development $development)
     {
-        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'files', 'images']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'files', 'images']);
         
         return Inertia::render('Development/Show', [
             'development' => $development,
@@ -145,9 +154,10 @@ class DevelopmentController extends Controller
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
+        $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
         $documentTypes = DocumentType::all();
         
-        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'files', 'images']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'files', 'images']);
         
         return Inertia::render('Development/Edit', [
             'development' => $development,
@@ -157,6 +167,7 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
             'documentTypes' => $documentTypes,
         ]);
     }
