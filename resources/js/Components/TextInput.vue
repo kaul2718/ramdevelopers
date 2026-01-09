@@ -23,6 +23,7 @@ defineExpose({ focus: () => input.value.focus() });
         ref="input"
         class="campo--input"
         :value="modelValue"
+        v-bind="$attrs"
         @input="$emit('update:modelValue', $event.target.value)"
     >
 </template>

@@ -25,6 +25,7 @@ class Development extends Model
         'devt_price_to',
         'devt_delivery_year',
         'devt_estimated_profit',
+        'devt_estimated_profit_is_percentage',
         'devt_is_featured',
         'devt_active',
         'devt_storage_rooms',

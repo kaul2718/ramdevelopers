@@ -80,7 +80,14 @@ class DevelopmentRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'min:0',
+                function ($attribute, $value, $fail) {
+                    $isPercentage = request('devt_estimated_profit_is_percentage');
+                    if ($isPercentage && ($value < 1 || $value > 100)) {
+                        $fail('Si es porcentaje, el valor debe estar entre 1 y 100.');
+                    }
+                }
             ],
+            'devt_estimated_profit_is_percentage' => ['nullable', 'boolean'],
             'devt_storage_rooms' => ['nullable', 'integer', 'min:0'],
             'devt_parking_spaces' => ['nullable', 'integer', 'min:0'],
             'devt_terraces' => ['nullable', 'integer', 'min:0'],

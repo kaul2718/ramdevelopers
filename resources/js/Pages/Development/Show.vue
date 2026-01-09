@@ -130,7 +130,9 @@ const closeImagePreview = () => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Honorarios</label>
-                            <p class="text-lg font-semibold text-green-600">{{ development.devt_estimated_profit?.toLocaleString() || '0 %' }}</p>
+                            <p class="text-lg font-semibold text-green-600">
+                                {{ development.devt_estimated_profit ? (development.devt_estimated_profit_is_percentage ? `${development.devt_estimated_profit}%` : `${development.currency?.curr_symbol} ${development.devt_estimated_profit?.toLocaleString()}`) : '0' }}
+                            </p>
                         </div>
                     </div>
                 </div>
