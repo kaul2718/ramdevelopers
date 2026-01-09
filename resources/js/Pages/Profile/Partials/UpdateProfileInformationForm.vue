@@ -1,83 +1,83 @@
 <script setup>
-import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+    import { ref } from 'vue';
+    import { Link, router, useForm } from '@inertiajs/vue3';
+    import ActionMessage from '@/Components/ActionMessage.vue';
+    import FormSection from '@/Components/FormSection.vue';
+    import InputError from '@/Components/InputError.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import SecondaryButton from '@/Components/SecondaryButton.vue';
+    import TextInput from '@/Components/TextInput.vue';
 
-const props = defineProps({
-    user: Object,
-    countries: Array,
-});
-
-const form = useForm({
-    _method: 'PUT',
-    name: props.user.name,
-    lastname: props.user.lastname || '',
-    email: props.user.email,
-    phone: props.user.phone || '',
-    idiomas: props.user.idiomas || '',
-    usr_id_ctry: props.user.usr_id_ctry || '',
-    photo: props.user.profile_photo_path || null,
-});
-
-const verificationLinkSent = ref(null);
-const photoPreview = ref(null);
-const photoInput = ref(null);
-
-const updateProfileInformation = () => {
-    if (photoInput.value && photoInput.value.files[0]) {
-        form.photo = photoInput.value.files[0];
-    }
-
-    form.post(route('user-profile-information.update'), {
-        errorBag: 'updateProfileInformation',
-        preserveScroll: true,
-        onSuccess: () => clearPhotoFileInput(),
+    const props = defineProps({
+        user: Object,
+        countries: Array,
     });
-};
 
-const sendEmailVerification = () => {
-    verificationLinkSent.value = true;
-};
+    const form = useForm({
+        _method: 'PUT',
+        name: props.user.name,
+        lastname: props.user.lastname || '',
+        email: props.user.email,
+        phone: props.user.phone || '',
+        idiomas: props.user.idiomas || '',
+        usr_id_ctry: props.user.usr_id_ctry || '',
+        photo: props.user.profile_photo_path || null,
+    });
 
-const selectNewPhoto = () => {
-    photoInput.value.click();
-};
+    const verificationLinkSent = ref(null);
+    const photoPreview = ref(null);
+    const photoInput = ref(null);
 
-const updatePhotoPreview = () => {
-    const photo = photoInput.value.files[0];
+    const updateProfileInformation = () => {
+        if (photoInput.value && photoInput.value.files[0]) {
+            form.photo = photoInput.value.files[0];
+        }
 
-    if (! photo) return;
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-        photoPreview.value = e.target.result;
+        form.post(route('user-profile-information.update'), {
+            errorBag: 'updateProfileInformation',
+            preserveScroll: true,
+            onSuccess: () => clearPhotoFileInput(),
+        });
     };
 
-    reader.readAsDataURL(photo);
-};
+    const sendEmailVerification = () => {
+        verificationLinkSent.value = true;
+    };
 
-const deletePhoto = () => {
-    router.delete(route('current-user-photo.destroy'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            photoPreview.value = null;
-            clearPhotoFileInput();
-        },
-    });
-};
+    const selectNewPhoto = () => {
+        photoInput.value.click();
+    };
 
-const clearPhotoFileInput = () => {
-    if (photoInput.value?.value) {
-        photoInput.value.value = null;
-    }
-};
+    const updatePhotoPreview = () => {
+        const photo = photoInput.value.files[0];
+
+        if (! photo) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            photoPreview.value = e.target.result;
+        };
+
+        reader.readAsDataURL(photo);
+    };
+
+    const deletePhoto = () => {
+        router.delete(route('current-user-photo.destroy'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                photoPreview.value = null;
+                clearPhotoFileInput();
+            },
+        });
+    };
+
+    const clearPhotoFileInput = () => {
+        if (photoInput.value?.value) {
+            photoInput.value.value = null;
+        }
+    };
 </script>
 
 <template>

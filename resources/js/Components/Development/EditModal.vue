@@ -1,24 +1,24 @@
 <script setup>
-import DialogModal from '@/Components/DialogModal.vue'
-import DevelopmentForm from '@/Components/Development/Form.vue'
+    import DialogModal from '@/Components/DialogModal.vue'
+    import DevelopmentForm from '@/Components/Development/Form.vue'
 
-const props = defineProps({
-    show: Boolean,
-    development: { type: Object, default: null },
-    developers: { type: Array, default: () => [] },
-    countries: { type: Array, default: () => [] },
-    cities: { type: Array, default: () => [] },
-    approvalStatuses: { type: Array, default: () => [] },
-    businessStates: { type: Array, default: () => [] },
-    commercialStatuses: { type: Array, default: () => [] },
-    housingTypes: { type: Array, default: () => [] }
-})
+    const props = defineProps({
+        show: Boolean,
+        development: { type: Object, default: null },
+        developers: { type: Array, default: () => [] },
+        countries: { type: Array, default: () => [] },
+        cities: { type: Array, default: () => [] },
+        approvalStatuses: { type: Array, default: () => [] },
+        businessStates: { type: Array, default: () => [] },
+        commercialStatuses: { type: Array, default: () => [] },
+        housingTypes: { type: Array, default: () => [] }
+    })
 
-const emit = defineEmits(['close', 'saved'])
+    const emit = defineEmits(['close', 'saved'])
 
-const handleSaved = (development) => {
-    emit('saved', development)
-}
+    const handleSaved = (development) => {
+        emit('saved', development)
+    }
 </script>
 
 <template>
