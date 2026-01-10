@@ -3,7 +3,8 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, router } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { formatDate } from '@/Helpers/dateHelper'
-import FormModal from '@/Components/LeadNote/FormModal.vue'
+import CreateModal from '@/Components/LeadNote/CreateModal.vue'
+import EditModal from '@/Components/LeadNote/EditModal.vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
 import { useNotificationStore } from '@/stores/notificationStore'
 
@@ -13,22 +14,24 @@ const props = defineProps({
 
 const notificationStore = useNotificationStore()
 
-const showFormModal = ref(false)
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
 const showConfirmModal = ref(false)
-const formMode = ref('create')
 
 const openCreateModal = () => {
-    formMode.value = 'create'
-    showFormModal.value = true
+    showCreateModal.value = true
 }
 
 const openEditModal = () => {
-    formMode.value = 'edit'
-    showFormModal.value = true
+    showEditModal.value = true
 }
 
-const closeFormModal = () => {
-    showFormModal.value = false
+const closeCreateModal = () => {
+    showCreateModal.value = false
+}
+
+const closeEditModal = () => {
+    showEditModal.value = false
 }
 
 const openDeleteModal = () => {
@@ -148,12 +151,18 @@ const handleSaved = () => {
         </div>
 
         <!-- Modales -->
-        <FormModal
-            :show="showFormModal"
-            :lead-note="formMode === 'edit' ? leadNote : null"
-            :lead-id="leadNote.lead_id"
-            :mode="formMode"
-            @close="closeFormModal"
+        <CreateModal
+            :show="showCreateModal"
+            :lead="{ lead_id: leadNote.lead_id }"
+            @close="closeCreateModal"
+            @saved="handleSaved"
+        />
+
+        <EditModal
+            :show="showEditModal"
+            :note="leadNote"
+            :lead="{ lead_id: leadNote.lead_id }"
+            @close="closeEditModal"
             @saved="handleSaved"
         />
 
