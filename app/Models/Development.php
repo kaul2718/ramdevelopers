@@ -8,6 +8,7 @@ class Development extends Model
     protected $primaryKey = 'devt_id';
 
     protected $fillable = [
+        'user_id',
         'devr_id',
         'ctry_id',
         'city_id',
@@ -38,6 +39,11 @@ class Development extends Model
         'devt_golf_courses',
         'devt_bedrooms',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function developer()
     {

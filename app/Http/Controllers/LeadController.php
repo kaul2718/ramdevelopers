@@ -18,16 +18,50 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $leads = Lead::with(['development', 'country', 'source', 'status', 'user', 'notes.user'])
-            ->paginate(10);
+        $query = Lead::with(['development', 'country', 'source', 'status', 'user', 'notes.user']);
         
-        $countries = Country::select('ctry_id', 'ctry_name')->get();
+        // Filtrar por país si el usuario es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $query->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        // Filtrar por leads asignados al Agente si tiene ese rol
+        elseif (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $query->where('user_id', auth()->user()->id);
+        }
+        
+        $leads = $query->paginate(10);
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::select('ctry_id', 'ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $developments = Development::select('devt_id', 'devt_title')->get();
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Agente Inmobiliario');
-        })->select('id', 'name', 'lastname')->get();
+        
+        // Filtrar usuarios: Master Pais puede verse a sí mismo + agentes, Agente solo se ve a sí mismo
+        $usersQuery = User::select('id', 'name', 'lastname');
+        
+        if (auth()->user()->hasRole('Master Pais')) {
+            // Master País: su propio ID + agentes del país
+            $usersQuery->where(function ($q) {
+                $q->where('id', auth()->user()->id)
+                  ->orWhereHas('roles', function ($roleQuery) {
+                      $roleQuery->where('name', 'Agente Inmobiliario');
+                  })->where('usr_id_ctry', auth()->user()->usr_id_ctry);
+            });
+        } elseif (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $usersQuery->where('id', auth()->user()->id);
+        } else {
+            // Admin/DevAdmin ven todos los agentes
+            $usersQuery->whereHas('roles', function ($query) {
+                $query->where('name', 'Agente Inmobiliario');
+            });
+        }
+        $users = $usersQuery->get();
 
         return Inertia::render('Lead/Index', [
             'leads' => $leads,
@@ -45,12 +79,38 @@ class LeadController extends Controller
     public function create()
     {
         $developments = Development::select('devt_id', 'devt_title')->get();
-        $countries = Country::select('ctry_id', 'ctry_name')->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::select('ctry_id', 'ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Agente Inmobiliario');
-        })->select('id', 'name', 'lastname')->get();
+        
+        // Filtrar usuarios: Master Pais puede verse a sí mismo + agentes, Agente solo se ve a sí mismo
+        $usersQuery = User::select('id', 'name', 'lastname');
+        
+        if (auth()->user()->hasRole('Master Pais')) {
+            // Master País: su propio ID + agentes del país
+            $usersQuery->where(function ($q) {
+                $q->where('id', auth()->user()->id)
+                  ->orWhereHas('roles', function ($roleQuery) {
+                      $roleQuery->where('name', 'Agente Inmobiliario');
+                  })->where('usr_id_ctry', auth()->user()->usr_id_ctry);
+            });
+        } elseif (auth()->user()->hasRole('Agente Inmobiliario')) {
+            // Agente solo ve su propio usuario
+            $usersQuery->where('id', auth()->user()->id);
+        } else {
+            // Admin/DevAdmin ven todos los agentes
+            $usersQuery->whereHas('roles', function ($query) {
+                $query->where('name', 'Agente Inmobiliario');
+            });
+        }
+        $users = $usersQuery->get();
 
         return Inertia::render('Lead/Create', [
             'developments' => $developments,
@@ -79,6 +139,11 @@ class LeadController extends Controller
             'leadSta_id' => 'nullable|exists:lead_statuses,leadSta_id',
         ]);
 
+        // Si el usuario es Agente Inmobiliario, asignar el lead a sí mismo
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = auth()->user()->id;
+        }
+
         Lead::create($validated);
 
         return redirect()->route('lead.index')
@@ -102,15 +167,46 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios leads
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $lead->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $lead->load(['development', 'country', 'source', 'status', 'user']);
 
         $developments = Development::select('devt_id', 'devt_title')->get();
-        $countries = Country::select('ctry_id', 'ctry_name')->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::select('ctry_id', 'ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $sources = LeadSource::select('leadSou_id', 'leadSou_name')->get();
         $statuses = LeadStatus::select('leadSta_id', 'leadSta_name')->get();
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Agente Inmobiliario');
-        })->select('id', 'name', 'lastname')->get();
+        
+        // Filtrar usuarios: Master Pais puede verse a sí mismo + agentes, Agente solo se ve a sí mismo
+        $usersQuery = User::select('id', 'name', 'lastname');
+        
+        if (auth()->user()->hasRole('Master Pais')) {
+            // Master País: su propio ID + agentes del país
+            $usersQuery->where(function ($q) {
+                $q->where('id', auth()->user()->id)
+                  ->orWhereHas('roles', function ($roleQuery) {
+                      $roleQuery->where('name', 'Agente Inmobiliario');
+                  })->where('usr_id_ctry', auth()->user()->usr_id_ctry);
+            });
+        } elseif (auth()->user()->hasRole('Agente Inmobiliario')) {
+            // Agente solo ve su propio usuario
+            $usersQuery->where('id', auth()->user()->id);
+        } else {
+            // Admin/DevAdmin ven todos los agentes
+            $usersQuery->whereHas('roles', function ($query) {
+                $query->where('name', 'Agente Inmobiliario');
+            });
+        }
+        $users = $usersQuery->get();
 
         return Inertia::render('Lead/Edit', [
             'lead' => $lead,
@@ -127,6 +223,11 @@ class LeadController extends Controller
      */
     public function update(Request $request, Lead $lead)
     {
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios leads
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $lead->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $validated = $request->validate([
             'lead_client_name' => 'required|string|max:255',
             'lead_client_email' => 'nullable|email|max:255',
@@ -140,6 +241,11 @@ class LeadController extends Controller
             'leadSta_id' => 'nullable|exists:lead_statuses,leadSta_id',
         ]);
 
+        // Si el usuario es Agente Inmobiliario, mantener su ID
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = auth()->user()->id;
+        }
+
         $lead->update($validated);
 
         return redirect()->route('lead.index')
@@ -151,6 +257,11 @@ class LeadController extends Controller
      */
     public function destroy(Lead $lead)
     {
+        // Verificar autorización para Agente Inmobiliario
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $lead->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $lead->delete();
 
         return redirect()->route('lead.index')

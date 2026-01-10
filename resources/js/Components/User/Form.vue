@@ -275,7 +275,7 @@
                             {{ country.ctry_name }}
                         </option>
                     </select>
-                    <InputLabel for="usr_id_ctry" value="País (Opcional)"></InputLabel>
+                    <InputLabel for="usr_id_ctry" value="País "></InputLabel>
                     <InputError :message="errors.usr_id_ctry || $page.props.errors.usr_id_ctry" class="mt-2" />
                 </div>
 

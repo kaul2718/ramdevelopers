@@ -20,6 +20,11 @@ class DeveloperController extends Controller
     {
         $query = Developer::with(['country', 'user']);
         
+        // Filtrar por país si el usuario es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $query->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        
         // Búsqueda por múltiples campos
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -32,7 +37,14 @@ class DeveloperController extends Controller
         }
         
         $developers = $query->latest()->paginate(10)->appends($request->query());
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', 'Agente Inmobiliario');
         })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
@@ -49,7 +61,13 @@ class DeveloperController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', 'Agente Inmobiliario');
         })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
@@ -84,7 +102,13 @@ class DeveloperController extends Controller
      */
     public function edit(Developer $developer)
     {
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', 'Agente Inmobiliario');
         })->where('usr_active', true)->select('id', 'name', 'lastname')->get();

@@ -56,6 +56,26 @@ class DevelopmentCaptor extends Model
     }
 
     /**
+     * Sobreescribir update para manejar claves compuestas correctamente
+     */
+    public function update(array $attributes = [], array $options = [])
+    {
+        // Actualizar usando query builder en lugar del método update() de Eloquent
+        if (!empty($attributes)) {
+            static::query()
+                ->where('devt_id', $this->devt_id)
+                ->where('user_id', $this->user_id)
+                ->update($attributes);
+            
+            // Actualizar los atributos en la instancia actual
+            foreach ($attributes as $key => $value) {
+                $this->attributes[$key] = $value;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Alcances (Scopes)
      */
 

@@ -309,7 +309,7 @@
                     >
                         <option value=""></option>
                         <option v-for="user in users" :key="user.id" :value="String(user.id)">
-                            {{ user.name }}
+                            {{ user.name }} {{ user.lastname }}
                         </option>
                     </select>
                     <InputLabel for="user_id" value="Usuario Responsable"></InputLabel>

@@ -18,7 +18,7 @@
                     <tr v-for="(user, index) in users" :key="index" class="hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-sm">
-                                {{ index + 1 }}
+                                {{ parseInt(index) + 1 }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.name }}</td>

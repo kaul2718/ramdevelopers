@@ -25,6 +25,11 @@ const isProcessing = ref(false)
 const captorsList = ref(props.captors || [])
 const availableList = ref(props.availableUsers || [])
 
+// Verificar si ya hay un captador principal
+const hasMainCaptor = () => {
+    return props.captors && props.captors.some(c => c?.devtUsr_is_main === true)
+}
+
 
 
 const addCaptor = async () => {
@@ -97,6 +102,13 @@ const setMainCaptor = async (userId) => {
             }
         })
 
+        // Actualizar estado local: desmarcar todos y marcar solo el actual como principal
+        if (props.captors) {
+            props.captors.forEach(captor => {
+                captor.devtUsr_is_main = captor.user_id === userId;
+            })
+        }
+
         notificationStore.success('Captador establecido como principal')
         setTimeout(() => window.location.reload(), 1000)
     } catch (error) {
@@ -168,7 +180,7 @@ const setMainCaptor = async (userId) => {
                                                 <span v-if="captor?.devtUsr_is_main" class="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Principal</span>
                                             </div>
                                             <div class="flex space-x-2">
-                                                <button v-if="!captor?.devtUsr_is_main" @click="setMainCaptor(captor?.user_id)" class="text-indigo-600 hover:text-indigo-900 text-sm">Marcar Principal</button>
+                                                <button v-if="!captor?.devtUsr_is_main && !hasMainCaptor()" @click="setMainCaptor(captor?.user_id)" class="text-indigo-600 hover:text-indigo-900 text-sm">Marcar Principal</button>
                                                 <button @click="removeCaptor(captor?.user_id)" class="text-red-600 hover:text-red-900 text-sm">Remover</button>
                                             </div>
                                         </div>
@@ -197,8 +209,10 @@ const setMainCaptor = async (userId) => {
                                         </div>
 
                                         <div class="flex items-center">
-                                            <input id="devtUsr_is_main" v-model="form.devtUsr_is_main" type="checkbox" class="h-4 w-4" />
-                                            <label for="devtUsr_is_main" class="ml-2 block text-sm text-gray-700">Establecer como principal</label>
+                                            <input id="devtUsr_is_main" v-model="form.devtUsr_is_main" type="checkbox" class="h-4 w-4" :disabled="hasMainCaptor()" />
+                                            <label for="devtUsr_is_main" class="ml-2 block text-sm text-gray-700" :class="{ 'text-gray-400': hasMainCaptor() }">
+                                                Establecer como principal <span v-if="hasMainCaptor()" class="text-xs text-gray-500">(ya existe uno)</span>
+                                            </label>
                                         </div>
 
                                         <button type="submit" :disabled="isProcessing || !form.user_id" class="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50">

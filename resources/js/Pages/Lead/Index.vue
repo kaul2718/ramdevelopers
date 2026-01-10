@@ -1,7 +1,7 @@
 <script setup>
     import AppLayout from '@/Layouts/AppLayout.vue';
-    import { router } from '@inertiajs/vue3';
-    import { ref, onMounted } from 'vue';
+    import { router, usePage } from '@inertiajs/vue3';
+    import { ref, onMounted, computed } from 'vue';
     import axios from 'axios';
     import CreateModal from '@/Components/Lead/CreateModal.vue';
     import ViewModal from '@/Components/Lead/ViewModal.vue';
@@ -12,6 +12,7 @@
     import HeaderBody from '@/Components/HeaderBody.vue';
     import Pagination from '@/Components/Pagination.vue'
 
+    const page = usePage();
     const props = defineProps({
         leads: Object,
         countries: Array,
@@ -31,6 +32,7 @@
 
     const selectedLead = ref(null);
     const leadToDelete = ref(null);
+    const filterMode = ref('all'); // 'all' para todos los leads, 'personal' para solo los del usuario
 
     const closeCreateModal = () => {
         showCreateModal.value = false;
@@ -120,6 +122,32 @@
         });
     };
 
+    const isUserMaestrosPais = () => {
+        return page.props.user.roles && page.props.user.roles.includes('Master Pais');
+    };
+
+    const currentUserId = computed(() => {
+        return page.props.user?.id;
+    });
+
+    const filteredLeads = computed(() => {
+        const leadsData = props.leads.data;
+        
+        // Si no es Master País, mostrar todos (ya vienen filtrados del backend)
+        if (!isUserMaestrosPais()) {
+            return leadsData;
+        }
+        
+        // Master País: aplicar filtro según modo seleccionado
+        if (filterMode.value === 'personal') {
+            // Mostrar solo los leads asignados al usuario Master País
+            return leadsData.filter(lead => lead.user_id === currentUserId.value);
+        }
+        
+        // Modo 'all': mostrar todos los leads del país (ya vienen filtrados del backend)
+        return leadsData;
+    });
+
     onMounted(() => {
         // Mostrar notificación de creación exitosa
         if (sessionStorage.getItem('showCreateLeadNotification')) {
@@ -168,6 +196,31 @@
         <HeaderBody titulo-body="Listado de Leads" permisos="create leads" nombre-btn="Crear nuevo"
             @create="showCreateModal = true" />
 
+        <!-- Filtro para Master País -->
+        <div v-if="isUserMaestrosPais()" class="mb-4 px-4 py-3 bg-white rounded-lg shadow">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar Leads:</label>
+            <div class="flex gap-4">
+                <label class="flex items-center cursor-pointer">
+                    <input 
+                        v-model="filterMode" 
+                        type="radio" 
+                        value="all" 
+                        class="h-4 w-4 text-blue-600 border-gray-300"
+                    >
+                    <span class="ml-2 text-sm text-gray-700">Todos los leads</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                    <input 
+                        v-model="filterMode" 
+                        type="radio" 
+                        value="personal" 
+                        class="h-4 w-4 text-blue-600 border-gray-300"
+                    >
+                    <span class="ml-2 text-sm text-gray-700">Solo mis leads personales</span>
+                </label>
+            </div>
+        </div>
+
         <div class="caja--tabla">
             <table>
                 <thead>
@@ -183,7 +236,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in leads.data" :key="item.lead_id" @click="openViewModal(item)">
+                    <tr v-for="item in filteredLeads" :key="item.lead_id" @click="openViewModal(item)">
                         <td class="botonera--tabla">
                             <button @click.stop="openNotesModal(item)" class="btn--tipo1" title="Ver notas"
                                 v-if="$page.props.user.permissions.includes('read lead notes')">

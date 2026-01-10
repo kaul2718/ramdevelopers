@@ -237,7 +237,7 @@
                             {{ user.name }} {{ user.lastname }}
                         </option>
                     </select>
-                    <InputLabel for="user_id" value="Usuario Asociado" />
+                    <InputLabel for="user_id" value="Usuario Responsable" />
                     <InputError :message="errors.user_id" class="mt-2" />
                 </div>
 

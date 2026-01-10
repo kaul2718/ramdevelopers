@@ -25,7 +25,12 @@ class DevelopmentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Development::with(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'images']);
+        $query = Development::with(['user', 'developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'images']);
+        
+        // Filtrar por país si el usuario es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $query->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
         
         // Filtro de búsqueda múltiple por palabras
         $search = $request->get('search', '');
@@ -57,9 +62,16 @@ class DevelopmentController extends Controller
         $developments = $query->latest()->paginate(10)->appends(['search' => $search]);
         
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
             $query->where('city_active', true)->orderBy('city_name');
-        }])->orderBy('ctry_name')->get();
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
@@ -88,20 +100,23 @@ class DevelopmentController extends Controller
     public function create()
     {
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
             $query->where('city_active', true)->orderBy('city_name');
-        }])->orderBy('ctry_name')->get();
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
         $housingTypes = HousingType::orderBy('houTyp_name')->get();
         $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
-        
-        \Log::info('=== DEVELOPMENT CREATE METHOD ===');
-        \Log::info('HousingTypes count: ' . $housingTypes->count());
-        \Log::info('HousingTypes: ' . json_encode($housingTypes));
-        
+               
         return Inertia::render('Development/Create', [
             'developers' => $developers,
             'countries' => $countries,
@@ -119,7 +134,14 @@ class DevelopmentController extends Controller
      */
     public function store(DevelopmentRequest $request)
     {
-        $development = Development::create($request->validated());
+        $validated = $request->validated();
+        
+        // Si es Agente Inmobiliario, asignar el proyecto a sí mismo
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = auth()->user()->id;
+        }
+        
+        $development = Development::create($validated);
         
         // Devolver JSON para peticiones AJAX/Axios
         if ($request->expectsJson()) {
@@ -173,10 +195,22 @@ class DevelopmentController extends Controller
      */
     public function edit(Development $development)
     {
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->with(['cities' => function($query) {
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
             $query->where('city_active', true)->orderBy('city_name');
-        }])->orderBy('ctry_name')->get();
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
@@ -206,7 +240,19 @@ class DevelopmentController extends Controller
      */
     public function update(DevelopmentRequest $request, Development $development)
     {
-        $development->update($request->validated());
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        $validated = $request->validated();
+        
+        // Si es Agente Inmobiliario, mantener su ID
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = $development->user_id;
+        }
+        
+        $development->update($validated);
         return redirect()->route('development.index');
     }
 
@@ -215,6 +261,11 @@ class DevelopmentController extends Controller
      */
     public function destroy(Development $development)
     {
+        // Verificar que el Agente Inmobiliario solo pueda eliminar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $development->delete();
         return redirect()->route('development.index');
     }

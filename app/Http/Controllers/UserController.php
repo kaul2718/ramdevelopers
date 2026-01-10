@@ -19,8 +19,22 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['roles', 'country'])
-            ->latest()
+        $query = User::with(['roles', 'country']);
+        
+        // Si NO es Admin o DevAdmin, excluir usuarios con esos roles
+        if (!auth()->user()->hasAnyRole(['Admin', 'DevAdmin'])) {
+            $query->whereDoesntHave('roles', function ($q) {
+                $q->whereIn('name', ['Admin', 'DevAdmin']);
+            });
+        }
+        
+        // Filtrar por país si el usuario actual es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countryId = auth()->user()->usr_id_ctry;
+            $query->where('usr_id_ctry', $countryId);
+        }
+        
+        $users = $query->latest()
             ->paginate(10)
             ->through(fn($user) => [
                 'id' => $user->id,
@@ -36,8 +50,25 @@ class UserController extends Controller
                 'idiomas' => $user->idiomas,
             ]);
         
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
-        $roles = Role::all();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        // Si es Master Pais, mostrar solo roles de Agente Inmobiliario y Cliente
+        // DevAdmin solo lo ve DevAdmin
+        if (auth()->user()->hasRole('Master Pais')) {
+            $roles = Role::whereIn('name', ['Agente Inmobiliario', 'Cliente'])->get();
+        } else {
+            $rolesQuery = Role::query();
+            if (!auth()->user()->hasRole('DevAdmin')) {
+                $rolesQuery->where('name', '!=', 'DevAdmin');
+            }
+            $roles = $rolesQuery->get();
+        }
+        
         $permissions = Permission::all();
         
         return Inertia::render('User/Index', [
@@ -53,8 +84,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
-        $roles = Role::all();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        // Filtrar roles: DevAdmin solo lo ve DevAdmin
+        $rolesQuery = Role::query();
+        if (!auth()->user()->hasRole('DevAdmin')) {
+            $rolesQuery->where('name', '!=', 'DevAdmin');
+        }
+        $roles = $rolesQuery->get();
+        
         $permissions = Permission::all();
         return Inertia::render('User/Create', [
             'countries' => $countries,
@@ -136,8 +179,19 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
-        $roles = Role::all();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        // Filtrar roles: DevAdmin solo lo ve DevAdmin
+        $rolesQuery = Role::query();
+        if (!auth()->user()->hasRole('DevAdmin')) {
+            $rolesQuery->where('name', '!=', 'DevAdmin');
+        }
+        $roles = $rolesQuery->get();
         
         // Obtener permisos del usuario a través de sus roles
         $rolePermissionIds = [];

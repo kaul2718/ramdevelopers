@@ -84,6 +84,12 @@ class DevelopmentCaptorController extends Controller
         }
 
         try {
+            // Si es principal, desmarcr otros captadores principales
+            if ($isMain) {
+                DevelopmentCaptor::where('devt_id', $development->devt_id)
+                    ->update(['devtUsr_is_main' => false]);
+            }
+
             $captor = DevelopmentCaptor::create([
                 'devt_id' => $development->devt_id,
                 'user_id' => $userId,
