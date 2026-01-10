@@ -175,6 +175,9 @@ class UserController extends Controller
         
         $data = $request->validated();
         
+        // Remover password_confirmation del array de datos
+        unset($data['password_confirmation']);
+        
         // Si los campos no vienen (Inertia no los envía si no cambiaron), usar los valores actuales
         if (is_null($data['name'] ?? null)) {
             $data['name'] = $user->name;
@@ -189,6 +192,9 @@ class UserController extends Controller
         // Solo actualizar password si se proporciona una
         if (empty($data['password'])) {
             unset($data['password']);
+        } else {
+            // Hash la contraseña si se proporciona
+            $data['password'] = bcrypt($data['password']);
         }
         
         // Convertir usr_active a boolean si viene como número

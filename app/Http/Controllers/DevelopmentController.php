@@ -141,8 +141,30 @@ class DevelopmentController extends Controller
     {
         $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'currency', 'files', 'images']);
         
+        // Cargar captadores con detalles del usuario
+        $captors = $development->developmentCaptors()
+            ->with('user')
+            ->get()
+            ->map(function ($captor) {
+                return [
+                    'devt_id' => $captor->devt_id,
+                    'user_id' => $captor->user_id,
+                    'devtUsr_is_main' => $captor->devtUsr_is_main,
+                    'created_at' => $captor->created_at,
+                    'updated_at' => $captor->updated_at,
+                    'user' => $captor->user ? [
+                        'id' => $captor->user->id,
+                        'name' => $captor->user->name,
+                        'lastname' => $captor->user->lastname,
+                        'email' => $captor->user->email,
+                        'phone' => $captor->user->phone,
+                    ] : null,
+                ];
+            });
+        
         return Inertia::render('Development/Show', [
             'development' => $development,
+            'captors' => $captors,
         ]);
     }
 

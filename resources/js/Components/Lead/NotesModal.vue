@@ -3,7 +3,7 @@
     import EditModal from '@/Components/LeadNote/EditModal.vue';
     import ConfirmModal from '@/Components/ConfirmModal.vue';
     import { router } from '@inertiajs/vue3';
-    import { ref } from 'vue';
+    import { ref, onMounted, onUnmounted } from 'vue';
     import { useNotificationStore } from '@/stores/notificationStore';
     import axios from 'axios';
 
@@ -31,6 +31,20 @@
     const closeModal = () => {
         emit('close');
     };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Escape' && props.show) {
+            closeModal();
+        }
+    };
+
+    onMounted(() => {
+        document.addEventListener('keydown', handleKeyDown);
+    });
+
+    onUnmounted(() => {
+        document.removeEventListener('keydown', handleKeyDown);
+    });
 
     const openCreateNoteModal = () => {
         selectedNote.value = null;
@@ -180,7 +194,7 @@
             <!-- Contenido del Modal -->
             <div class="overflow-y-auto flex-1 p-6">
                 <div v-if="lead?.notes && lead.notes.length > 0" class="space-y-4">
-                    <div v-for="note in lead.notes" :key="note.leadNot_id"
+                    <div v-for="note in [...lead.notes].reverse()" :key="note.leadNot_id"
                         class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 transition">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex-1">

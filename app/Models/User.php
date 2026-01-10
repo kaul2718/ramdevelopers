@@ -58,4 +58,28 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Country::class, 'usr_id_ctry', 'ctry_id');
     }
+
+    // Relación: Un Usuario puede ser captador de muchos Developments
+    public function capturedDevelopments()
+    {
+        return $this->belongsToMany(
+            Development::class,
+            'developments_captors',
+            'user_id',
+            'devt_id'
+        )->withPivot('devtUsr_is_main')->withTimestamps();
+    }
+
+    // Relación: Un Usuario tiene muchos DevelopmentCaptors
+    public function developmentCaptors()
+    {
+        return $this->hasMany(DevelopmentCaptor::class, 'user_id', 'user_id');
+    }
+
+    // Relación: Developments donde este usuario es el captador principal
+    public function mainCapturedDevelopments()
+    {
+        return $this->capturedDevelopments()
+            ->wherePivot('devtUsr_is_main', true);
+    }
 }

@@ -102,4 +102,21 @@ class Development extends Model
     {
         return $this->developmentImages();
     }
+
+    // Relación: Un Development tiene muchos Captadores (Usuarios)
+    public function captors()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'developments_captors',
+            'devt_id',
+            'user_id'
+        )->withPivot('devtUsr_is_main')->withTimestamps();
+    }
+
+    // Relación: Un Development tiene muchos DevelopmentCaptors
+    public function developmentCaptors()
+    {
+        return $this->hasMany(DevelopmentCaptor::class, 'devt_id', 'devt_id');
+    }
 }

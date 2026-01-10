@@ -9,6 +9,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DevelopmentController;
+use App\Http\Controllers\DevelopmentCaptorController;
 use App\Http\Controllers\DevelopmentFileController;
 use App\Http\Controllers\DevelopmentImageController;
 use App\Http\Controllers\DocumentTypeController;
@@ -49,6 +50,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('developmentimages', DevelopmentImageController::class);
     Route::resource('development', DevelopmentController::class);
     Route::resource('developmentfile', DevelopmentFileController::class);
+    
+    // Rutas para Development Captors - Nested Resource
+    Route::get('development/{development}/captors', [DevelopmentCaptorController::class, 'index'])->name('development.captors.index');
+    Route::post('development/{development}/captors', [DevelopmentCaptorController::class, 'store'])->name('development.captors.store');
+    Route::get('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'show'])->name('development.captors.show');
+    Route::put('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'update'])->name('development.captors.update');
+    Route::delete('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'destroy'])->name('development.captors.destroy');
+    Route::patch('development/{development}/captors/{userId}/set-main', [DevelopmentCaptorController::class, 'setMain'])->name('development.captors.setMain');
+    Route::get('development/{development}/captors-available-list', [DevelopmentCaptorController::class, 'getAvailableUsers'])->name('development.captors.availableUsers');
+    
     Route::resource('documenttype', DocumentTypeController::class);
     Route::resource('housingtype', HousingTypeController::class);
     Route::resource('lead', LeadController::class);

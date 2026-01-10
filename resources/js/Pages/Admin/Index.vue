@@ -6,13 +6,33 @@
 
 <script setup>
     import AppLayout from '@/Layouts/AppLayout.vue'
-    import { Link } from '@inertiajs/vue3'
+    import { Link, usePage } from '@inertiajs/vue3'
+
+    const page = usePage();
+
+    const canAccessAdmin = () => {
+        const user = page.props.auth?.user;
+        if (!user) return false;
+        const allowedRoles = ['Admin', 'DevAdmin'];
+        return user.roles && user.roles.some(role => allowedRoles.includes(role.name));
+    };
+
+    const isMasterPais = () => {
+        const user = page.props.auth?.user;
+        if (!user) return false;
+        return user.roles && user.roles.some(role => role.name === 'Master Pais');
+    };
+
+    const canAccessCities = () => {
+        return canAccessAdmin() || isMasterPais();
+    };
 </script>
 
 <template>
     <AppLayout title="Admin">
-        <!-- USUARIOS -->
-        <div class="bloque--horizontal">
+        <div v-if="canAccessAdmin() || isMasterPais()">
+            <!-- USUARIOS -->
+            <div v-if="canAccessAdmin()" class="bloque--horizontal">
             <h2>Usuarios</h2>
             <div class="rejilla--tipo1">
                 <Link :href="route('users.index')" class="caja--tipo1">
@@ -31,17 +51,19 @@
         <div class="bloque--horizontal">
             <h2>Ubicación</h2>
             <div class="rejilla--tipo1">
-                <Link :href="route('countries.index')" class="caja--tipo1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
-                    </svg>
-                    <div>
-                        <h3>Países</h3>
-                        <p>Activar/Desactivar</p>
-                    </div>
-                </Link>
+                <div v-if="canAccessAdmin()">
+                    <Link :href="route('countries.index')" class="caja--tipo1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
+                        </svg>
+                        <div>
+                            <h3>Países</h3>
+                            <p>Activar/Desactivar</p>
+                        </div>
+                    </Link>
+                </div>
 
-                <Link :href="route('cities.index')" class="caja--tipo1">
+                <Link v-if="canAccessCities()" :href="route('cities.index')" class="caja--tipo1">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
                     </svg>
@@ -54,7 +76,7 @@
         </div>
 
         <!-- PROYECTOS -->
-        <div class="bloque--horizontal">
+        <div v-if="canAccessAdmin()" class="bloque--horizontal">
             <h2>Proyectos</h2>
             <div class="rejilla--tipo1">
                 <Link :href="route('approvalstatus.index')" class="caja--tipo1">
@@ -121,7 +143,7 @@
         </div>
 
         <!-- LEADS -->
-        <div class="bloque--horizontal">
+        <div v-if="canAccessAdmin()" class="bloque--horizontal">
             <h2>Leads</h2>
             <div class="rejilla--tipo1">
                 <Link :href="route('leadstatus.index')" class="caja--tipo1">
@@ -144,6 +166,7 @@
                     </div>
                 </Link>
             </div>
+        </div>
         </div>
     </AppLayout>
 </template>

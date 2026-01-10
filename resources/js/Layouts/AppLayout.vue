@@ -15,6 +15,13 @@
         return page.url.startsWith(`/${path}`);
     };
 
+    const canAccessAdmin = () => {
+        const user = page.props.auth?.user;
+        if (!user) return false;
+        const allowedRoles = ['Admin', 'DevAdmin', 'Master Pais'];
+        return user.roles && user.roles.some(role => allowedRoles.includes(role.name));
+    };
+
 
     defineProps({
         title: String,
@@ -177,7 +184,7 @@
                                     </div>
                                 </button>
                             </li>
-                            <li>
+                            <li v-if="canAccessAdmin()">
                                 <button type="button" @click="goToAdmin">
                                     <div class="flex-col gap-1 flex">
                                         <div class="flex-col flex rounded-lg p-2">
