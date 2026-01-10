@@ -1,40 +1,40 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+    import { ref } from 'vue';
+    import { useForm } from '@inertiajs/vue3';
+    import ActionMessage from '@/Components/ActionMessage.vue';
+    import FormSection from '@/Components/FormSection.vue';
+    import InputError from '@/Components/InputError.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import TextInput from '@/Components/TextInput.vue';
 
-const passwordInput = ref(null);
-const currentPasswordInput = ref(null);
+    const passwordInput = ref(null);
+    const currentPasswordInput = ref(null);
 
-const form = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const updatePassword = () => {
-    form.put(route('user-password.update'), {
-        errorBag: 'updatePassword',
-        preserveScroll: true,
-        onSuccess: () => form.reset(),
-        onError: () => {
-            if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
-                passwordInput.value.focus();
-            }
-
-            if (form.errors.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.focus();
-            }
-        },
+    const form = useForm({
+        current_password: '',
+        password: '',
+        password_confirmation: '',
     });
-};
+
+    const updatePassword = () => {
+        form.put(route('user-password.update'), {
+            errorBag: 'updatePassword',
+            preserveScroll: true,
+            onSuccess: () => form.reset(),
+            onError: () => {
+                if (form.errors.password) {
+                    form.reset('password', 'password_confirmation');
+                    passwordInput.value.focus();
+                }
+
+                if (form.errors.current_password) {
+                    form.reset('current_password');
+                    currentPasswordInput.value.focus();
+                }
+            },
+        });
+    };
 </script>
 
 <template>
@@ -47,45 +47,47 @@ const updatePassword = () => {
             Asegúrate de que tu cuenta utiliza una contraseña larga y aleatoria para mantenerla segura.
         </template>
 
-        <template #form>            
-            <div class="contenedor--input">
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="campo--input"
-                    autocomplete="current-password"
-                />
-                <InputLabel for="current_password" value="Contraseña actual" />
-                <InputError :message="form.errors.current_password" class="mt-2" />
-            </div>
+        <template #form>
+            <div class="caja--doble">            
+                <div class="contenedor--input">
+                    <TextInput
+                        id="current_password"
+                        ref="currentPasswordInput"
+                        v-model="form.current_password"
+                        type="password"
+                        class="campo--input"
+                        autocomplete="current-password"
+                    />
+                    <InputLabel for="current_password" value="Contraseña actual" />
+                    <InputError :message="form.errors.current_password" class="mt-2" />
+                </div>
 
-            <div class="contenedor--imputs"></div>
+                <div class="contenedor--imputs"></div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="campo--input"
-                    autocomplete="new-password"
-                />
-                <InputLabel for="password" value="Nueva contraseña" />
-                <InputError :message="form.errors.password" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="password"
+                        ref="passwordInput"
+                        v-model="form.password"
+                        type="password"
+                        class="campo--input"
+                        autocomplete="new-password"
+                    />
+                    <InputLabel for="password" value="Nueva contraseña" />
+                    <InputError :message="form.errors.password" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="campo--input"
-                    autocomplete="new-password"
-                />
-                <InputLabel for="password_confirmation" value="Confirmar nueva contraseña" />
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
+                <div class="contenedor--input">
+                    <TextInput
+                        id="password_confirmation"
+                        v-model="form.password_confirmation"
+                        type="password"
+                        class="campo--input"
+                        autocomplete="new-password"
+                    />
+                    <InputLabel for="password_confirmation" value="Confirmar nueva contraseña" />
+                    <InputError :message="form.errors.password_confirmation" class="mt-2" />
+                </div>
             </div>
         </template>
 
