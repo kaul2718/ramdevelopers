@@ -30,6 +30,8 @@ class DevelopmentRequest extends FormRequest
             'apvSta_id' => ['required', 'exists:approval_statuses,apvSta_id'],
             'busiSta_id' => ['required', 'exists:business_state,busiSta_id'],
             'commSta_id' => ['required', 'exists:commercial_statuses,commSta_id'],
+            'houTyp_id' => ['required', 'exists:housing_types,houTyp_id'],
+            'curr_id' => ['nullable', 'exists:currencies,curr_id'],
             'devt_title' => [
                 'required',
                 'string',
@@ -78,7 +80,23 @@ class DevelopmentRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'min:0',
+                function ($attribute, $value, $fail) {
+                    $isPercentage = request('devt_estimated_profit_is_percentage');
+                    if ($isPercentage && ($value < 1 || $value > 100)) {
+                        $fail('Si es porcentaje, el valor debe estar entre 1 y 100.');
+                    }
+                }
             ],
+            'devt_estimated_profit_is_percentage' => ['nullable', 'boolean'],
+            'devt_storage_rooms' => ['nullable', 'integer', 'min:0'],
+            'devt_parking_spaces' => ['nullable', 'integer', 'min:0'],
+            'devt_terraces' => ['nullable', 'integer', 'min:0'],
+            'devt_swimming_pools' => ['nullable', 'integer', 'min:0'],
+            'devt_children_areas' => ['nullable', 'integer', 'min:0'],
+            'devt_green_zones' => ['nullable', 'integer', 'min:0'],
+            'devt_elevators' => ['nullable', 'integer', 'min:0'],
+            'devt_golf_courses' => ['nullable', 'integer', 'min:0'],
+            'devt_bedrooms' => ['nullable', 'integer', 'min:0'],
             'devt_is_featured' => ['nullable', 'boolean'],
             'devt_active' => ['nullable', 'boolean'],
         ];
@@ -132,8 +150,8 @@ class DevelopmentRequest extends FormRequest
             'devt_delivery_year.min' => 'El año de entrega no puede ser menor a 2020.',
             'devt_delivery_year.max' => 'El año de entrega no puede ser mayor a 2100.',
 
-            'devt_estimated_profit.numeric' => 'La ganancia estimada debe ser un número.',
-            'devt_estimated_profit.min' => 'La ganancia estimada no puede ser negativa.',
+            'devt_estimated_profit.numeric' => 'Los honorarios estimados deben ser un número.',
+            'devt_estimated_profit.min' => 'Los honorarios estimados no pueden ser negativos.',
 
             'devt_is_featured.boolean' => 'El campo destacado debe ser un valor booleano.',
 

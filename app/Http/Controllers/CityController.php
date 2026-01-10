@@ -7,6 +7,7 @@ use App\Http\Requests\CityRequest;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CityController extends Controller
@@ -16,8 +17,30 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities = City::with('country')->latest()->paginate(10);
-        return Inertia::render('City/Index', ['cities' => $cities]);
+        $user = Auth::user();
+        $query = City::with('country');
+        
+        // Si el usuario tiene rol 'Master Pais', mostrar solo ciudades de sus países
+        if ($user->hasRole('Master Pais')) {
+            $userCountryId = $user->usr_id_ctry;
+            if ($userCountryId) {
+                $query->where('ctry_id', $userCountryId);
+            }
+        }
+        
+        $cities = $query->orderBy('city_name')->paginate(10);
+        
+        $countriesQuery = Country::where('ctry_active', true);
+        // Si es Master Pais, solo mostrar su país en el filtro
+        if ($user->hasRole('Master Pais') && $user->usr_id_ctry) {
+            $countriesQuery->where('ctry_id', $user->usr_id_ctry);
+        }
+        $countries = $countriesQuery->orderBy('ctry_name')->get();
+        
+        return Inertia::render('City/Index', [
+            'cities' => $cities,
+            'countries' => $countries
+        ]);
     }
 
     /**
@@ -25,7 +48,15 @@ class CityController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $user = Auth::user();
+        $countriesQuery = Country::where('ctry_active', true);
+        
+        // Si es Master Pais, solo permitir crear ciudades en su país
+        if ($user->hasRole('Master Pais') && $user->usr_id_ctry) {
+            $countriesQuery->where('ctry_id', $user->usr_id_ctry);
+        }
+        
+        $countries = $countriesQuery->orderBy('ctry_name')->get();
         return Inertia::render('City/Create', ['countries' => $countries]);
     }
 
@@ -51,7 +82,20 @@ class CityController extends Controller
      */
     public function edit(City $city)
     {
-        $countries = Country::where('ctry_active', true)->get();
+        $user = Auth::user();
+        
+        // Si es Master Pais, verificar que la ciudad pertenezca a su país
+        if ($user->hasRole('Master Pais') && $city->ctry_id !== $user->usr_id_ctry) {
+            abort(403, 'No tienes permiso para editar esta ciudad.');
+        }
+        
+        $countriesQuery = Country::where('ctry_active', true);
+        // Si es Master Pais, solo permitir asignar su país
+        if ($user->hasRole('Master Pais') && $user->usr_id_ctry) {
+            $countriesQuery->where('ctry_id', $user->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         return Inertia::render('City/Edit', [
             'city' => $city,
             'countries' => $countries,
@@ -63,6 +107,13 @@ class CityController extends Controller
      */
     public function update(CityRequest $request, City $city)
     {
+        $user = Auth::user();
+        
+        // Si es Master Pais, verificar que la ciudad pertenezca a su país
+        if ($user->hasRole('Master Pais') && $city->ctry_id !== $user->usr_id_ctry) {
+            abort(403, 'No tienes permiso para actualizar esta ciudad.');
+        }
+        
         $city->update($request->validated());
         return redirect()->route('cities.index');
     }

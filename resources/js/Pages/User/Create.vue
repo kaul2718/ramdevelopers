@@ -42,28 +42,12 @@ const form = useForm({
 
 <template>
     <AppLayout title="Crear Usuario">
-        <template #header>
-            <h1 
-                v-if="$page.props.user.permissions.includes('create users')"
-                class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear Usuario
-            </h1>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <UserForm 
-                            :form="form"
-                            :countries="countries"
-                            :roles="roles"
-                            :permissions="permissions"
-                            @submit="form.post(route('users.store'), { multipart: true })" 
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <UserForm 
+            :form="form"
+            :countries="countries"
+            :roles="roles"
+            :permissions="permissions"
+            @submit="form.post(route('users.store'), { multipart: true })" 
+        />
     </AppLayout>
 </template>

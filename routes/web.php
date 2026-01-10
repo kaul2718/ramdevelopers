@@ -5,12 +5,15 @@ use App\Http\Controllers\BusinessStateController;
 use App\Http\Controllers\CommercialStatusController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DevelopmentController;
+use App\Http\Controllers\DevelopmentCaptorController;
 use App\Http\Controllers\DevelopmentFileController;
 use App\Http\Controllers\DevelopmentImageController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\HousingTypeController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadNoteController;
 use App\Http\Controllers\LeadSourcesController;
@@ -18,25 +21,47 @@ use App\Http\Controllers\LeadStatusController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Country;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // NO AUTH Routes
-Route::get('/', [DashboardController::class, 'index']);
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
+// Ruta personalizada para el registro con datos adicionales
+Route::get('/register', function () {
+    $countries = Country::where('ctry_active', true)->orderBy('ctry_name')->get();
+    return Inertia::render('Auth/Register', [
+        'countries' => $countries
+    ]);
+})->middleware('guest')->name('register');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     // AUTH Routes
-    Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('approvalstatus', ApprovalStatusController::class);
     Route::resource('businessstate', BusinessStateController::class);
     Route::resource('commercialstatus', CommercialStatusController::class);
     Route::resource('cities', CityController::class);
     Route::resource('countries', CountryController::class);
+    Route::resource('currency', CurrencyController::class);
     Route::resource('developers', DeveloperController::class);
     Route::resource('developmentimages', DevelopmentImageController::class);
     Route::resource('development', DevelopmentController::class);
     Route::resource('developmentfile', DevelopmentFileController::class);
+    
+    // Rutas para Development Captors - Nested Resource
+    Route::get('development/{development}/captors', [DevelopmentCaptorController::class, 'index'])->name('development.captors.index');
+    Route::post('development/{development}/captors', [DevelopmentCaptorController::class, 'store'])->name('development.captors.store');
+    Route::get('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'show'])->name('development.captors.show');
+    Route::put('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'update'])->name('development.captors.update');
+    Route::delete('development/{development}/captors/{userId}', [DevelopmentCaptorController::class, 'destroy'])->name('development.captors.destroy');
+    Route::patch('development/{development}/captors/{userId}/set-main', [DevelopmentCaptorController::class, 'setMain'])->name('development.captors.setMain');
+    Route::get('development/{development}/captors-available-list', [DevelopmentCaptorController::class, 'getAvailableUsers'])->name('development.captors.availableUsers');
+    
     Route::resource('documenttype', DocumentTypeController::class);
+    Route::resource('housingtype', HousingTypeController::class);
     Route::resource('lead', LeadController::class);
     Route::resource('leadnote', LeadNoteController::class);
     Route::resource('leadsources', LeadSourcesController::class);

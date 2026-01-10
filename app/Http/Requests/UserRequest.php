@@ -36,11 +36,14 @@ class UserRequest extends FormRequest
                 ? ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId, 'id')]
                 : ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'phone' => 'nullable|string|max:20',
-            'idiomas' => 'nullable|string|max:500',
+            'idiomas' => 'nullable|string|in:Español,Inglés,Francés',
             'profile_photo_path' => 'nullable|file|mimes:jpeg,jpg,png,gif|max:5242880',
             'password' => $isUpdate
-                ? ['nullable', Password::defaults()]
-                : ['required', Password::defaults()],
+                ? ['nullable', Password::defaults(), 'confirmed']
+                : ['required', Password::defaults(), 'confirmed'],
+            'password_confirmation' => $isUpdate
+                ? ['nullable', 'required_with:password']
+                : ['required'],
             'usr_id_ctry' => ['nullable', 'exists:countries,ctry_id'],
             'usr_active' => ['nullable', 'boolean'],
             'roles' => ['nullable', 'array'],

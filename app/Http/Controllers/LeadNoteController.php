@@ -109,6 +109,11 @@ class LeadNoteController extends Controller
     {
         $leadnote->delete();
 
+        // Si es una solicitud AJAX, retornar JSON
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Nota de Lead eliminada exitosamente.'], 200);
+        }
+
         return redirect()->route('leadnote.index')
             ->with('message', 'Nota de Lead eliminada exitosamente.');
     }

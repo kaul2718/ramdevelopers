@@ -1,0 +1,32 @@
+:root{
+    --fondo:   #191e2b;
+    --oscuro:  #253045;
+    --medio:   #00c6ec;
+    --medio2:  #B8F3FF;
+    --claro:   ghostwhite;
+    --gris:    #5A6677;
+    --rojo:    #EC004F;
+    --naranja: #EC9D00;
+    --verde:   #00EC9D;
+    --azul:    #004FEC;
+}
+
+
+
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--gris) transparent;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: .5em;
+  height: .5em;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: var(--gris);
+  border-radius: .5em;
+}

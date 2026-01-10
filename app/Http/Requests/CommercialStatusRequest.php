@@ -38,7 +38,7 @@ class CommercialStatusRequest extends FormRequest
                     ->ignore($id, 'commSta_id'),
             ],
             'commSta_description' => 'nullable|string',
-            'commSta_active' => ['nullable', 'boolean'],
+            'commSta_active' => ['required', 'boolean'],
         ];
     }
 

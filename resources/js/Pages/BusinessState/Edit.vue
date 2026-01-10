@@ -19,10 +19,10 @@ const form = useForm({
 </script>
 
 <template>
-    <AppLayout title="Editar Estado de Negocio">
+    <AppLayout title="Editar Estado del Proyecto">
         <template #header>
             <h1 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Estado de Negocio
+                Editar Estado del Proyecto
             </h1>
         </template>
 

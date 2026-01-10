@@ -1,10 +1,68 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
+import { Link, router } from '@inertiajs/vue3'
+import { ref } from 'vue'
 import { formatDate } from '@/Helpers/dateHelper'
+import FormModal from '@/Components/LeadNote/FormModal.vue'
+import ConfirmModal from '@/Components/ConfirmModal.vue'
+import { useNotificationStore } from '@/stores/notificationStore'
 
-defineProps({
+const props = defineProps({
     leadNote: Object,
 })
+
+const notificationStore = useNotificationStore()
+
+const showFormModal = ref(false)
+const showConfirmModal = ref(false)
+const formMode = ref('create')
+
+const openCreateModal = () => {
+    formMode.value = 'create'
+    showFormModal.value = true
+}
+
+const openEditModal = () => {
+    formMode.value = 'edit'
+    showFormModal.value = true
+}
+
+const closeFormModal = () => {
+    showFormModal.value = false
+}
+
+const openDeleteModal = () => {
+    showConfirmModal.value = true
+}
+
+const closeDeleteModal = () => {
+    showConfirmModal.value = false
+}
+
+const confirmDelete = () => {
+    router.delete(route('leadnote.destroy', props.leadNote.leadNot_id), {
+        onSuccess: () => {
+            closeDeleteModal()
+            notificationStore.success('Nota eliminada exitosamente')
+            
+            // Remover la notificación después de 3 segundos
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+        }
+    })
+}
+
+const handleSaved = () => {
+    window.location.href = route('leadnote.show', props.leadNote.lead_id)
+}
 </script>
 
 <template>
@@ -20,9 +78,21 @@ defineProps({
                     <Link :href="route('leadnote.index')" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50">
                         Volver
                     </Link>
-                    <Link :href="route('leadnote.edit', leadNote.leadNot_id)" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500">
+                    <button 
+                        @click="openCreateModal"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                        Nueva Nota
+                    </button>
+                    <button 
+                        @click="openEditModal"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500">
                         Editar
-                    </Link>
+                    </button>
+                    <button 
+                        @click="openDeleteModal"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
+                        Eliminar
+                    </button>
                 </div>
 
                 <!-- Note Details -->
@@ -76,5 +146,26 @@ defineProps({
                 </div>
             </div>
         </div>
+
+        <!-- Modales -->
+        <FormModal
+            :show="showFormModal"
+            :lead-note="formMode === 'edit' ? leadNote : null"
+            :lead-id="leadNote.lead_id"
+            :mode="formMode"
+            @close="closeFormModal"
+            @saved="handleSaved"
+        />
+
+        <ConfirmModal
+            :show="showConfirmModal"
+            title="Eliminar Nota"
+            message="¿Está seguro de que desea eliminar esta nota? Esta acción no se puede deshacer."
+            confirm-text="Eliminar"
+            cancel-text="Cancelar"
+            :isDangerous="true"
+            @confirm="confirmDelete"
+            @close="closeDeleteModal"
+        />
     </AppLayout>
 </template>

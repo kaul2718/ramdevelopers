@@ -11,20 +11,87 @@ use App\Models\City;
 use App\Models\ApprovalStatus;
 use App\Models\BusinessState;
 use App\Models\CommercialStatus;
+use App\Models\Currency;
+use App\Models\HousingType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use App\Models\DocumentType;
 
 class DevelopmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $developments = Development::with(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus'])
-            ->latest()
-            ->paginate(10);
-        return Inertia::render('Development/Index', ['developments' => $developments]);
+        $query = Development::with(['user', 'developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'images']);
+        
+        // Filtrar por país si el usuario es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $query->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        
+        // Filtro de búsqueda múltiple por palabras
+        $search = $request->get('search', '');
+        if ($search) {
+            $words = collect(array_filter(explode(' ', trim($search))));
+            
+            if ($words->isNotEmpty()) {
+                $query->where(function ($query) use ($words) {
+                    foreach ($words as $word) {
+                        $query->where(function ($q) use ($word) {
+                            $q->whereRaw('LOWER(devt_title) LIKE ?', ["%{$word}%"])
+                              ->orWhereRaw('LOWER(devt_short_description) LIKE ?', ["%{$word}%"])
+                              ->orWhereRaw('LOWER(devt_long_description) LIKE ?', ["%{$word}%"])
+                              ->orWhereHas('developer', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(devr_commercial_name) LIKE ?', ["%{$word}%"]);
+                              })
+                              ->orWhereHas('country', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(ctry_name) LIKE ?', ["%{$word}%"]);
+                              })
+                              ->orWhereHas('city', function ($q) use ($word) {
+                                  $q->whereRaw('LOWER(city_name) LIKE ?', ["%{$word}%"]);
+                              });
+                        });
+                    }
+                });
+            }
+        }
+        
+        $developments = $query->latest()->paginate(10)->appends(['search' => $search]);
+        
+        $developers = Developer::where('devr_active', true)->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
+        $approvalStatuses = ApprovalStatus::all();
+        $businessStates = BusinessState::all();
+        $commercialStatuses = CommercialStatus::all();
+        $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
+        $documentTypes = DocumentType::all();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
+        
+        return Inertia::render('Development/Index', [
+            'developments' => $developments,
+            'developers' => $developers,
+            'countries' => $countries,
+            'cities' => $cities,
+            'approvalStatuses' => $approvalStatuses,
+            'businessStates' => $businessStates,
+            'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
+            'documentTypes' => $documentTypes,
+            'currencies' => $currencies,
+        ]);
     }
 
     /**
@@ -33,12 +100,23 @@ class DevelopmentController extends Controller
     public function create()
     {
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->get();
-        $cities = City::where('city_active', true)->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
-        
+        $housingTypes = HousingType::orderBy('houTyp_name')->get();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
+               
         return Inertia::render('Development/Create', [
             'developers' => $developers,
             'countries' => $countries,
@@ -46,6 +124,8 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -54,7 +134,24 @@ class DevelopmentController extends Controller
      */
     public function store(DevelopmentRequest $request)
     {
-        $development = Development::create($request->validated());
+        $validated = $request->validated();
+        
+        // Si es Agente Inmobiliario, asignar el proyecto a sí mismo
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = auth()->user()->id;
+        }
+        
+        $development = Development::create($validated);
+        
+        // Devolver JSON para peticiones AJAX/Axios
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Desarrollo creado correctamente.',
+                'development' => $development
+            ], 201);
+        }
+        
+        // Redirigir para peticiones tradicionales
         return redirect()->route('developmentfile.create', ['development_id' => $development->devt_id])
                         ->with('message', 'Desarrollo creado correctamente.');
     }
@@ -64,10 +161,32 @@ class DevelopmentController extends Controller
      */
     public function show(Development $development)
     {
-        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'files', 'images']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'currency', 'files', 'images']);
+        
+        // Cargar captadores con detalles del usuario
+        $captors = $development->developmentCaptors()
+            ->with('user')
+            ->get()
+            ->map(function ($captor) {
+                return [
+                    'devt_id' => $captor->devt_id,
+                    'user_id' => $captor->user_id,
+                    'devtUsr_is_main' => $captor->devtUsr_is_main,
+                    'created_at' => $captor->created_at,
+                    'updated_at' => $captor->updated_at,
+                    'user' => $captor->user ? [
+                        'id' => $captor->user->id,
+                        'name' => $captor->user->name,
+                        'lastname' => $captor->user->lastname,
+                        'email' => $captor->user->email,
+                        'phone' => $captor->user->phone,
+                    ] : null,
+                ];
+            });
         
         return Inertia::render('Development/Show', [
             'development' => $development,
+            'captors' => $captors,
         ]);
     }
 
@@ -76,14 +195,31 @@ class DevelopmentController extends Controller
      */
     public function edit(Development $development)
     {
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $developers = Developer::where('devr_active', true)->get();
-        $countries = Country::where('ctry_active', true)->get();
-        $cities = City::where('city_active', true)->get();
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->with(['cities' => function($query) {
+            $query->where('city_active', true)->orderBy('city_name');
+        }])->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        $cities = City::where('city_active', true)->orderBy('city_name')->get();
         $approvalStatuses = ApprovalStatus::all();
         $businessStates = BusinessState::all();
         $commercialStatuses = CommercialStatus::all();
+        $housingTypes = HousingType::where('houTyp_active', true)->orderBy('houTyp_name')->get();
+        $currencies = Currency::where('curr_active', true)->orderBy('curr_name')->get();
+        $documentTypes = DocumentType::all();
         
-        $development->load(['developmentFiles', 'developmentImages']);
+        $development->load(['developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'housingType', 'currency', 'files', 'images']);
         
         return Inertia::render('Development/Edit', [
             'development' => $development,
@@ -93,6 +229,9 @@ class DevelopmentController extends Controller
             'approvalStatuses' => $approvalStatuses,
             'businessStates' => $businessStates,
             'commercialStatuses' => $commercialStatuses,
+            'housingTypes' => $housingTypes,
+            'currencies' => $currencies,
+            'documentTypes' => $documentTypes,
         ]);
     }
 
@@ -101,7 +240,19 @@ class DevelopmentController extends Controller
      */
     public function update(DevelopmentRequest $request, Development $development)
     {
-        $development->update($request->validated());
+        // Verificar que el Agente Inmobiliario solo pueda editar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        $validated = $request->validated();
+        
+        // Si es Agente Inmobiliario, mantener su ID
+        if (auth()->user()->hasRole('Agente Inmobiliario')) {
+            $validated['user_id'] = $development->user_id;
+        }
+        
+        $development->update($validated);
         return redirect()->route('development.index');
     }
 
@@ -110,6 +261,11 @@ class DevelopmentController extends Controller
      */
     public function destroy(Development $development)
     {
+        // Verificar que el Agente Inmobiliario solo pueda eliminar sus propios proyectos
+        if (auth()->user()->hasRole('Agente Inmobiliario') && $development->user_id !== auth()->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
         $development->delete();
         return redirect()->route('development.index');
     }

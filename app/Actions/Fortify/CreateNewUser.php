@@ -21,15 +21,26 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'usr_id_ctry' => ['nullable', 'integer', 'exists:countries,ctry_id'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
+            'lastname' => $input['lastname'],
             'email' => $input['email'],
+            'phone' => $input['phone'] ?? null,
+            'usr_id_ctry' => $input['usr_id_ctry'] ?? null,
             'password' => Hash::make($input['password']),
         ]);
+
+        // Asignar rol de cliente por defecto
+        $user->assignRole('cliente');
+
+        return $user;
     }
 }

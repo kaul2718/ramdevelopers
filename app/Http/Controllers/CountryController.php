@@ -15,7 +15,7 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $countries = Country::latest()->paginate(10);
+        $countries = Country::orderBy('ctry_name')->paginate(10);
         return Inertia::render('Country/Index', ['countries' => $countries]);
     }
 

@@ -16,10 +16,44 @@ class DeveloperController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $developers = Developer::with(['country', 'user'])->latest()->paginate(10);
-        return Inertia::render('Developer/Index', ['developers' => $developers]);
+        $query = Developer::with(['country', 'user']);
+        
+        // Filtrar por país si el usuario es "Master Pais"
+        if (auth()->user()->hasRole('Master Pais')) {
+            $query->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        
+        // Búsqueda por múltiples campos
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('devr_commercial_name', 'like', "%{$search}%")
+                  ->orWhere('devr_legal_name', 'like', "%{$search}%")
+                  ->orWhere('devr_email_contact', 'like', "%{$search}%")
+                  ->orWhere('devr_id', 'like', "%{$search}%");
+            });
+        }
+        
+        $developers = $query->latest()->paginate(10)->appends($request->query());
+        
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
+        return Inertia::render('Developer/Index', [
+            'developers' => $developers,
+            'countries' => $countries,
+            'users' => $users,
+            'search' => $request->input('search', ''),
+        ]);
     }
 
     /**
@@ -27,10 +61,16 @@ class DeveloperController extends Controller
      */
     public function create()
     {
-        $countries = Country::where('ctry_active', true)->get();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'promotor');
-        })->where('usr_active', true)->get();
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
         return Inertia::render('Developer/Create', [
             'countries' => $countries,
             'users' => $users,
@@ -62,10 +102,16 @@ class DeveloperController extends Controller
      */
     public function edit(Developer $developer)
     {
-        $countries = Country::where('ctry_active', true)->get();
+        // Filtrar países: Master Pais solo ve su país
+        $countriesQuery = Country::where('ctry_active', true)->orderBy('ctry_name');
+        if (auth()->user()->hasRole('Master Pais')) {
+            $countriesQuery->where('ctry_id', auth()->user()->usr_id_ctry);
+        }
+        $countries = $countriesQuery->get();
+        
         $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'promotor');
-        })->where('usr_active', true)->get();
+            $query->where('name', 'Agente Inmobiliario');
+        })->where('usr_active', true)->select('id', 'name', 'lastname')->get();
         return Inertia::render('Developer/Edit', [
             'developer' => $developer,
             'countries' => $countries,
