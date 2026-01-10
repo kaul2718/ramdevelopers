@@ -169,161 +169,165 @@
         </template>
 
         <template #form>
-            <!-- Nombre del Cliente -->
-            <div class="contenedor--input">
-                <TextInput
-                    id="lead_client_name"
-                    v-model="form.lead_client_name"
-                    type="text"
-                    autocomplete="off"
-                    placeholder=" "
-                    class="campo--input"
-                />
-                <InputLabel for="lead_client_name" value="Nombre del Cliente *"></InputLabel>
-                <InputError :message="getError('lead_client_name')" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <!-- Nombre del Cliente -->
+                <div class="contenedor--input">
+                    <TextInput
+                        id="lead_client_name"
+                        v-model="form.lead_client_name"
+                        type="text"
+                        autocomplete="off"
+                        placeholder=" "
+                        class="campo--input"
+                    />
+                    <InputLabel for="lead_client_name" value="Nombre del Cliente *"></InputLabel>
+                    <InputError :message="getError('lead_client_name')" class="mt-2" />
+                </div>
 
-            <!-- Email -->
-            <div class="contenedor--input">
-                <TextInput
-                    id="lead_client_email"
-                    v-model="form.lead_client_email"
-                    type="email"
-                    autocomplete="off"
-                    placeholder=" "
-                    class="campo--input"
-                />
-                <InputLabel for="lead_client_email" value="Email"></InputLabel>
-                <InputError :message="getError('lead_client_email')" class="mt-2" />
-            </div>
+                <!-- Email -->
+                <div class="contenedor--input">
+                    <TextInput
+                        id="lead_client_email"
+                        v-model="form.lead_client_email"
+                        type="email"
+                        autocomplete="off"
+                        placeholder=" "
+                        class="campo--input"
+                    />
+                    <InputLabel for="lead_client_email" value="Email"></InputLabel>
+                    <InputError :message="getError('lead_client_email')" class="mt-2" />
+                </div>
 
-            <!-- Teléfono -->
-            <div class="contenedor--input">
-                <TextInput
-                    id="lead_client_phone"
-                    v-model="form.lead_client_phone"
-                    type="tel"
-                    autocomplete="off"
-                    placeholder=" "
-                    class="campo--input"
-                />
-                <InputLabel for="lead_client_phone" value="Teléfono"></InputLabel>
-                <InputError :message="getError('lead_client_phone')" class="mt-2" />
-            </div>
+                <!-- Teléfono -->
+                <div class="contenedor--input">
+                    <TextInput
+                        id="lead_client_phone"
+                        v-model="form.lead_client_phone"
+                        type="tel"
+                        autocomplete="off"
+                        placeholder=" "
+                        class="campo--input"
+                    />
+                    <InputLabel for="lead_client_phone" value="Teléfono"></InputLabel>
+                    <InputError :message="getError('lead_client_phone')" class="mt-2" />
+                </div>
 
-            <!-- Idioma -->
-            <div class="contenedor--input">
-                <select
-                    id="lead_language"
-                    v-model="form.lead_language"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option value="Español">Español</option>
-                    <option value="Inglés">Inglés</option>
-                    <option value="Francés">Francés</option>
-                </select>
-                <InputLabel for="lead_language" value="Idiomas (Opcional)"></InputLabel>
-                <InputError :message="getError('lead_language')" class="mt-2" />
-            </div>
+                <!-- Idioma -->
+                <div class="contenedor--input">
+                    <select
+                        id="lead_language"
+                        v-model="form.lead_language"
+                        placeholder=" "
+                        class="campo--input"
+                    >
+                        <option value=""></option>
+                        <option value="Español">Español</option>
+                        <option value="Inglés">Inglés</option>
+                        <option value="Francés">Francés</option>
+                    </select>
+                    <InputLabel for="lead_language" value="Idiomas (Opcional)"></InputLabel>
+                    <InputError :message="getError('lead_language')" class="mt-2" />
+                </div>
 
-            <!-- País -->
-            <div class="contenedor--input">
-                <select
-                    id="ctry_id"
-                    v-model="form.ctry_id"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option v-for="country in countries" :key="country.ctry_id" :value="String(country.ctry_id)">
-                        {{ country.ctry_name }}
-                    </option>
-                </select>
-                <InputLabel for="ctry_id" value="País"></InputLabel>
-                <InputError :message="getError('ctry_id')" class="mt-2" />
-            </div>
+                <!-- País -->
+                <div class="contenedor--input">
+                    <select
+                        id="ctry_id"
+                        v-model="form.ctry_id"
+                        placeholder=" "
+                        class="campo--input"
+                    >
+                        <option value=""></option>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="String(country.ctry_id)">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                    <InputLabel for="ctry_id" value="País"></InputLabel>
+                    <InputError :message="getError('ctry_id')" class="mt-2" />
+                </div>
 
-            <!-- Desarrollo -->
-            <div class="contenedor--input">
-                <select
-                    id="devt_id"
-                    v-model="form.devt_id"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option v-for="dev in developments" :key="dev.devt_id" :value="String(dev.devt_id)">
-                        {{ dev.devt_title }}
-                    </option>
-                </select>
-                <InputLabel for="devt_id" value="Desarrollo"></InputLabel>
-                <InputError :message="getError('devt_id')" class="mt-2" />
-            </div>
+                <!-- Desarrollo -->
+                <div class="contenedor--input">
+                    <select
+                        id="devt_id"
+                        v-model="form.devt_id"
+                        placeholder=" "
+                        class="campo--input"
+                    >
+                        <option value=""></option>
+                        <option v-for="dev in developments" :key="dev.devt_id" :value="String(dev.devt_id)">
+                            {{ dev.devt_title }}
+                        </option>
+                    </select>
+                    <InputLabel for="devt_id" value="Desarrollo"></InputLabel>
+                    <InputError :message="getError('devt_id')" class="mt-2" />
+                </div>
 
-            <!-- Fuente del Lead -->
-            <div class="contenedor--input">
-                <select
-                    id="leadSou_id"
-                    v-model="form.leadSou_id"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option v-for="source in sources" :key="source.leadSou_id" :value="String(source.leadSou_id)">
-                        {{ source.leadSou_name }}
-                    </option>
-                </select>
-                <InputLabel for="leadSou_id" value="Fuente del Lead"></InputLabel>
-                <InputError :message="getError('leadSou_id')" class="mt-2" />
-            </div>
+                <div class="caja--doble">
+                    <!-- Fuente del Lead -->
+                    <div class="contenedor--input">
+                        <select
+                            id="leadSou_id"
+                            v-model="form.leadSou_id"
+                            placeholder=" "
+                            class="campo--input"
+                        >
+                            <option value=""></option>
+                            <option v-for="source in sources" :key="source.leadSou_id" :value="String(source.leadSou_id)">
+                                {{ source.leadSou_name }}
+                            </option>
+                        </select>
+                        <InputLabel for="leadSou_id" value="Origen"></InputLabel>
+                        <InputError :message="getError('leadSou_id')" class="mt-2" />
+                    </div>
 
-            <!-- Estado del Lead -->
-            <div class="contenedor--input">
-                <select
-                    id="leadSta_id"
-                    v-model="form.leadSta_id"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option v-for="status in statuses" :key="status.leadSta_id" :value="String(status.leadSta_id)">
-                        {{ status.leadSta_name }}
-                    </option>
-                </select>
-                <InputLabel for="leadSta_id" value="Estado del Lead"></InputLabel>
-                <InputError :message="getError('leadSta_id')" class="mt-2" />
-            </div>
+                    <!-- Estado del Lead -->
+                    <div class="contenedor--input">
+                        <select
+                            id="leadSta_id"
+                            v-model="form.leadSta_id"
+                            placeholder=" "
+                            class="campo--input"
+                        >
+                            <option value=""></option>
+                            <option v-for="status in statuses" :key="status.leadSta_id" :value="String(status.leadSta_id)">
+                                {{ status.leadSta_name }}
+                            </option>
+                        </select>
+                        <InputLabel for="leadSta_id" value="Estado"></InputLabel>
+                        <InputError :message="getError('leadSta_id')" class="mt-2" />
+                    </div>
+                </div>
 
-            <!-- Usuario Responsable -->
-            <div class="contenedor--input">
-                <select
-                    id="user_id"
-                    v-model="form.user_id"
-                    placeholder=" "
-                    class="campo--input"
-                >
-                    <option value=""></option>
-                    <option v-for="user in users" :key="user.id" :value="String(user.id)">
-                        {{ user.name }}
-                    </option>
-                </select>
-                <InputLabel for="user_id" value="Usuario Responsable"></InputLabel>
-                <InputError :message="getError('user_id')" class="mt-2" />
-            </div>
+                <!-- Usuario Responsable -->
+                <div class="contenedor--input">
+                    <select
+                        id="user_id"
+                        v-model="form.user_id"
+                        placeholder=" "
+                        class="campo--input"
+                    >
+                        <option value=""></option>
+                        <option v-for="user in users" :key="user.id" :value="String(user.id)">
+                            {{ user.name }}
+                        </option>
+                    </select>
+                    <InputLabel for="user_id" value="Usuario Responsable"></InputLabel>
+                    <InputError :message="getError('user_id')" class="mt-2" />
+                </div>
 
-            <!-- Mensaje -->
-            <div class="contenedor--input" style="grid-column: 1 / -1;">
-                <TextInput
-                    id="lead_message"
-                    v-model="form.lead_message"
-                    rows="5"
-                    placeholder=" "
-                    class="campo--input"
-                ></TextInput>
-                <InputLabel for="lead_message" value="Mensaje"></InputLabel>
-                <InputError :message="getError('lead_message')" class="mt-2" />
+                <!-- Mensaje -->
+                <div class="contenedor--input" style="grid-column: 1 / -1;">
+                    <TextInput
+                        id="lead_message"
+                        v-model="form.lead_message"
+                        rows="5"
+                        placeholder=" "
+                        class="campo--input"
+                    ></TextInput>
+                    <InputLabel for="lead_message" value="Mensaje"></InputLabel>
+                    <InputError :message="getError('lead_message')" class="mt-2" />
+                </div>
             </div>
         </template>
 

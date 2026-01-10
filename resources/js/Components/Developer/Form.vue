@@ -158,95 +158,97 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="devr_commercial_name"
-                    v-model="form.devr_commercial_name"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: TechDev Solutions"
-                />
-                <InputLabel for="devr_commercial_name" value="Nombre Comercial" />
-                <InputError :message="errors.devr_commercial_name" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="devr_commercial_name"
+                        v-model="form.devr_commercial_name"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: TechDev Solutions"
+                    />
+                    <InputLabel for="devr_commercial_name" value="Nombre Comercial" />
+                    <InputError :message="errors.devr_commercial_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="devr_legal_name"
-                    v-model="form.devr_legal_name"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: TechDev Solutions S.A."
-                />
-                <InputLabel for="devr_legal_name" value="Nombre Legal" />
-                <InputError :message="errors.devr_legal_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="devr_legal_name"
+                        v-model="form.devr_legal_name"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: TechDev Solutions S.A."
+                    />
+                    <InputLabel for="devr_legal_name" value="Nombre Legal" />
+                    <InputError :message="errors.devr_legal_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="devr_email_contact"
-                    v-model="form.devr_email_contact"
-                    type="email"
-                    class="campo--input"
-                    placeholder="contacto@ejemplo.com"
-                />
-                <InputLabel for="devr_email_contact" value="Email de Contacto" />
-                <InputError :message="errors.devr_email_contact" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="devr_email_contact"
+                        v-model="form.devr_email_contact"
+                        type="email"
+                        class="campo--input"
+                        placeholder="contacto@ejemplo.com"
+                    />
+                    <InputLabel for="devr_email_contact" value="Email de Contacto" />
+                    <InputError :message="errors.devr_email_contact" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="devr_phone_contact"
-                    v-model="form.devr_phone_contact"
-                    type="text"
-                    class="campo--input"
-                    placeholder="+1 (555) 123-4567"
-                />
-                <InputLabel for="devr_phone_contact" value="Teléfono de Contacto" />
-                <InputError :message="errors.devr_phone_contact" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="devr_phone_contact"
+                        v-model="form.devr_phone_contact"
+                        type="text"
+                        class="campo--input"
+                        placeholder="+1 (555) 123-4567"
+                    />
+                    <InputLabel for="devr_phone_contact" value="Teléfono de Contacto" />
+                    <InputError :message="errors.devr_phone_contact" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="devr_website"
-                    v-model="form.devr_website"
-                    type="url"
-                    class="campo--input"
-                    placeholder="https://www.ejemplo.com"
-                />
-                <InputLabel for="devr_website" value="Sitio Web (Opcional)" />
-                <InputError :message="errors.devr_website" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="devr_website"
+                        v-model="form.devr_website"
+                        type="url"
+                        class="campo--input"
+                        placeholder="https://www.ejemplo.com"
+                    />
+                    <InputLabel for="devr_website" value="Sitio Web (Opcional)" />
+                    <InputError :message="errors.devr_website" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select id="ctry_id" v-model="form.ctry_id" class="campo--input">
-                    <option value="">Selecciona un país</option>
-                    <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
-                        {{ country.ctry_name }}
-                    </option>
-                </select>
-                <InputLabel for="ctry_id" value="País" />
-                <InputError :message="errors.ctry_id" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select id="ctry_id" v-model="form.ctry_id" class="campo--input">
+                        <option value="">Selecciona un país</option>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                    <InputLabel for="ctry_id" value="País" />
+                    <InputError :message="errors.ctry_id" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select id="user_id" v-model="form.user_id" class="campo--input">
-                    <option value="">Selecciona un usuario (Opcional)</option>
-                    <option v-for="user in users" :key="user.id" :value="user.id">
-                        {{ user.name }} {{ user.lastname }}
-                    </option>
-                </select>
-                <InputLabel for="user_id" value="Usuario Asociado" />
-                <InputError :message="errors.user_id" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select id="user_id" v-model="form.user_id" class="campo--input">
+                        <option value="">Selecciona un usuario (Opcional)</option>
+                        <option v-for="user in users" :key="user.id" :value="user.id">
+                            {{ user.name }} {{ user.lastname }}
+                        </option>
+                    </select>
+                    <InputLabel for="user_id" value="Usuario Asociado" />
+                    <InputError :message="errors.user_id" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="devr_active" v-model="form.devr_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="devr_active" value="Estado" />
-                <InputError :message="errors.devr_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="devr_active" v-model="form.devr_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="devr_active" value="Estado" />
+                    <InputError :message="errors.devr_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

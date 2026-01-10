@@ -23,11 +23,7 @@ const hasActions = computed(() => !! useSlots().actions);
 
         <div class="contenedor--form">
             <form @submit.prevent="$emit('submitted')">
-                <div class="">
-                    <div class="grid grid-cols-6 gap-6">
-                        <slot name="form" />
-                    </div>
-                </div>
+                <slot name="form" />
 
                 <div v-if="hasActions" class="envio--form">
                     <slot name="actions" />

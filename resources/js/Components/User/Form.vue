@@ -238,121 +238,123 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput id="name" v-model="form.name" type="text" autocomplete="given-name" class="campo--input">
-                </TextInput>
-                <InputLabel for="name" value="Nombre"></InputLabel>
-                <InputError :message="errors.name || $page.props.errors.name" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput id="name" v-model="form.name" type="text" autocomplete="given-name" class="campo--input">
+                    </TextInput>
+                    <InputLabel for="name" value="Nombre"></InputLabel>
+                    <InputError :message="errors.name || $page.props.errors.name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput id="lastname" v-model="form.lastname" type="text" autocomplete="family-name"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="lastname" value="Apellido"></InputLabel>
-                <InputError :message="errors.lastname || $page.props.errors.lastname" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput id="lastname" v-model="form.lastname" type="text" autocomplete="family-name"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="lastname" value="Apellido"></InputLabel>
+                    <InputError :message="errors.lastname || $page.props.errors.lastname" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput id="email" v-model="form.email" type="email" autocomplete="email" class="campo--input">
-                </TextInput>
-                <InputLabel for="email" value="Correo Electrónico"></InputLabel>
-                <InputError :message="errors.email || $page.props.errors.email" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput id="email" v-model="form.email" type="email" autocomplete="email" class="campo--input">
+                    </TextInput>
+                    <InputLabel for="email" value="Correo Electrónico"></InputLabel>
+                    <InputError :message="errors.email || $page.props.errors.email" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput id="phone" v-model="form.phone" type="tel" autocomplete="tel" class="campo--input">
-                </TextInput>
-                <InputLabel for="phone" value="Teléfono (Opcional)"></InputLabel>
-                <InputError :message="errors.phone || $page.props.errors.phone" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput id="phone" v-model="form.phone" type="tel" autocomplete="tel" class="campo--input">
+                    </TextInput>
+                    <InputLabel for="phone" value="Teléfono (Opcional)"></InputLabel>
+                    <InputError :message="errors.phone || $page.props.errors.phone" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select id="usr_id_ctry" v-model.number="form.usr_id_ctry" class="campo--input">
-                    <option value="">Selecciona un país</option>
-                    <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
-                        {{ country.ctry_name }}
-                    </option>
-                </select>
-                <InputLabel for="usr_id_ctry" value="País (Opcional)"></InputLabel>
-                <InputError :message="errors.usr_id_ctry || $page.props.errors.usr_id_ctry" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select id="usr_id_ctry" v-model.number="form.usr_id_ctry" class="campo--input">
+                        <option value="">Selecciona un país</option>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                    <InputLabel for="usr_id_ctry" value="País (Opcional)"></InputLabel>
+                    <InputError :message="errors.usr_id_ctry || $page.props.errors.usr_id_ctry" class="mt-2" />
+                </div>
 
-            <div v-if="!updating" class="contenedor--input">
-                <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="password" value="Contraseña"></InputLabel>
-                <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
-            </div>
+                <div v-if="!updating" class="contenedor--input">
+                    <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="password" value="Contraseña"></InputLabel>
+                    <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="password" value="Contraseña (Dejar en blanco para mantener actual)"></InputLabel>
-                <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
-            </div>
+                <div v-if="updating" class="contenedor--input">
+                    <TextInput id="password" v-model="form.password" type="password" autocomplete="new-password"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="password" value="Contraseña (Dejar en blanco para mantener actual)"></InputLabel>
+                    <InputError :message="errors.password || $page.props.errors.password" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
-                    autocomplete="new-password" class="campo--input">
-                </TextInput>
-                <InputLabel for="password_confirmation" value="Confirmar Contraseña"></InputLabel>
-                <InputError :message="errors.password_confirmation || $page.props.errors.password_confirmation"
-                    class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
+                        autocomplete="new-password" class="campo--input">
+                    </TextInput>
+                    <InputLabel for="password_confirmation" value="Confirmar Contraseña"></InputLabel>
+                    <InputError :message="errors.password_confirmation || $page.props.errors.password_confirmation"
+                        class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select id="idiomas" v-model="form.idiomas" class="campo--input">
-                    <option value="">Selecciona un idioma</option>
-                    <option value="Español">Español</option>
-                    <option value="Inglés">Inglés</option>
-                    <option value="Francés">Francés</option>
-                </select>
-                <InputLabel for="idiomas" value="Idiomas (Opcional)"></InputLabel>
-                <InputError :message="$page.props.errors.idiomas" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select id="idiomas" v-model="form.idiomas" class="campo--input">
+                        <option value="">Selecciona un idioma</option>
+                        <option value="Español">Español</option>
+                        <option value="Inglés">Inglés</option>
+                        <option value="Francés">Francés</option>
+                    </select>
+                    <InputLabel for="idiomas" value="Idiomas (Opcional)"></InputLabel>
+                    <InputError :message="$page.props.errors.idiomas" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="usr_active" v-model.number="form.usr_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="usr_active" value="Estado"></InputLabel>
-                <InputError :message="errors.usr_active || $page.props.errors.usr_active" class="mt-2" />
-            </div>
+                <div v-if="updating" class="contenedor--input">
+                    <select id="usr_active" v-model.number="form.usr_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="usr_active" value="Estado"></InputLabel>
+                    <InputError :message="errors.usr_active || $page.props.errors.usr_active" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select v-model.number="form.roles" class="campo--input">
-                    <option value="" disabled>Seleccione un rol</option>
-                    <option v-for="role in roles" :key="role.id" :value="role.id">
-                        {{ role.name }}
-                    </option>
-                </select>
+                <div class="contenedor--input">
+                    <select v-model.number="form.roles" class="campo--input">
+                        <option value="" disabled>Seleccione un rol</option>
+                        <option v-for="role in roles" :key="role.id" :value="role.id">
+                            {{ role.name }}
+                        </option>
+                    </select>
 
-                <InputLabel value="Rol" />
-                <InputError :message="getError('roles')" class="mt-2" />
-            </div>
+                    <InputLabel value="Rol" />
+                    <InputError :message="getError('roles')" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <input ref="photoInput" id="profile_photo_path" type="file" accept="image/*" @change="handlePhotoChange"
-                    class="campo--input text-sm text-gray-500
-                        file:mr-4 file:py-2.5 file:px-4
-                        file:rounded-md file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-indigo-50 file:text-indigo-700
-                        hover:file:bg-indigo-100">
-                </input>
-                <InputLabel for="profile_photo_path" :value="updating ? 'Actualizar foto (Opcional)' : 'Subir foto (Opcional)'"></InputLabel>
-                <InputError :message="errors.profile_photo_path || $page.props.errors.profile_photo_path"
-                    class="mt-2" />
-                <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, GIF (máx. 5MB)</p>
-            </div>
+                <div class="contenedor--input">
+                    <input ref="photoInput" id="profile_photo_path" type="file" accept="image/*" @change="handlePhotoChange"
+                        class="campo--input text-sm text-gray-500
+                            file:mr-4 file:py-2.5 file:px-4
+                            file:rounded-md file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-indigo-50 file:text-indigo-700
+                            hover:file:bg-indigo-100">
+                    </input>
+                    <InputLabel for="profile_photo_path" :value="updating ? 'Actualizar foto (Opcional)' : 'Subir foto (Opcional)'"></InputLabel>
+                    <InputError :message="errors.profile_photo_path || $page.props.errors.profile_photo_path"
+                        class="mt-2" />
+                    <p class="text-xs text-gray-500 mt-1">Formatos: JPG, PNG, GIF (máx. 5MB)</p>
+                </div>
 
-            <div v-if="updating && user?.profile_photo_path" class="contenedor--input">
-                <img :src="'/storage/' + user.profile_photo_path" :alt="user.name" class="size-20 rounded-full object-cover border border-gray-200">
-                <InputLabel value="Foto actual" style="transform: translateY(-6.4em);"/>
+                <div v-if="updating && user?.profile_photo_path" class="contenedor--input">
+                    <img :src="'/storage/' + user.profile_photo_path" :alt="user.name" class="size-20 rounded-full object-cover border border-gray-200">
+                    <InputLabel value="Foto actual" style="transform: translateY(-6.4em);"/>
+                </div>
             </div>
         </template>
 

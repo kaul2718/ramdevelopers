@@ -136,39 +136,41 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="ctry_name"
-                    v-model="form.ctry_name"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: Colombia"
-                    @keyup.enter="handleSubmit"
-                />
-                <InputLabel for="ctry_name" value="Nombre del País" />
-                <InputError :message="errors.ctry_name" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="ctry_name"
+                        v-model="form.ctry_name"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: Colombia"
+                        @keyup.enter="handleSubmit"
+                    />
+                    <InputLabel for="ctry_name" value="Nombre del País" />
+                    <InputError :message="errors.ctry_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="ctry_code"
-                    v-model="form.ctry_code"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: CO"
-                    maxlength="5"
-                    @keyup.enter="handleSubmit"
-                />
-                <InputLabel for="ctry_code" value="Código (ISO)" />
-                <InputError :message="errors.ctry_code" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="ctry_code"
+                        v-model="form.ctry_code"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: CO"
+                        maxlength="5"
+                        @keyup.enter="handleSubmit"
+                    />
+                    <InputLabel for="ctry_code" value="Código (ISO)" />
+                    <InputError :message="errors.ctry_code" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="ctry_active" v-model.number="form.ctry_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="ctry_active" value="Estado" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="ctry_active" v-model.number="form.ctry_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="ctry_active" value="Estado" />
+                </div>
             </div>
         </template>
 

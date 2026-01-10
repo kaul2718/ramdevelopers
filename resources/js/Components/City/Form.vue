@@ -146,48 +146,50 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="city_name"
-                    v-model="form.city_name"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: Bogotá"
-                    @keyup.enter="handleSubmit"
-                />
-                <InputLabel for="city_name" value="Nombre de la Ciudad" />
-                <InputError :message="errors.city_name" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="city_name"
+                        v-model="form.city_name"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: Bogotá"
+                        @keyup.enter="handleSubmit"
+                    />
+                    <InputLabel for="city_name" value="Nombre de la Ciudad" />
+                    <InputError :message="errors.city_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select id="ctry_id" v-model="form.ctry_id" class="campo--input">
-                    <option value="" disabled>Selecciona un país</option>
-                    <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
-                        {{ country.ctry_name }}
-                    </option>
-                </select>
-                <InputLabel for="ctry_id" value="País" />
-                <InputError :message="errors.ctry_id" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select id="ctry_id" v-model="form.ctry_id" class="campo--input">
+                        <option value="" disabled>Selecciona un país</option>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                    <InputLabel for="ctry_id" value="País" />
+                    <InputError :message="errors.ctry_id" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="city_region"
-                    v-model="form.city_region"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: Cundinamarca"
-                />
-                <InputLabel for="city_region" value="Región (Opcional)" />
-                <InputError :message="errors.city_region" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="city_region"
+                        v-model="form.city_region"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: Cundinamarca"
+                    />
+                    <InputLabel for="city_region" value="Región (Opcional)" />
+                    <InputError :message="errors.city_region" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="city_active" v-model.number="form.city_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="city_active" value="Estado" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="city_active" v-model.number="form.city_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="city_active" value="Estado" />
+                </div>
             </div>
         </template>
 
