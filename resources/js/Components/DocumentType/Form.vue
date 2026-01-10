@@ -142,64 +142,66 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput 
-                    id="docTyp_code" 
-                    v-model="form.docTyp_code" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="docTyp_code" value="Código"></InputLabel>
-                <InputError :message="errors.docTyp_code" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="docTyp_code" 
+                        v-model="form.docTyp_code" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="docTyp_code" value="Código"></InputLabel>
+                    <InputError :message="errors.docTyp_code" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="docTyp_name" 
-                    v-model="form.docTyp_name" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="docTyp_name" value="Nombre"></InputLabel>
-                <InputError :message="errors.docTyp_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="docTyp_name" 
+                        v-model="form.docTyp_name" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="docTyp_name" value="Nombre"></InputLabel>
+                    <InputError :message="errors.docTyp_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="docTyp_description" 
-                    v-model="form.docTyp_description" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="docTyp_description" value="Descripción"></InputLabel>
-                <InputError :message="errors.docTyp_description" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="docTyp_description" 
+                        v-model="form.docTyp_description" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="docTyp_description" value="Descripción"></InputLabel>
+                    <InputError :message="errors.docTyp_description" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <select 
-                    id="docTyp_isInternal" 
-                    v-model.number="form.docTyp_isInternal"
-                    class="campo--input">
-                    <option :value="1">Sí</option>
-                    <option :value="0">No</option>
-                </select>
-                <InputLabel for="docTyp_isInternal" value="¿Es Interno?"></InputLabel>
-                <InputError :message="errors.docTyp_isInternal" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <select 
+                        id="docTyp_isInternal" 
+                        v-model.number="form.docTyp_isInternal"
+                        class="campo--input">
+                        <option :value="1">Sí</option>
+                        <option :value="0">No</option>
+                    </select>
+                    <InputLabel for="docTyp_isInternal" value="¿Es Interno?"></InputLabel>
+                    <InputError :message="errors.docTyp_isInternal" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select 
-                    id="docTyp_active" 
-                    v-model.number="form.docTyp_active"
-                    class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="docTyp_active" value="Estado"></InputLabel>
-                <InputError :message="errors.docTyp_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select 
+                        id="docTyp_active" 
+                        v-model.number="form.docTyp_active"
+                        class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="docTyp_active" value="Estado"></InputLabel>
+                    <InputError :message="errors.docTyp_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

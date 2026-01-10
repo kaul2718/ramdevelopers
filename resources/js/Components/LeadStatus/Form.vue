@@ -142,49 +142,51 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSta_code"
-                    v-model="form.leadSta_code"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSta_code" value="Código"></InputLabel>
-                <InputError :message="getError('leadSta_code') || $page.props.errors.leadSta_code" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSta_code"
+                        v-model="form.leadSta_code"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSta_code" value="Código"></InputLabel>
+                    <InputError :message="getError('leadSta_code') || $page.props.errors.leadSta_code" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSta_name"
-                    v-model="form.leadSta_name"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSta_name" value="Nombre"></InputLabel>
-                <InputError :message="getError('leadSta_name') || $page.props.errors.leadSta_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSta_name"
+                        v-model="form.leadSta_name"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSta_name" value="Nombre"></InputLabel>
+                    <InputError :message="getError('leadSta_name') || $page.props.errors.leadSta_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSta_description"
-                    v-model="form.leadSta_description"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSta_description" value="Descripción (Opcional)"></InputLabel>
-                <InputError :message="$page.props.errors.leadSta_description" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSta_description"
+                        v-model="form.leadSta_description"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSta_description" value="Descripción (Opcional)"></InputLabel>
+                    <InputError :message="$page.props.errors.leadSta_description" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="leadSta_active" v-model.number="form.leadSta_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="leadSta_active" value="Estado"></InputLabel>
-                <InputError :message="$page.props.errors.leadSta_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="leadSta_active" v-model.number="form.leadSta_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="leadSta_active" value="Estado"></InputLabel>
+                    <InputError :message="$page.props.errors.leadSta_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

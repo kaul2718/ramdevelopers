@@ -138,52 +138,54 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput 
-                    id="commSta_code" 
-                    v-model="form.commSta_code" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="commSta_code" value="Código"></InputLabel>
-                <InputError :message="errors.commSta_code" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="commSta_code" 
+                        v-model="form.commSta_code" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="commSta_code" value="Código"></InputLabel>
+                    <InputError :message="errors.commSta_code" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="commSta_name" 
-                    v-model="form.commSta_name" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="commSta_name" value="Nombre"></InputLabel>
-                <InputError :message="errors.commSta_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="commSta_name" 
+                        v-model="form.commSta_name" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="commSta_name" value="Nombre"></InputLabel>
+                    <InputError :message="errors.commSta_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="commSta_description" 
-                    v-model="form.commSta_description" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="commSta_description" value="Descripción"></InputLabel>
-                <InputError :message="errors.commSta_description" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="commSta_description" 
+                        v-model="form.commSta_description" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="commSta_description" value="Descripción"></InputLabel>
+                    <InputError :message="errors.commSta_description" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select 
-                    id="commSta_active" 
-                    v-model.number="form.commSta_active"
-                    class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="commSta_active" value="Estado"></InputLabel>
-                <InputError :message="errors.commSta_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select 
+                        id="commSta_active" 
+                        v-model.number="form.commSta_active"
+                        class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="commSta_active" value="Estado"></InputLabel>
+                    <InputError :message="errors.commSta_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

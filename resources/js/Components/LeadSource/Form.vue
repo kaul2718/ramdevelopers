@@ -142,49 +142,51 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSou_code"
-                    v-model="form.leadSou_code"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSou_code" value="Código"></InputLabel>
-                <InputError :message="getError('leadSou_code') || $page.props.errors.leadSou_code" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSou_code"
+                        v-model="form.leadSou_code"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSou_code" value="Código"></InputLabel>
+                    <InputError :message="getError('leadSou_code') || $page.props.errors.leadSou_code" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSou_name"
-                    v-model="form.leadSou_name"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSou_name" value="Nombre"></InputLabel>
-                <InputError :message="getError('leadSou_name') || $page.props.errors.leadSou_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSou_name"
+                        v-model="form.leadSou_name"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSou_name" value="Nombre"></InputLabel>
+                    <InputError :message="getError('leadSou_name') || $page.props.errors.leadSou_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="leadSou_description"
-                    v-model="form.leadSou_description"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="leadSou_description" value="Descripción (Opcional)"></InputLabel>
-                <InputError :message="$page.props.errors.leadSou_description" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="leadSou_description"
+                        v-model="form.leadSou_description"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="leadSou_description" value="Descripción (Opcional)"></InputLabel>
+                    <InputError :message="$page.props.errors.leadSou_description" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="leadSou_active" v-model.number="form.leadSou_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="leadSou_active" value="Estado"></InputLabel>
-                <InputError :message="$page.props.errors.leadSou_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="leadSou_active" v-model.number="form.leadSou_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="leadSou_active" value="Estado"></InputLabel>
+                    <InputError :message="$page.props.errors.leadSou_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

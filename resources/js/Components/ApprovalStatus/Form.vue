@@ -154,49 +154,51 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="apvSta_code"
-                    v-model="form.apvSta_code"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="apvSta_code" value="Código"></InputLabel>
-                <InputError :message="getError('apvSta_code')" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="apvSta_code"
+                        v-model="form.apvSta_code"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="apvSta_code" value="Código"></InputLabel>
+                    <InputError :message="getError('apvSta_code')" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="apvSta_name"
-                    v-model="form.apvSta_name"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="apvSta_name" value="Nombre"></InputLabel>
-                <InputError :message="getError('apvSta_name')" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="apvSta_name"
+                        v-model="form.apvSta_name"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="apvSta_name" value="Nombre"></InputLabel>
+                    <InputError :message="getError('apvSta_name')" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="apvSta_description"
-                    v-model="form.apvSta_description"
-                    type="text"
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="apvSta_description" value="Descripción (Opcional)"></InputLabel>
-                <InputError :message="getError('apvSta_description')" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="apvSta_description"
+                        v-model="form.apvSta_description"
+                        type="text"
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="apvSta_description" value="Descripción (Opcional)"></InputLabel>
+                    <InputError :message="getError('apvSta_description')" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="apvSta_active" v-model.number="form.apvSta_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="apvSta_active" value="Estado"></InputLabel>
-                <InputError :message="getError('apvSta_active')" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select id="apvSta_active" v-model.number="form.apvSta_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="apvSta_active" value="Estado"></InputLabel>
+                    <InputError :message="getError('apvSta_active')" class="mt-2" />
+                </div>
             </div>
         </template>
 

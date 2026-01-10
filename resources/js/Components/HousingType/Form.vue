@@ -138,52 +138,54 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput 
-                    id="houTyp_code" 
-                    v-model="form.houTyp_code" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="houTyp_code" value="Código"></InputLabel>
-                <InputError :message="errors.houTyp_code" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="houTyp_code" 
+                        v-model="form.houTyp_code" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="houTyp_code" value="Código"></InputLabel>
+                    <InputError :message="errors.houTyp_code" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="houTyp_name" 
-                    v-model="form.houTyp_name" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="houTyp_name" value="Nombre"></InputLabel>
-                <InputError :message="errors.houTyp_name" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="houTyp_name" 
+                        v-model="form.houTyp_name" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="houTyp_name" value="Nombre"></InputLabel>
+                    <InputError :message="errors.houTyp_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput 
-                    id="houTyp_description" 
-                    v-model="form.houTyp_description" 
-                    type="text" 
-                    autocomplete="off"
-                    class="campo--input">
-                </TextInput>
-                <InputLabel for="houTyp_description" value="Descripción"></InputLabel>
-                <InputError :message="errors.houTyp_description" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput 
+                        id="houTyp_description" 
+                        v-model="form.houTyp_description" 
+                        type="text" 
+                        autocomplete="off"
+                        class="campo--input">
+                    </TextInput>
+                    <InputLabel for="houTyp_description" value="Descripción"></InputLabel>
+                    <InputError :message="errors.houTyp_description" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select 
-                    id="houTyp_active" 
-                    v-model.number="form.houTyp_active"
-                    class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="houTyp_active" value="Estado"></InputLabel>
-                <InputError :message="errors.houTyp_active" class="mt-2" />
+                <div v-if="updating" class="contenedor--input">
+                    <select 
+                        id="houTyp_active" 
+                        v-model.number="form.houTyp_active"
+                        class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="houTyp_active" value="Estado"></InputLabel>
+                    <InputError :message="errors.houTyp_active" class="mt-2" />
+                </div>
             </div>
         </template>
 

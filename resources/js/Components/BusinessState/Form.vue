@@ -137,49 +137,51 @@
         </template>
 
         <template #form>
-            <div class="contenedor--input">
-                <TextInput
-                    id="busiSta_name"
-                    v-model="form.busiSta_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    placeholder="campo--input"
-                    @keyup.enter="handleSubmit"
-                />
-                <InputLabel for="busiSta_name" value="Nombre" />
-                <InputError :message="errors.busiSta_name" class="mt-2" />
-            </div>
+            <div class="caja--doble">
+                <div class="contenedor--input">
+                    <TextInput
+                        id="busiSta_name"
+                        v-model="form.busiSta_name"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: Nuevo"
+                        @keyup.enter="handleSubmit"
+                    />
+                    <InputLabel for="busiSta_name" value="Nombre" />
+                    <InputError :message="errors.busiSta_name" class="mt-2" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="busiSta_code"
-                    v-model="form.busiSta_code"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ej: ACT"
-                    @keyup.enter="handleSubmit"
-                />
-                <InputLabel for="busiSta_code" value="Código" />
-                <InputError :message="errors.busiSta_code" class="mt-2" />
-            </div>
+                <div class="contenedor--input">
+                    <TextInput
+                        id="busiSta_code"
+                        v-model="form.busiSta_code"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ej: ACT"
+                        @keyup.enter="handleSubmit"
+                    />
+                    <InputLabel for="busiSta_code" value="Código" />
+                    <InputError :message="errors.busiSta_code" class="mt-2" />
+                </div>
 
-            <div v-if="updating" class="contenedor--input">
-                <select id="busiSta_active" v-model.number="form.busiSta_active" class="campo--input">
-                    <option :value="1">Activo</option>
-                    <option :value="0">Inactivo</option>
-                </select>
-                <InputLabel for="busiSta_active" value="Estado" />
-            </div>
+                <div v-if="updating" class="contenedor--input">
+                    <select id="busiSta_active" v-model.number="form.busiSta_active" class="campo--input">
+                        <option :value="1">Activo</option>
+                        <option :value="0">Inactivo</option>
+                    </select>
+                    <InputLabel for="busiSta_active" value="Estado" />
+                </div>
 
-            <div class="contenedor--input">
-                <TextInput
-                    id="busiSta_description"
-                    v-model="form.busiSta_description"
-                    type="text"
-                    class="campo--input"
-                    placeholder="Ingresa una descripción (opcional)"
-                />
-                <InputLabel for="busiSta_description" value="Descripción" />
+                <div class="contenedor--input">
+                    <TextInput
+                        id="busiSta_description"
+                        v-model="form.busiSta_description"
+                        type="text"
+                        class="campo--input"
+                        placeholder="Ingresa una descripción (opcional)"
+                    />
+                    <InputLabel for="busiSta_description" value="Descripción" />
+                </div>
             </div>
         </template>
 
