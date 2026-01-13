@@ -12,11 +12,11 @@ export const useUserRole = () => {
     const getRoleTitle = (role = null) => {
         const userRole = role || getCurrentUserRole();
         const roleMap = {
-            'Admin': '🔐 Administrador',
-            'DevAdmin': '⚙️ Desarrollador',
-            'Master Pais': '🌍 Master País',
-            'Agente Inmobiliario': '🏢 Agente Inmobiliario',
-            'Cliente': '👤 Cliente'
+            'Admin': 'Administrador',
+            'DevAdmin': 'Desarrollador',
+            'Master Pais': 'Master País',
+            'Agente Inmobiliario': 'Agente Inmobiliario',
+            'Cliente': 'Cliente'
         };
         return roleMap[userRole] || 'Dashboard';
     };

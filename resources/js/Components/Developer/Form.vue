@@ -145,6 +145,22 @@
             }
         }
     })
+
+    watch(() => props.developer, (newDeveloper) => {
+        if (props.updating && newDeveloper) {
+            form.value = {
+                devr_commercial_name: newDeveloper.devr_commercial_name || '',
+                devr_legal_name: newDeveloper.devr_legal_name || '',
+                devr_email_contact: newDeveloper.devr_email_contact || '',
+                devr_phone_contact: newDeveloper.devr_phone_contact || '',
+                devr_website: newDeveloper.devr_website || '',
+                ctry_id: newDeveloper.ctry_id || '',
+                user_id: newDeveloper.user_id || '',
+                devr_active: Number(newDeveloper.devr_active ?? 1)
+            }
+            errors.value = {}
+        }
+    }, { deep: true, immediate: true })
 </script>
 
 <template>
@@ -220,7 +236,7 @@
                 </div>
 
                 <div class="contenedor--input">
-                    <select id="ctry_id" v-model="form.ctry_id" class="campo--input">
+                    <select id="ctry_id" v-model.number="form.ctry_id" class="campo--input">
                         <option value="">Selecciona un país</option>
                         <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id">
                             {{ country.ctry_name }}
@@ -231,7 +247,7 @@
                 </div>
 
                 <div class="contenedor--input">
-                    <select id="user_id" v-model="form.user_id" class="campo--input">
+                    <select id="user_id" v-model.number="form.user_id" class="campo--input">
                         <option value="">Selecciona un usuario (Opcional)</option>
                         <option v-for="user in users" :key="user.id" :value="user.id">
                             {{ user.name }} {{ user.lastname }}

@@ -1,12 +1,10 @@
 <?php
-// filepath: app/Http/Controllers/UserController.php
 
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Country;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -21,12 +19,19 @@ class UserController extends Controller
     {
         $query = User::with(['roles', 'country']);
         
-        // Si NO es Admin o DevAdmin, excluir usuarios con esos roles
-        if (!auth()->user()->hasAnyRole(['Admin', 'DevAdmin'])) {
+        // Si eres Admin (pero NO DevAdmin), excluir solo DevAdmin
+        if (auth()->user()->hasRole('Admin') && !auth()->user()->hasRole('DevAdmin')) {
+            $query->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'DevAdmin');
+            });
+        }
+        // Si NO eres Admin ni DevAdmin, excluir Admin y DevAdmin
+        elseif (!auth()->user()->hasAnyRole(['Admin', 'DevAdmin'])) {
             $query->whereDoesntHave('roles', function ($q) {
                 $q->whereIn('name', ['Admin', 'DevAdmin']);
             });
         }
+        // Si eres DevAdmin, ver a todos (sin filtro)
         
         // Filtrar por país si el usuario actual es "Master Pais"
         if (auth()->user()->hasRole('Master Pais')) {
@@ -305,6 +310,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Prevenir que un usuario se elimine a sí mismo
+        if (auth()->user()->id === $user->id) {
+            return redirect()->route('users.index')->with('error', 'No puedes eliminar tu propia cuenta');
+        }
+        
         $user->delete();
         return redirect()->route('users.index');
     }

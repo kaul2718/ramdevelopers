@@ -161,6 +161,17 @@
                 : 'Imagen eliminada correctamente';
             notificationStore.success(successMessage);
 
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+
             // Recargar la página después de eliminar
             setTimeout(() => {
                 router.reload();
@@ -173,6 +184,18 @@
     const handleFilesSaved = () => {
         showFileModal.value = false;
         notificationStore.success('Archivo agregado correctamente')
+        
+        setTimeout(() => {
+            const notyfToasts = document.querySelectorAll('.notyf__toast')
+            notyfToasts.forEach(toast => {
+                toast.style.opacity = '0'
+                toast.style.transition = 'opacity 0.3s ease-out'
+                setTimeout(() => {
+                    toast.remove()
+                }, 300)
+            })
+        }, 3000)
+        
         setTimeout(() => {
             router.reload();
         }, 1000)
@@ -181,6 +204,18 @@
     const handleImagesSaved = () => {
         showImageModal.value = false;
         notificationStore.success('Imagen agregada correctamente')
+        
+        setTimeout(() => {
+            const notyfToasts = document.querySelectorAll('.notyf__toast')
+            notyfToasts.forEach(toast => {
+                toast.style.opacity = '0'
+                toast.style.transition = 'opacity 0.3s ease-out'
+                setTimeout(() => {
+                    toast.remove()
+                }, 300)
+            })
+        }, 3000)
+        
         setTimeout(() => {
             router.reload();
         }, 1000)
@@ -209,6 +244,18 @@
         try {
             await form.put(route('development.update', props.development.devt_id))
             notificationStore.success('Desarrollo actualizado correctamente')
+            
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+            
             setTimeout(() => {
                 router.reload()
             }, 1000)

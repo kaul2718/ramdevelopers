@@ -1,5 +1,6 @@
 <script setup>
-    import { Head, Link, useForm } from '@inertiajs/vue3';
+    import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+    import { computed } from 'vue';
     import AuthenticationCard from '@/Components/AuthenticationCard.vue';
     import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
     import Checkbox from '@/Components/Checkbox.vue';
@@ -10,10 +11,15 @@
     import RightLogin from '@/Components/RightLogin.vue';
     import { router } from '@inertiajs/vue3';
 
+    const page = usePage();
+
     defineProps({
         canResetPassword: Boolean,
         status: String,
+        error: [String, Object],
     });
+
+    const flashError = computed(() => page.props.flash?.error || null);
 
     const form = useForm({
         email: '',
@@ -53,6 +59,14 @@
 
                 <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
                     {{ status }}
+                </div>
+
+                <div v-if="flashError" class="mb-4 font-medium text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
+                    {{ flashError }}
+                </div>
+
+                <div v-if="error" class="mb-4 font-medium text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
+                    {{ error }}
                 </div>
 
                 <form @submit.prevent="submit" class="contenedor--form">

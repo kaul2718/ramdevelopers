@@ -1,76 +1,84 @@
 <script setup>
-    import { ref } from 'vue';
-    import { Head, Link, router } from '@inertiajs/vue3';
-    import Banner from '@/Components/Banner.vue';
-    import { usePage } from '@inertiajs/vue3';
-    //import ApplicationMark from '@/Components/ApplicationMark.vue';
-    //import Dropdown from '@/Components/Dropdown.vue';
-    //import DropdownLink from '@/Components/DropdownLink.vue';
-    //import NavLink from '@/Components/NavLink.vue';
-    //import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { ref, computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import Banner from '@/Components/Banner.vue';
+import { usePage } from '@inertiajs/vue3';
 
-    const page = usePage();
+const page = usePage();
 
-    const isActive = (path) => {
-        return page.url.startsWith(`/${path}`);
-    };
+const isActive = (path) => {
+    return page.url.startsWith(`/${path}`);
+};
 
-    const canAccessAdmin = () => {
-        const user = page.props.auth?.user;
-        if (!user) return false;
-        const allowedRoles = ['Admin', 'DevAdmin', 'Master Pais'];
-        return user.roles && user.roles.some(role => allowedRoles.includes(role.name));
-    };
+const canAccessAdmin = () => {
+    const user = page.props.auth?.user;
+    if (!user) return false;
+    const allowedRoles = ['Admin', 'DevAdmin'];
+    return user.roles && user.roles.some(role => allowedRoles.includes(role.name));
+};
 
 
-    defineProps({
-        title: String,
-    });
+// Generar iniciales para el avatar
+const userInitials = computed(() => {
+    const name = page.props.auth?.user?.name?.charAt(0) || '';
+    const lastname = page.props.auth?.user?.lastname?.charAt(0) || '';
+    return (name + lastname).toUpperCase();
+});
 
-    const showingNavigationDropdown = ref(false);
+// Colores predefinidos basados en el ID del usuario
+const avatarColors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+const avatarBgColor = computed(() => {
+    const userId = page.props.auth?.user?.id || 1;
+    return avatarColors[userId % avatarColors.length];
+});
 
-    const switchToTeam = (team) => {
-        router.put(route('current-team.update'), {
-            team_id: team.id,
-        }, {
-            preserveState: false,
-        });
-    };
+// Obtener la URL de la foto de perfil
+const profilePhotoUrl = computed(() => {
+    if (page.props.auth?.user?.profile_photo_path) {
+        return `/storage/${page.props.auth.user.profile_photo_path}`;
+    }
+    return null;
+});
 
-    //RUTA DASHBOARD
-    const goToDashboard = () => {
-        router.visit('/dashboard');
-    };
 
-    //RUTA DEVELOPERS
-    const goToDevelopers = () => {
-        router.visit('/developers');
-    };
+defineProps({
+    title: String,
+});
 
-    //RUTA DEVELOPMENTS
-    const goToDevelopments = () => {
-        router.visit('/development');
-    };
+//RUTA DASHBOARD
+const goToDashboard = () => {
+    router.visit('/dashboard');
+};
 
-    //RUTA LEADS
-    const goToLeads = () => {
-        router.visit('/lead');
-    };
+//RUTA DEVELOPERS
+const goToDevelopers = () => {
+    router.visit('/developers');
+};
 
-    //RUTA ADMIN
-    const goToAdmin = () => {
-        router.visit('/admin');
-    };
+//RUTA DEVELOPMENTS
+const goToDevelopments = () => {
+    router.visit('/development');
+};
 
-    //RUTA PROFILE
-    const goToProfile = () => {
-        router.visit('/user/profile');
-    };
+//RUTA LEADS
+const goToLeads = () => {
+    router.visit('/lead');
+};
 
-    //RUTA LOGOUT
-    const logout = () => {
-        router.post(route('logout'));
-    };
+//RUTA ADMIN
+const goToAdmin = () => {
+    router.visit('/admin');
+};
+
+//RUTA PROFILE
+const goToProfile = () => {
+    router.visit('/user/profile');
+};
+
+//RUTA LOGOUT
+const logout = () => {
+    router.post(route('logout'));
+};
 
 </script>
 
@@ -212,51 +220,45 @@
                         <div class="h-8 px-3 items-center inline-flex">
                             <h6 class=" text-xs font-semibold leading-4">Cuenta</h6>
                         </div>
-                        <ul class="flex-col gap-1 flex">
-                            <li>
-                                <button type="button" @click="goToProfile"
-                                    :class="[isActive('user/profile') ? 'sidebar--btn--active' : '']">
-                                    <div class="flex-col gap-1 flex">
-                                        <div class="flex-col flex rounded-lg p-2">
-                                            <div class="h-5 gap-3 flex">
-                                                <div class="relative">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-5">
-                                                        <g id="User Circle">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                        </g>
-                                                    </svg>
-                                                </div>
-                                                <h2 class="text-sm font-medium leading-snug">Perfil</h2>
-                                            </div>
-                                        </div>
+                        <button type="button" @click="goToProfile"
+                            class="w-full px-4 py-4 border-b border-white/10 bg-white/10 hover:bg-white/20 transition  text-left rounded-xl">
+                            <div class="flex items-center gap-4">
+                                <!-- Avatar -->
+                                <div class="flex-shrink-0">
+                                    <img v-if="profilePhotoUrl" :src="profilePhotoUrl"
+                                        :alt="`Avatar de ${page.props.auth?.user?.name}`"
+                                        class="w-11 h-11 rounded-full object-cover" />
+                                    <div v-else
+                                        class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                                        :style="{ backgroundColor: avatarBgColor }">
+                                        {{ userInitials }}
                                     </div>
+                                </div>
+
+                                <!-- Info usuario -->
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-white truncate">
+                                        {{ page.props.auth?.user?.name || 'N/A' }}
+                                        {{ page.props.auth?.user?.lastname || '' }}
+                                    </p>
+                                    <p class="text-xs text-white/80 truncate">
+                                        {{ page.props.auth?.user?.roles?.[0]?.name || 'Sin rol' }}
+                                    </p>
+                                </div>
+
+                                <!-- Botón salir -->
+                                <button @click.prevent="logout" type="button" class="flex-shrink-0 p-3 
+                   bg-white/10 hover:bg-red-500/20 
+                   rounded-full transition" title="Salir">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.8" stroke="currentColor" class="w-6 h-6 text-white">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                    </svg>
                                 </button>
-                            </li>
-                            <li>
-                                <button @click.prevent="logout" type="button">
-                                    <div class="flex-col gap-1 flex">
-                                        <div class="flex-col flex rounded-lg p-2">
-                                            <div class="h-5 gap-3 flex">
-                                                <div class="relative">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-5">
-                                                        <g id="Logout">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                                                        </g>
-                                                    </svg>
-                                                </div>
-                                                <h2 class="text-sm font-medium leading-snug">Salir</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </li>
-                        </ul>
+                            </div>
+                        </button>
+
                     </div>
                 </div>
             </aside>

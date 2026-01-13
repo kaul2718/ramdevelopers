@@ -8,6 +8,7 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import TextInput from '@/Components/TextInput.vue';
     import RightLogin from '@/Components/RightLogin.vue';
+    import { watch } from 'vue';
 
     defineProps({
         countries: {
@@ -27,7 +28,16 @@
         terms: false,
     });
 
+    // Watcher para convertir email a minúsculas
+    watch(() => form.email, (newEmail) => {
+        if (newEmail) {
+            form.email = newEmail.toLowerCase();
+        }
+    });
+
     const submit = () => {
+        // Convertir email a minúsculas antes de enviar
+        form.email = form.email.toLowerCase();
         form.post(route('register'), {
             onFinish: () => form.reset('password', 'password_confirmation'),
         });

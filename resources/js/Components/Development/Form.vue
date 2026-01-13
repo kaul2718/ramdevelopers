@@ -261,6 +261,18 @@
 
             // Emitir solo el objeto development, no la respuesta completa
             const development = response.data.development || response.data
+
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+            
             emit('saved', development)
         } catch (error) {
             const errorMessage = typeof error.response?.data?.message === 'string'

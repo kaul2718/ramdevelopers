@@ -121,6 +121,17 @@
                     : 'Moneda creada correctamente'
             )
 
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+
             const currency = response.data.currency || response.data
             emit('saved', currency)
         } catch (error) {

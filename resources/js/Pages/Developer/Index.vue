@@ -99,7 +99,6 @@
                     }, 3000);
                 },
                 onError: (error) => {
-                    console.error('Error deleting developer:', error);
                     notificationStore.error('Error al eliminar el desarrollador');
                     showDeleteConfirm.value = false;
                     developerToDelete.value = null;

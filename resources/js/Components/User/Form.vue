@@ -52,7 +52,7 @@
             form.value = {
                 name: props.user.name || '',
                 lastname: props.user.lastname || '',
-                email: props.user.email || '',
+                email: (props.user.email || '').toLowerCase(),
                 phone: props.user.phone || '',
                 idiomas: props.user.idiomas || '',
                 usr_id_ctry: props.user.usr_id_ctry || null,
@@ -72,7 +72,7 @@
             form.value = {
                 name: newUser.name || '',
                 lastname: newUser.lastname || '',
-                email: newUser.email || '',
+                email: (newUser.email || '').toLowerCase(),
                 phone: newUser.phone || '',
                 idiomas: newUser.idiomas || '',
                 usr_id_ctry: newUser.usr_id_ctry || null,
@@ -97,6 +97,11 @@
 
     const validateForm = () => {
         errors.value = {};
+        
+        // Convertir email a minúsculas
+        if (form.value.email) {
+            form.value.email = form.value.email.toLowerCase()
+        }
         
         if (!form.value.name?.trim()) {
             errors.value.name = 'El nombre es requerido';
@@ -206,6 +211,18 @@
             
             const message = props.updating ? 'Usuario actualizado correctamente' : 'Usuario creado correctamente'
             notificationStore.success(message)
+            
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+            
             emit('success')
         } catch (e) {
             console.error('Error details:', e.response?.data)
@@ -224,6 +241,8 @@
         if (!error) return null
         return Array.isArray(error) ? error[0] : error
     }
+
+
 
 </script>   
 

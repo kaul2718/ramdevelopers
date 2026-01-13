@@ -37,22 +37,20 @@
 
 <template>
     <AppLayout :title="getRoleTitle()">
-        <template #header>
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="font-semibold text-3xl text-gray-800 leading-tight">
-                        {{ getRoleTitle() }}
-                    </h2>
-                    <p class="text-gray-600 text-sm mt-1">Bienvenido, {{ page.props.auth.user.name }}</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs text-gray-500">{{ new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
-                </div>
-            </div>
-        </template>
-
         <div class="py-12 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- HEADER -->
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="font-semibold text-3xl text-gray-800 leading-tight">
+                            {{ getRoleTitle() }}
+                        </h2>
+                        <p class="text-gray-600 text-sm mt-1">Bienvenido, {{ page.props.auth.user.name }} {{ page.props.auth.user.lastname }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-500">{{ new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+                    </div>
+                </div>
                 
                 <!-- ADMIN DASHBOARD -->
                 <AdminDashboard

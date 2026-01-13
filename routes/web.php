@@ -37,7 +37,7 @@ Route::get('/register', function () {
         'countries' => $countries
     ]);
 })->middleware('guest')->name('register');
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', \App\Http\Middleware\CheckUserActive::class])->group(function () {
     // AUTH Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('approvalstatus', ApprovalStatusController::class);

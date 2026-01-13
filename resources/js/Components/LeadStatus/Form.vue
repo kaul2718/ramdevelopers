@@ -111,6 +111,18 @@
 
             const message = props.updating ? 'Estado de lead actualizado correctamente' : 'Estado de lead creado correctamente'
             notificationStore.success(message)
+            
+            setTimeout(() => {
+                const notyfToasts = document.querySelectorAll('.notyf__toast')
+                notyfToasts.forEach(toast => {
+                    toast.style.opacity = '0'
+                    toast.style.transition = 'opacity 0.3s ease-out'
+                    setTimeout(() => {
+                        toast.remove()
+                    }, 300)
+                })
+            }, 3000)
+            
             emit('success')
         } catch (e) {
             console.error('Error details:', e.response?.data)
