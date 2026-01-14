@@ -1,46 +1,56 @@
 <script setup>
-    import DialogModal from '@/Components/DialogModal.vue'
+import DialogModal from '@/Components/DialogModal.vue'
 
-    defineProps({
-        show: {
-            type: Boolean,
-            default: false,
-        },
-        country: {
-            type: Object,
-            default: null,
-        },
-    })
+defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+    country: {
+        type: Object,
+        default: null,
+    },
+})
 
-    const emit = defineEmits(['close'])
+const emit = defineEmits(['close'])
 </script>
 
 <template>
-    <DialogModal :show="show" @close="emit('close')">
-        <template #title>
-            <h2 class="text-lg font-medium text-gray-900">Información del País</h2>
-        </template>
-
+    <DialogModal :show="show" @close="emit('close')" max-width="2xl">
         <template #content>
             <div v-if="country" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Nombre del País</label>
-                    <p class="mt-1 text-sm text-gray-900">{{ country.ctry_name }}</p>
+                <!-- Título -->
+                <div class="pb-4 border-b">
+                    <h3 class="modal-title">Información del País</h3>
                 </div>
 
+                <!-- Información -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Código (ISO)</label>
-                    <p class="mt-1 text-sm text-gray-900">{{ country.ctry_code }}</p>
-                </div>
+                    <h4 class="modal-section-title">Detalles</h4>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Estado</label>
-                    <div class="mt-1">
-                        <div :class="['py-1.5 px-2.5 rounded-full flex justify-center w-24 items-center gap-2', country.ctry_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600']">
-                            <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="3" cy="3" r="3" :fill="country.ctry_active ? '#059669' : '#dc2626'" />
-                            </svg>
-                            <span class="font-semibold text-xs">{{ country.ctry_active ? 'Activo' : 'Inactivo' }}</span>
+                    <div class="modal-grid">
+                        <div>
+                            <p class="modal-value">Nombre del País</p>
+                            <p class="modal-label">{{ country.ctry_name }}</p>
+                        </div>
+
+                        <div>
+                            <p class="modal-value">Código (ISO)</p>
+                            <p class="modal-label">{{ country.ctry_code }}</p>
+                        </div>
+
+                        <div>
+                            <p class="modal-value">Estado</p>
+
+                            <p v-if="country.ctry_active"
+                                class="modal-label inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700">
+                                ✓ Activo
+                            </p>
+
+                            <p v-else
+                                class="modal-label inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-700">
+                                ✗ Inactivo
+                            </p>
                         </div>
                     </div>
                 </div>

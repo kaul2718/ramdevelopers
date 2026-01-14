@@ -17,14 +17,15 @@
     const selectedPhotoName = ref('')
     const photoInput = ref(null)
 
-    const emit = defineEmits(['success', 'cancel'])
+    const emit = defineEmits(['success', 'cancel', 'close'])
 
     const props = defineProps({
         countries: Array,
         roles: Array,
         permissions: Array,
         updating: Boolean,
-        user: Object
+        user: Object,
+        readonly: Boolean
     })
 
     const notificationStore = useNotificationStore()
@@ -247,7 +248,103 @@
 </script>   
 
 <template>
-    <FormSection @submitted="handleSubmit">
+    <!-- Modo Lectura: Solo mostrar valores usando FormSection -->
+    <FormSection v-if="readonly">
+        <template #title>
+            Detalles del Usuario
+        </template>
+
+        <template #description>
+            Información completa del usuario seleccionado
+        </template>
+
+        <template #form>
+            <div class="space-y-6">
+                <!-- Encabezado: Foto y Nombre -->
+                <div class="flex items-center gap-4 pb-4 border-b">
+                    <img v-if="user?.profile_photo_path" 
+                        :src="'/storage/' + user.profile_photo_path" 
+                        :alt="user?.name" 
+                        class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500">
+                    <div v-else
+                        class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-semibold text-gray-700 border-2 border-indigo-500">
+                        {{ user?.name?.charAt(0) }}
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900">{{ user?.name }} {{ user?.lastname }}</h3>
+                        <p class="text-sm text-gray-600">{{ user?.email }}</p>
+                        <div class="mt-2">
+                            <span v-if="user?.usr_active"
+                                class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                ✓ Activo
+                            </span>
+                            <span v-else
+                                class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
+                                ✗ Inactivo
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información Personal -->
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-900 mb-4">Información Personal</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">Nombre</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ user?.name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">Apellido</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ user?.lastname }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">Correo</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ user?.email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">Teléfono</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ user?.phone || 'No especificado' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">País</p>
+                            <p v-if="user?.country" class="mt-1">
+                                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700">
+                                    {{ user.country.ctry_name }}
+                                </span>
+                            </p>
+                            <p v-else class="mt-1 text-sm text-gray-900">No especificado</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-500 uppercase">Idiomas</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ user?.idiomas || 'No especificado' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles Asignados -->
+                <div v-if="user?.roles && user.roles.length > 0">
+                    <h4 class="text-sm font-semibold text-gray-900 mb-4">Roles Asignados</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span v-for="role in user.roles" 
+                            :key="role.id"
+                            class="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800">
+                            {{ role.name }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template #actions>
+            <button @click="$emit('close')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition font-medium">
+                Cerrar
+            </button>
+        </template>
+    </FormSection>
+
+    <!-- Modo Edición/Creación: Formulario editable -->
+    <FormSection v-else @submitted="handleSubmit">
         <template #title>
             {{ updating ? 'Actualizar Usuario' : 'Crear Usuario' }}
         </template>

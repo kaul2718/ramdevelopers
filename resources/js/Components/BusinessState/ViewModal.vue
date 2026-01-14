@@ -1,56 +1,64 @@
 <script setup>
-    import DialogModal from '@/Components/DialogModal.vue'
+import DialogModal from '@/Components/DialogModal.vue'
 
-    defineProps({
-        show: {
-            type: Boolean,
-            default: false,
-        },
-        businessState: {
-            type: Object,
-            default: null,
-        },
-    })
+defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+    businessState: {
+        type: Object,
+        default: null,
+    },
+})
 
-    const emit = defineEmits(['close'])
+const emit = defineEmits(['close'])
 </script>
 
 <template>
-    <DialogModal :show="show" @close="emit('close')">
-        <template #title> Ver Estado del Proyecto </template>
-        <template #content>
-            <div class="space-y-4">
-                <!-- Nombre -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                    <p class="px-3 py-2 text-gray-900">{{ businessState?.busiSta_name }}</p>
+    <DialogModal :show="show" @close="emit('close')" max-width="2xl">
+        <template #content v-if="businessState">
+            <div class="space-y-6">
+                <!-- Título -->
+                <div class="pb-4 border-b">
+                    <h3 class="modal-title">Información del Estado del Proyecto</h3>
                 </div>
 
-                <!-- Código -->
+                <!-- Información -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Código</label>
-                    <p class="px-3 py-2 text-gray-900">{{ businessState?.busiSta_code }}</p>
-                </div>
+                    <h4 class="modal-section-title">Detalles</h4>
 
-                <!-- Descripción -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                    <p class="px-3 py-2 text-gray-900">{{ businessState?.busiSta_description || 'N/A' }}</p>
-                </div>
+                    <div class="modal-grid">
+                        <div>
+                            <p class="modal-value">Nombre</p>
+                            <p class="modal-label">{{ businessState.busiSta_name }}</p>
+                        </div>
 
-                <!-- Estado -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                    <div class="inline-block">
-                        <span
-                            v-if="businessState?.busiSta_active"
-                            class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-sm font-semibold"
-                        >
-                            Activo
-                        </span>
-                        <span v-else class="px-3 py-1 rounded-full bg-red-50 text-red-600 text-sm font-semibold">
-                            Inactivo
-                        </span>
+                        <div>
+                            <p class="modal-value">Código</p>
+                            <p class="modal-label">{{ businessState.busiSta_code }}</p>
+                        </div>
+
+                        <div>
+                            <p class="modal-value">Estado</p>
+
+                            <p v-if="businessState.busiSta_active"
+                                class="modal-label inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700">
+                                ✓ Activo
+                            </p>
+
+                            <p v-else
+                                class="modal-label inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-700">
+                                ✗ Inactivo
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="modal-value">Descripción</p>
+                            <p class="modal-label">
+                                {{ businessState.busiSta_description || 'N/A' }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,53 +1,61 @@
 <script setup>
-    import DialogModal from '@/Components/DialogModal.vue'
+import DialogModal from '@/Components/DialogModal.vue'
 
-    const props = defineProps({
-        show: Boolean,
-        leadSource: Object
-    })
+const props = defineProps({
+    show: Boolean,
+    leadSource: Object
+})
 
-    const emit = defineEmits(['close'])
+const emit = defineEmits(['close'])
 
-    const closeModal = () => {
-        emit('close')
-    }
+const closeModal = () => {
+    emit('close')
+}
 </script>
 
 <template>
     <DialogModal :show="show" @close="closeModal" max-width="2xl">
         <template #content v-if="leadSource">
             <div class="space-y-6">
-                <!-- Encabezado -->
+                <!-- Título -->
                 <div class="pb-4 border-b">
-                    <h3 class="modal-title">{{ leadSource.leadSou_name }}</h3>
-                    <p class="modal-subtitle">{{ leadSource.leadSou_code }}</p>
-                    <div class="mt-2">
-                        <span v-if="leadSource.leadSou_active" 
-                            class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-                            ✓ Activo
-                        </span>
-                        <span v-else 
-                            class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
-                            ✗ Inactivo
-                        </span>
-                    </div>
+                    <h3 class="modal-title">Información de la Fuente de Leads</h3>
                 </div>
 
                 <!-- Información -->
                 <div>
-                    <h4 class="modal-section-title">Información</h4>
+                    <h4 class="modal-section-title">Detalles</h4>
+
                     <div class="modal-grid">
                         <div>
-                            <p class="modal-label">Código</p>
-                            <p class="modal-value">{{ leadSource.leadSou_code }}</p>
+                            <p class="modal-value">Código</p>
+                            <p class="modal-label">{{ leadSource.leadSou_code }}</p>
                         </div>
+
                         <div>
-                            <p class="modal-label">Nombre</p>
-                            <p class="modal-value">{{ leadSource.leadSou_name }}</p>
+                            <p class="modal-value">Nombre</p>
+                            <p class="modal-label">{{ leadSource.leadSou_name }}</p>
                         </div>
-                        <div class="col-span-2">
-                            <p class="modal-label">Descripción</p>
-                            <p class="modal-value">{{ leadSource.leadSou_description || 'No especificada' }}</p>
+
+                        <div>
+                            <p class="modal-value">Estado</p>
+
+                            <p v-if="leadSource.leadSou_active"
+                                class="modal-label inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700">
+                                ✓ Activo
+                            </p>
+
+                            <p v-else
+                                class="modal-label inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-sm font-medium text-gray-700">
+                                ✗ Inactivo
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="modal-value">Descripción</p>
+                            <p class="modal-label">
+                                {{ leadSource.leadSou_description || 'No especificada' }}
+                            </p>
                         </div>
                     </div>
                 </div>
