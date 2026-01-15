@@ -1,5 +1,5 @@
 <template>
-  <Link :href="route('development.public.show', development.devt_id)" class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 shadow-sm hover:shadow-md transition-all block">
+  <Link :href="route('development.public.show', development.devt_slug)" class="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 shadow-sm hover:shadow-md transition-all block">
     <div class="relative aspect-[16/9] overflow-hidden">
       <div
         class="w-full h-full bg-slate-800 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"

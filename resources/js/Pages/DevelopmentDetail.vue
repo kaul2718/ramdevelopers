@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import LandingHeader from '@/Components/Landing/LandingHeader.vue';
 import LandingFooter from '@/Components/Landing/LandingFooter.vue';
 import DevelopmentHero from '@/Components/Developments/DevelopmentHero.vue';
+import ImageLightbox from '@/Components/ImageLightbox.vue';
 import { ref, computed } from 'vue'
 
 const props = defineProps({
@@ -10,6 +11,7 @@ const props = defineProps({
 });
 
 const currentImageIndex = ref(0)
+const showLightbox = ref(false)
 const formData = ref({
     name: '',
     email: '',
@@ -161,9 +163,17 @@ const handleSubmitRequest = () => {
                                 <span class="text-slate-400 text-sm">{{ development.images.length }} fotos</span>
                             </div>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div v-for="(image, index) in development.images.slice(0, 6)" :key="index" class="h-48 rounded-lg overflow-hidden cursor-pointer" @click="currentImageIndex = index">
-                                    <img :src="image.devImg_url" :alt="`Imagen ${index + 1}`" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                                <div v-for="(image, index) in development.images.slice(0, 6)" :key="index" class="h-48 rounded-lg overflow-hidden cursor-pointer group relative" @click="currentImageIndex = index; showLightbox = true">
+                                    <img :src="image.devImg_url" :alt="`Imagen ${index + 1}`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">fullscreen</span>
+                                    </div>
                                 </div>
+                            </div>
+                            <div v-if="development.images.length > 6" class="mt-4 text-center">
+                                <button @click="showLightbox = true" class="text-primary hover:text-primary/80 font-medium transition">
+                                    Ver todas las {{ development.images.length }} imágenes
+                                </button>
                             </div>
                         </section>
 
@@ -181,7 +191,7 @@ const handleSubmitRequest = () => {
                                             <p class="text-xs text-slate-400">{{ file.documentType?.docTyp_name || 'Documento' }}</p>
                                         </div>
                                     </div>
-                                    <a :href="`/storage/${file.devFile_url}`" download class="text-slate-400 group-hover:text-primary transition-colors">
+                                    <a :href="route('development.file.download', [development.devt_slug, file.devFile_id])" download class="text-slate-400 group-hover:text-primary transition-colors">
                                         <span class="material-symbols-outlined">download</span>
                                     </a>
                                 </div>
@@ -250,6 +260,15 @@ const handleSubmitRequest = () => {
 
         <!-- Footer -->
         <LandingFooter />
+
+        <!-- Image Lightbox Modal -->
+        <ImageLightbox 
+            v-if="showLightbox && development?.images"
+            :images="development.images"
+            :current-index="currentImageIndex"
+            @update:current-index="currentImageIndex = $event"
+            @close="showLightbox = false"
+        />
     </div>
 </template>
 

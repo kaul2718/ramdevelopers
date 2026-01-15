@@ -37,7 +37,8 @@ Route::get('/api/developers/featured', [PublicDevelopmentController::class, 'fea
 
 // Public Developments Listing Page
 Route::get('/developments', [PublicDevelopmentController::class, 'listing'])->name('developments.public');
-Route::get('/developments/{devt_id}', [PublicDevelopmentController::class, 'show'])->name('development.public.show');
+Route::get('/developments/{devt_slug}', [PublicDevelopmentController::class, 'show'])->name('development.public.show');
+Route::get('/developments/{devt_slug}/download-file/{file_id}', [PublicDevelopmentController::class, 'downloadFile'])->name('development.file.download');
 
 // Ruta personalizada para el registro con datos adicionales
 Route::get('/register', function () {

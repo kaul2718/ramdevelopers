@@ -11,6 +11,103 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light Mode Styles - Variables y Colores */
+:root {
+    --bg-primary: #191e2b;
+    --bg-secondary: #253045;
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+html.light {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4b5563;
+    --border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Aplica el tema a elementos principales */
+html.light {
+    @apply text-gray-900;
+    background-color: #f5f8f8;
+}
+
+html.light body {
+    @apply text-gray-900;
+    background-color: #f5f8f8;
+}
+
+html.light .bg-background-dark {
+    background-color: #f5f8f8;
+}
+
+html.light .bg-white\/5 {
+    @apply bg-gray-50;
+}
+
+html.light .bg-white\/10 {
+    @apply bg-gray-100;
+}
+
+html.light .bg-white\/20 {
+    @apply bg-gray-200;
+}
+
+html.light .border-white\/10 {
+    @apply border-gray-200;
+}
+
+html.light .border-white\/20 {
+    @apply border-gray-300;
+}
+
+html.light .text-white {
+    @apply text-gray-900;
+}
+
+html.light .text-gray-300,
+html.light .text-slate-300 {
+    @apply text-gray-700;
+}
+
+html.light .text-gray-400,
+html.light .text-slate-400 {
+    @apply text-gray-600;
+}
+
+html.light .hover\:bg-white\/10:hover,
+html.light .group:hover .group-hover\:bg-white\/10 {
+    @apply bg-gray-200;
+}
+
+html.light .hover\:border-white\/10:hover {
+    @apply border-gray-200;
+}
+
+html.light .backdrop-blur-md {
+    @apply bg-white;
+}
+
+/* Light Mode - Header Glassmorphism */
+html.light > div.w-full.flex.justify-center.border-b.border-white\/10.backdrop-blur-md {
+    @apply bg-white/40 border-gray-200;
+}
+
+html.light .bg-background-dark\/80 {
+    @apply bg-white/40;
+}
+
+html.light .bg-background-dark\/95 {
+    @apply bg-white/50;
+}
+
+/* Light Mode - Footer */
+html.light .bg-slate-900\/50 {
+    @apply bg-white border-gray-200;
+}
+
 /* Material Symbols Outlined */
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;

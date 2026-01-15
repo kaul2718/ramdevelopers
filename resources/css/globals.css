@@ -11,6 +11,17 @@
     --azul:    #004FEC;
 }
 
+/* Light Mode Colors */
+html.light {
+    color-scheme: light;
+    --fondo:   #ffffff;
+    --oscuro:  #f5f5f5;
+    --medio:   #00c6ec;
+    --medio2:  #B8F3FF;
+    --claro:   #1a1a1a;
+    --gris:    #a0a0a0;
+}
+
 
 
 /* Firefox */

@@ -1,5 +1,11 @@
 <script setup>
+import { Link } from '@inertiajs/vue3'
+
 defineProps({
+  devtSlug: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -57,10 +63,11 @@ const formatPrice = (price) => {
         :style="{ backgroundImage: `url('${image}')` }"></div>
       <div
         class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-        <button
-          class="w-full bg-white text-[#191e2b] py-2.5 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors">
+        <Link
+          :href="route('development.public.show', devtSlug)"
+          class="w-full bg-white text-[#191e2b] py-2.5 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors text-center">
           Ver Detalles
-        </button>
+        </Link>
       </div>
     </div>
     <div class="flex flex-col gap-2">

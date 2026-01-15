@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3'
 import ProjectCard from '@/Components/Landing/ProjectCard.vue';
 
 defineProps({
@@ -7,13 +8,6 @@ defineProps({
         default: () => []
     }
 });
-
-const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    }
-};
 </script>
 <template>
     <div class="w-full flex justify-center">
@@ -26,16 +20,16 @@ const scrollToSection = (sectionId) => {
                         Proyectos Destacados
                     </h2>
                 </div>
-                <button class="flex items-center gap-2 text-primary font-bold hover:underline"
-                    @click="scrollToSection('developments')">
+                <Link href="/developments" class="flex items-center gap-2 text-primary font-bold hover:underline">
                     Ver todos los proyectos <span class="material-symbols-outlined">arrow_forward</span>
-                </button>
+                </Link>
             </div>
 
             <!-- Featured Projects Grid -->
             <div id="developments">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <ProjectCard v-for="development in developments" :key="development.devt_id"
+                        :devt-slug="development.devt_slug"
                         :title="development.devt_title" 
                         :priceFrom="development.devt_price_from"
                         :priceTo="development.devt_price_to"

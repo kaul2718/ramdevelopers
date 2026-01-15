@@ -44,7 +44,7 @@ onMounted(async () => {
     <div class="relative flex min-h-screen w-full flex-col bg-background-dark group/design-root overflow-x-hidden"
         :class="{ dark: true }">
 
-        <Head title="EstateSync - Modern Real Estate CRM" />
+        <Head title="Inicio" />
         <!-- Navigation Bar -->
         <LandingHeader />
         <div class="layout-container flex h-full grow flex-col">

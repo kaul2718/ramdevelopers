@@ -6,8 +6,10 @@ use App\Models\Developer;
 use App\Models\Country;
 use App\Models\City;
 use App\Models\HousingType;
+use App\Models\DevelopmentFile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Storage;
 
 class PublicDevelopmentController extends Controller
 {
@@ -37,6 +39,7 @@ class PublicDevelopmentController extends Controller
                 
                 return [
                     'devt_id' => $development->devt_id,
+                    'devt_slug' => $development->devt_slug,
                     'devt_title' => $development->devt_title,
                     'devt_price_from' => $development->devt_price_from,
                     'devt_price_to' => $development->devt_price_to,
@@ -155,6 +158,7 @@ class PublicDevelopmentController extends Controller
 
             return [
                 'devt_id' => $dev->devt_id,
+                'devt_slug' => $dev->devt_slug,
                 'devt_title' => $dev->devt_title,
                 'devt_short_description' => $dev->devt_short_description,
                 'devt_price_from' => $dev->devt_price_from,
@@ -200,11 +204,11 @@ class PublicDevelopmentController extends Controller
     /**
      * Show a single development publicly
      */
-    public function show($devt_id)
+    public function show($devt_slug)
     {
-        $development = Development::where('devt_id', $devt_id)
+        $development = Development::where('devt_slug', $devt_slug)
             ->where('devt_active', true)
-            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus', 'developer', 'user'])
+            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus', 'developer.user', 'files.documentType', 'user'])
             ->firstOrFail();
 
         $images = $development->images->map(function ($img) {
@@ -217,6 +221,7 @@ class PublicDevelopmentController extends Controller
         return Inertia::render('DevelopmentDetail', [
             'development' => [
                 'devt_id' => $development->devt_id,
+                'devt_slug' => $development->devt_slug,
                 'devt_title' => $development->devt_title,
                 'devt_short_description' => $development->devt_short_description,
                 'devt_long_description' => $development->devt_long_description,
@@ -241,8 +246,54 @@ class PublicDevelopmentController extends Controller
                 'housingType' => $development->housingType,
                 'businessStatus' => $development->businessStatus,
                 'commercialStatus' => $development->commercialStatus,
-                'developer' => $development->developer,
+                'developer' => $development->developer ? [
+                    'devr_id' => $development->developer->devr_id,
+                    'devr_commercial_name' => $development->developer->devr_commercial_name,
+                    'dev_name' => $development->developer->devr_commercial_name,
+                    'devr_email_contact' => $development->developer->devr_email_contact,
+                    'devr_phone_contact' => $development->developer->devr_phone_contact,
+                    'devr_website' => $development->developer->devr_website,
+                    'user' => $development->developer->user ? [
+                        'id' => $development->developer->user->id,
+                        'name' => $development->developer->user->name,
+                        'email' => $development->developer->user->email,
+                        'profile_photo_path' => $development->developer->user->profile_photo_path,
+                    ] : null,
+                ] : null,
+                'files' => $development->files->map(function ($file) {
+                    $fileUrl = $file->devFile_url;
+                    if ($fileUrl && !str_starts_with($fileUrl, 'http')) {
+                        $fileUrl = asset('storage/' . $fileUrl);
+                    }
+                    return [
+                        'devFile_id' => $file->devFile_id,
+                        'devFile_name' => $file->devFile_name,
+                        'devFile_url' => $fileUrl,
+                        'devFile_isPublic' => $file->devFile_isPublic,
+                        'documentType' => $file->documentType,
+                    ];
+                })->all(),
             ]
         ]);
+    }
+
+    /**
+     * Download a development file
+     */
+    public function downloadFile($devt_slug, $file_id)
+    {
+        // Verificar que el desarrollo es público y activo
+        $development = Development::where('devt_slug', $devt_slug)
+            ->where('devt_active', true)
+            ->firstOrFail();
+
+        // Verificar que el archivo existe y pertenece al desarrollo
+        $file = DevelopmentFile::where('devFile_id', $file_id)
+            ->where('devt_id', $development->devt_id)
+            ->where('devFile_isPublic', true)
+            ->firstOrFail();
+
+        // Retornar la URL del archivo para que el navegador lo descargue
+        return response()->redirectTo(asset('storage/' . $file->devFile_url));
     }
 }
