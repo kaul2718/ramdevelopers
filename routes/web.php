@@ -9,6 +9,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DevelopmentController;
+use App\Http\Controllers\PublicDevelopmentController;
 use App\Http\Controllers\DevelopmentCaptorController;
 use App\Http\Controllers\DevelopmentFileController;
 use App\Http\Controllers\DevelopmentImageController;
@@ -25,10 +26,18 @@ use App\Models\Country;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// NO AUTH Routes
+// NO AUTH Routes - Landing Page
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return Inertia::render('Landing');
+})->name('landing');
+
+// Public API endpoints for landing page
+Route::get('/api/developments/featured', [PublicDevelopmentController::class, 'featured'])->name('developments.featured');
+Route::get('/api/developers/featured', [PublicDevelopmentController::class, 'featuredDevelopers'])->name('developers.featured');
+
+// Public Developments Listing Page
+Route::get('/developments', [PublicDevelopmentController::class, 'listing'])->name('developments.public');
+Route::get('/developments/{devt_id}', [PublicDevelopmentController::class, 'show'])->name('development.public.show');
 
 // Ruta personalizada para el registro con datos adicionales
 Route::get('/register', function () {

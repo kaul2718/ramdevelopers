@@ -1,5 +1,4 @@
 <?php
-// filepath: app/Http/Controllers/DevelopmentController.php
 
 namespace App\Http\Controllers;
 

@@ -247,7 +247,7 @@ const logout = () => {
                                 </div>
 
                                 <!-- Botón salir -->
-                                <button @click.prevent="logout" type="button" class="flex-shrink-0 p-3 
+                                <button @click.stop.prevent="logout" type="button" class="flex-shrink-0 p-3 
                    bg-white/10 hover:bg-red-500/20 
                    rounded-full transition" title="Salir">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
