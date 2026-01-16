@@ -19,7 +19,7 @@ class PublicDevelopmentController extends Controller
     public function featured()
     {
         $developments = Development::where('devt_is_featured', true)
-            ->with(['country', 'city', 'housingType', 'images'])
+            ->with(['country', 'city', 'housingType', 'currency', 'images'])
             ->latest()
             ->limit(3)
             ->get()
@@ -46,6 +46,11 @@ class PublicDevelopmentController extends Controller
                     'country' => $development->country,
                     'city' => $development->city,
                     'housingType' => $development->housingType,
+                    'currency' => $development->currency ? [
+                        'curr_code' => $development->currency->curr_code,
+                        'curr_symbol' => $development->currency->curr_symbol,
+                        'curr_symbol_first' => $development->currency->curr_symbol_first,
+                    ] : null,
                     'status' => 'Disponible',
                     'image' => $imageUrl,
                 ];
@@ -94,7 +99,7 @@ class PublicDevelopmentController extends Controller
     public function listing(Request $request)
     {
         $query = Development::where('devt_active', true)
-            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus'])
+            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus', 'currency'])
             ->latest();
 
         // Search filter
@@ -171,6 +176,11 @@ class PublicDevelopmentController extends Controller
                 'housingType' => $dev->housingType,
                 'businessStatus' => $dev->businessStatus,
                 'commercialStatus' => $dev->commercialStatus,
+                'currency' => $dev->currency ? [
+                    'curr_code' => $dev->currency->curr_code,
+                    'curr_symbol' => $dev->currency->curr_symbol,
+                    'curr_symbol_first' => $dev->currency->curr_symbol_first,
+                ] : null,
             ];
         });
 
@@ -208,7 +218,7 @@ class PublicDevelopmentController extends Controller
     {
         $development = Development::where('devt_slug', $devt_slug)
             ->where('devt_active', true)
-            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus', 'developer.user', 'files.documentType', 'user'])
+            ->with(['country', 'city', 'housingType', 'images', 'businessStatus', 'commercialStatus', 'developer.user', 'files.documentType', 'user', 'currency'])
             ->firstOrFail();
 
         $images = $development->images->map(function ($img) {
@@ -273,6 +283,11 @@ class PublicDevelopmentController extends Controller
                         'documentType' => $file->documentType,
                     ];
                 })->all(),
+                'currency' => $development->currency ? [
+                    'curr_code' => $development->currency->curr_code,
+                    'curr_symbol' => $development->currency->curr_symbol,
+                    'curr_symbol_first' => $development->currency->curr_symbol_first,
+                ] : null,
             ]
         ]);
     }

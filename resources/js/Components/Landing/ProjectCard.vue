@@ -34,18 +34,29 @@ defineProps({
     type: String,
     required: true,
   },
+  currency: {
+    type: Object,
+    default: () => ({ curr_symbol: '$', curr_symbol_first: true, curr_code: 'USD' }),
+  },
 });
 
-const formatPrice = (price) => {
+const formatPrice = (price, currency) => {
   if (!price) return 'Consultar';
   const num = Number(price);
+  let formatted = '';
+
   if (num >= 1000000) {
-    return `$${(num / 1000000).toFixed(2)}M`;
+    formatted = `${(num / 1000000).toFixed(2)}M`;
+  } else if (num >= 1000) {
+    formatted = `${(num / 1000).toFixed(0)}K`;
+  } else {
+    formatted = num.toLocaleString();
   }
-  if (num >= 1000) {
-    return `$${(num / 1000).toFixed(0)}K`;
-  }
-  return `$${num.toLocaleString()}`;
+
+  const symbol = currency?.curr_symbol || '$';
+  const symbolFirst = currency?.curr_symbol_first ?? true;
+
+  return symbolFirst ? `${symbol}${formatted}` : `${formatted} ${symbol}`;
 };
 </script>
 
@@ -79,9 +90,9 @@ const formatPrice = (price) => {
       <div class="pt-2 border-t border-white/10 flex items-center justify-between">
         <div>
           <p class="text-[10px] uppercase text-slate-500 font-semibold tracking-widest">Desde</p>
-          <p class="text-primary font-bold text-lg">{{ formatPrice(priceFrom) }}</p>
+          <p class="text-primary font-bold text-lg">{{ formatPrice(priceFrom, currency) }}</p>
           <p v-if="priceTo && priceTo !== priceFrom" class="text-[10px] uppercase text-slate-500 font-semibold tracking-widest mt-2">Hasta</p>
-          <p v-if="priceTo && priceTo !== priceFrom" class="text-primary font-bold text-lg">{{ formatPrice(priceTo) }}</p>
+          <p v-if="priceTo && priceTo !== priceFrom" class="text-primary font-bold text-lg">{{ formatPrice(priceTo, currency) }}</p>
         </div>
         <div class="flex flex-col gap-3 text-right">
           <div>

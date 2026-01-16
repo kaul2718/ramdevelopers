@@ -36,7 +36,8 @@ defineProps({
                         :location="`${development.city?.city_name || 'N/A'}, ${development.country?.ctry_name || 'N/A'}`"
                         :image="development.image || 'https://via.placeholder.com/600x400?text=Development'"
                         :status="development.status || 'Disponible'"
-                        :type="development.housingType?.houTyp_name || 'Residencial'" />
+                        :type="development.housingType?.houTyp_name || 'Residencial'"
+                        :currency="development.currency" />
                 </div>
             </div>
         </div>

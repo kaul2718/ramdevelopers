@@ -28,6 +28,25 @@ const closeImagePreview = () => {
     showImagePreview.value = false;
     selectedImage.value = null;
 };
+
+const formatPrice = (price, currency) => {
+    if (!price) return 'N/A'
+    let formatted = '';
+
+    const num = Number(price);
+    if (num >= 1000000) {
+        formatted = `${(num / 1000000).toFixed(2)}M`;
+    } else if (num >= 1000) {
+        formatted = `${(num / 1000).toFixed(0)}K`;
+    } else {
+        formatted = num.toLocaleString();
+    }
+
+    const symbol = currency?.curr_symbol || '$';
+    const symbolFirst = currency?.curr_symbol_first ?? true;
+
+    return symbolFirst ? `${symbol}${formatted}` : `${formatted} ${symbol}`;
+};
 </script>
 
 <template>
@@ -122,11 +141,11 @@ const closeImagePreview = () => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Precio Desde</label>
-                            <p class="text-lg font-semibold text-gray-900">{{ development.currency?.curr_symbol }} {{ development.devt_price_from?.toLocaleString() || 'N/A' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ formatPrice(development.devt_price_from, development.currency) }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Precio Hasta</label>
-                            <p class="text-lg font-semibold text-gray-900">{{ development.currency?.curr_symbol }} {{ development.devt_price_to?.toLocaleString() || 'N/A' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ formatPrice(development.devt_price_to, development.currency) }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Honorarios</label>

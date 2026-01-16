@@ -24,7 +24,7 @@ class DevelopmentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Development::with(['user', 'developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'images']);
+        $query = Development::with(['user', 'developer', 'country', 'city', 'approvalStatus', 'businessStatus', 'commercialStatus', 'currency', 'images']);
         
         // Filtrar por país si el usuario es "Master Pais"
         if (auth()->user()->hasRole('Master Pais')) {

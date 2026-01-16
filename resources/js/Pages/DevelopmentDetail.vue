@@ -31,13 +31,23 @@ const prevImage = () => {
     }
 }
 
-const formatPrice = (price) => {
+const formatPrice = (price, currency) => {
     if (!price) return 'N/A'
-    return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-    }).format(price)
+    let formatted = '';
+
+    const num = Number(price);
+    if (num >= 1000000) {
+        formatted = `${(num / 1000000).toFixed(2)}M`;
+    } else if (num >= 1000) {
+        formatted = `${(num / 1000).toFixed(0)}K`;
+    } else {
+        formatted = num.toLocaleString();
+    }
+
+    const symbol = currency?.curr_symbol || '$';
+    const symbolFirst = currency?.curr_symbol_first ?? true;
+
+    return symbolFirst ? `${symbol}${formatted}` : `${formatted} ${symbol}`;
 }
 
 const handleSubmitRequest = () => {
@@ -48,16 +58,18 @@ const handleSubmitRequest = () => {
 </script>
 
 <template>
-    <div class="relative flex min-h-screen w-full flex-col bg-background-dark group/design-root overflow-x-hidden" :class="{ dark: true }">
-        <Head :title="`${development?.devt_title || 'Proyecto'} | EstateSync`" />
-        
+    <div class="relative flex min-h-screen w-full flex-col bg-background-dark group/design-root overflow-x-hidden"
+        :class="{ dark: true }">
+
+        <Head :title="`${development?.devt_title || 'Proyecto'}`" />
+
         <!-- Navigation -->
         <LandingHeader />
 
         <main class="flex-1 w-full">
             <!-- Breadcrumbs -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <nav class="flex items-center gap-2 text-sm text-slate-400">
+                <nav class="flex items-center gap-2 text-sm text-slate-400 mb-6">
                     <Link href="/" class="hover:text-primary transition-colors">Inicio</Link>
                     <span class="material-symbols-outlined text-xs">chevron_right</span>
                     <Link href="/developments" class="hover:text-primary transition-colors">Proyectos</Link>
@@ -66,12 +78,8 @@ const handleSubmitRequest = () => {
                 </nav>
 
                 <!-- Hero Section -->
-                <DevelopmentHero 
-                    :development="development" 
-                    :current-image-index="currentImageIndex"
-                    @next-image="nextImage"
-                    @prev-image="prevImage"
-                />
+                <DevelopmentHero :development="development" :current-image-index="currentImageIndex"
+                    @next-image="nextImage" @prev-image="prevImage" />
             </div>
 
             <!-- Main Content -->
@@ -82,8 +90,10 @@ const handleSubmitRequest = () => {
                         <!-- Description -->
                         <section>
                             <h3 class="text-2xl font-bold text-white mb-4">Sobre el Proyecto</h3>
-                            <p class="text-slate-300 leading-relaxed text-lg whitespace-pre-wrap">{{ development?.devt_short_description }}</p>
-                            <p class="text-slate-400 leading-relaxed text-lg mt-4 whitespace-pre-wrap">{{ development?.devt_long_description }}</p>
+                            <p class="text-slate-300 leading-relaxed text-lg whitespace-pre-wrap">{{
+                                development?.devt_short_description }}</p>
+                            <p class="text-slate-400 leading-relaxed text-lg mt-4 whitespace-pre-wrap">{{
+                                development?.devt_long_description }}</p>
                         </section>
 
                         <!-- Specifications -->
@@ -91,66 +101,99 @@ const handleSubmitRequest = () => {
                             <h4 class="text-lg font-bold text-white mb-6">Especificaciones del Proyecto</h4>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4">
                                 <div class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Rango de Precio</span>
-                                    <span class="text-lg font-bold text-white">{{ formatPrice(development?.devt_price_from) }} - {{ formatPrice(development?.devt_price_to) }}</span>
+                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Rango de
+                                        Precio</span>
+                                    <span class="text-lg font-bold text-white">{{
+                                        formatPrice(development?.devt_price_from, development?.currency) }} - {{
+                                            formatPrice(development?.devt_price_to, development?.currency) }}</span>
                                 </div>
-                                <div v-if="development?.devt_delivery_year" class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Entrega</span>
-                                    <span class="text-lg font-bold text-white">{{ development.devt_delivery_year }}</span>
+                                <div v-if="development?.devt_delivery_year"
+                                    class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
+                                    <span
+                                        class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Entrega</span>
+                                    <span class="text-lg font-bold text-white">{{ development.devt_delivery_year
+                                    }}</span>
                                 </div>
-                                <div v-if="development?.devt_bedrooms" class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Recámaras</span>
+                                <div v-if="development?.devt_bedrooms"
+                                    class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
+                                    <span
+                                        class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Recámaras</span>
                                     <span class="text-lg font-bold text-white">{{ development.devt_bedrooms }}</span>
                                 </div>
-                                <div v-if="development?.country" class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">País</span>
-                                    <span class="text-lg font-bold text-white">{{ development.country.ctry_name }}</span>
+                                <div v-if="development?.country"
+                                    class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
+                                    <span
+                                        class="text-slate-400 text-xs font-semibold uppercase tracking-wider">País</span>
+                                    <span class="text-lg font-bold text-white">{{ development.country.ctry_name
+                                    }}</span>
                                 </div>
-                                <div v-if="development?.city" class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Ciudad</span>
+                                <div v-if="development?.city"
+                                    class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
+                                    <span
+                                        class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Ciudad</span>
                                     <span class="text-lg font-bold text-white">{{ development.city.city_name }}</span>
                                 </div>
-                                <div v-if="development?.developer" class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
-                                    <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Desarrollador</span>
-                                    <span class="text-lg font-bold text-white">{{ development.developer.dev_name }}</span>
+                                <div v-if="development?.developer"
+                                    class="flex flex-col gap-1 border-l-2 border-primary/20 pl-4">
+                                    <span
+                                        class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Desarrollador</span>
+                                    <span class="text-lg font-bold text-white">{{ development.developer.dev_name
+                                    }}</span>
                                 </div>
                             </div>
                         </section>
 
                         <!-- Amenities -->
-                        <section v-if="development?.devt_bedrooms || development?.devt_parking_spaces || development?.devt_swimming_pools || development?.devt_elevators || development?.devt_green_zones || development?.devt_storage_rooms">
+                        <section
+                            v-if="development?.devt_bedrooms || development?.devt_parking_spaces || development?.devt_swimming_pools || development?.devt_elevators || development?.devt_green_zones || development?.devt_storage_rooms">
                             <h3 class="text-2xl font-bold text-white mb-6">Amenidades Premium</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                                <div v-if="development?.devt_bedrooms" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_bedrooms"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">bed</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_bedrooms }} Recámaras</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_bedrooms }}
+                                        Recámaras</span>
                                 </div>
-                                <div v-if="development?.devt_parking_spaces" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
-                                    <span class="material-symbols-outlined text-primary text-4xl mb-3">local_parking</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_parking_spaces }} Estacionamientos</span>
+                                <div v-if="development?.devt_parking_spaces"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-primary text-4xl mb-3">local_parking</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_parking_spaces }}
+                                        Estacionamientos</span>
                                 </div>
-                                <div v-if="development?.devt_swimming_pools" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_swimming_pools"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">pool</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_swimming_pools }} Piscinas</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_swimming_pools }}
+                                        Piscinas</span>
                                 </div>
-                                <div v-if="development?.devt_elevators" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_elevators"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">elevator</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_elevators }} Elevadores</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_elevators }}
+                                        Elevadores</span>
                                 </div>
-                                <div v-if="development?.devt_green_zones" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_green_zones"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">park</span>
                                     <span class="font-medium text-white text-sm">Zonas Verdes</span>
                                 </div>
-                                <div v-if="development?.devt_storage_rooms" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_storage_rooms"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">storage</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_storage_rooms }} Trasteros</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_storage_rooms }}
+                                        Trasteros</span>
                                 </div>
-                                <div v-if="development?.devt_terraces" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                <div v-if="development?.devt_terraces"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
                                     <span class="material-symbols-outlined text-primary text-4xl mb-3">balcony</span>
-                                    <span class="font-medium text-white text-sm">{{ development.devt_terraces }} Terrazas</span>
+                                    <span class="font-medium text-white text-sm">{{ development.devt_terraces }}
+                                        Terrazas</span>
                                 </div>
-                                <div v-if="development?.devt_golf_courses" class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
-                                    <span class="material-symbols-outlined text-primary text-4xl mb-3">golf_course</span>
+                                <div v-if="development?.devt_golf_courses"
+                                    class="flex flex-col items-center p-6 bg-white/5 border border-white/10 rounded-xl text-center hover:border-primary/50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-primary text-4xl mb-3">golf_course</span>
                                     <span class="font-medium text-white text-sm">Campos de Golf</span>
                                 </div>
                             </div>
@@ -163,15 +206,21 @@ const handleSubmitRequest = () => {
                                 <span class="text-slate-400 text-sm">{{ development.images.length }} fotos</span>
                             </div>
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <div v-for="(image, index) in development.images.slice(0, 6)" :key="index" class="h-48 rounded-lg overflow-hidden cursor-pointer group relative" @click="currentImageIndex = index; showLightbox = true">
-                                    <img :src="image.devImg_url" :alt="`Imagen ${index + 1}`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">fullscreen</span>
+                                <div v-for="(image, index) in development.images.slice(0, 6)" :key="index"
+                                    class="h-48 rounded-lg overflow-hidden cursor-pointer group relative"
+                                    @click="currentImageIndex = index; showLightbox = true">
+                                    <img :src="image.devImg_url" :alt="`Imagen ${index + 1}`"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div
+                                        class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                        <span
+                                            class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">fullscreen</span>
                                     </div>
                                 </div>
                             </div>
                             <div v-if="development.images.length > 6" class="mt-4 text-center">
-                                <button @click="showLightbox = true" class="text-primary hover:text-primary/80 font-medium transition">
+                                <button @click="showLightbox = true"
+                                    class="text-primary hover:text-primary/80 font-medium transition">
                                     Ver todas las {{ development.images.length }} imágenes
                                 </button>
                             </div>
@@ -181,17 +230,20 @@ const handleSubmitRequest = () => {
                         <section v-if="development?.files && development.files.length > 0">
                             <h3 class="text-2xl font-bold text-white mb-6">Documentos y Descargas</h3>
                             <div class="space-y-3">
-                                <div v-for="file in development.files" :key="file.devFile_id" class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-lg hover:border-primary/50 transition-colors group">
+                                <div v-for="file in development.files" :key="file.devFile_id"
+                                    class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-lg hover:border-primary/50 transition-colors group">
                                     <div class="flex items-center gap-4">
                                         <div class="p-2 bg-primary/10 rounded">
                                             <span class="material-symbols-outlined text-primary">description</span>
                                         </div>
                                         <div>
                                             <p class="font-bold text-white">{{ file.devFile_name }}</p>
-                                            <p class="text-xs text-slate-400">{{ file.documentType?.docTyp_name || 'Documento' }}</p>
+                                            <p class="text-xs text-slate-400">{{ file.documentType?.docTyp_name ||
+                                                'Documento' }}</p>
                                         </div>
                                     </div>
-                                    <a :href="route('development.file.download', [development.devt_slug, file.devFile_id])" download class="text-slate-400 group-hover:text-primary transition-colors">
+                                    <a :href="route('development.file.download', [development.devt_slug, file.devFile_id])"
+                                        download class="text-slate-400 group-hover:text-primary transition-colors">
                                         <span class="material-symbols-outlined">download</span>
                                     </a>
                                 </div>
@@ -206,39 +258,66 @@ const handleSubmitRequest = () => {
                             <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
                                 <div class="mb-8">
                                     <p class="text-slate-400 text-sm font-medium">Comenzando desde</p>
-                                    <h4 class="text-3xl font-black text-primary">{{ formatPrice(development?.devt_price_from) }}</h4>
+                                    <h4 class="text-3xl font-black text-primary">{{
+                                        formatPrice(development?.devt_price_from, development?.currency) }}</h4>
                                 </div>
                                 <div class="space-y-4">
                                     <h5 class="font-bold text-lg text-white">Solicitar Información</h5>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre Completo</label>
-                                        <input v-model="formData.name" type="text" placeholder="Juan García" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition"/>
+                                        <label
+                                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre
+                                            Completo</label>
+                                        <input v-model="formData.name" type="text" placeholder="Juan García"
+                                            class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition" />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Correo Electrónico</label>
-                                        <input v-model="formData.email" type="email" placeholder="juan@example.com" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition"/>
+                                        <label
+                                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Correo
+                                            Electrónico</label>
+                                        <input v-model="formData.email" type="email" placeholder="juan@example.com"
+                                            class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition" />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Mensaje (Opcional)</label>
-                                        <textarea v-model="formData.message" placeholder="Me interesa conocer más sobre este proyecto..." rows="3" class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition resize-none"></textarea>
+                                        <label
+                                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Mensaje
+                                            (Opcional)</label>
+                                        <textarea v-model="formData.message"
+                                            placeholder="Me interesa conocer más sobre este proyecto..." rows="3"
+                                            class="w-full bg-white/5 border border-white/10 text-white placeholder-slate-500 rounded-lg p-3 focus:ring-primary focus:border-primary focus:outline-none transition resize-none"></textarea>
                                     </div>
-                                    <button @click="handleSubmitRequest" class="w-full bg-primary hover:bg-primary/90 text-background-dark font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/25 mt-4">
+                                    <button @click="handleSubmitRequest"
+                                        class="w-full bg-primary hover:bg-primary/90 text-background-dark font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/25 mt-4">
                                         Solicitar Detalles
                                     </button>
-                                    <p class="text-[10px] text-center text-slate-400">Al hacer clic en Solicitar Detalles, aceptas nuestros Términos de Uso y Política de Privacidad.</p>
+                                    <p class="text-[10px] text-center text-slate-400">Al hacer clic en Solicitar
+                                        Detalles, aceptas nuestros Términos de Uso y Política de Privacidad.</p>
                                 </div>
                             </div>
 
                             <!-- Developer Info -->
-                            <div v-if="development?.developer" class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
-                                <h5 class="font-bold text-white mb-4">Desarrollador</h5>
-                                <div>
-                                    <p class="font-bold text-white">{{ development.developer.dev_name }}</p>
-                                    <p class="text-sm text-slate-400 mt-2">{{ development.developer.dev_description }}</p>
+                            <div v-if="development?.developer"
+                                class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
+                                <h5 class="font-bold text-white mb-4">Promotor</h5>
+                                <div class="space-y-4">
+                                    <p class="font-bold text-white">{{ development.developer.devr_commercial_name }}</p>
+                                    <div v-if="development.developer.devr_email_contact"
+                                        class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-sm">mail</span>
+                                        <a :href="`mailto:${development.developer.devr_email_contact}`"
+                                            class="text-sm text-slate-300 hover:text-primary transition-colors">{{
+                                                development.developer.devr_email_contact }}</a>
+                                    </div>
+                                    <div v-if="development.developer.devr_phone_contact"
+                                        class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-sm">phone</span>
+                                        <a :href="`tel:${development.developer.devr_phone_contact}`"
+                                            class="text-sm text-slate-300 hover:text-primary transition-colors">{{
+                                                development.developer.devr_phone_contact }}</a>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Status -->
+                            <!-- Status 
                             <div v-if="development?.businessStatus || development?.commercialStatus" class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
                                 <h5 class="font-bold text-white mb-4">Estado del Proyecto</h5>
                                 <div class="space-y-3">
@@ -251,7 +330,7 @@ const handleSubmitRequest = () => {
                                         <span class="text-sm text-white font-medium">{{ development.commercialStatus.cstatus_name }}</span>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </aside>
                 </div>
@@ -262,13 +341,9 @@ const handleSubmitRequest = () => {
         <LandingFooter />
 
         <!-- Image Lightbox Modal -->
-        <ImageLightbox 
-            v-if="showLightbox && development?.images"
-            :images="development.images"
-            :current-index="currentImageIndex"
-            @update:current-index="currentImageIndex = $event"
-            @close="showLightbox = false"
-        />
+        <ImageLightbox v-if="showLightbox && development?.images" :images="development.images"
+            :current-index="currentImageIndex" @update:current-index="currentImageIndex = $event"
+            @close="showLightbox = false" />
     </div>
 </template>
 

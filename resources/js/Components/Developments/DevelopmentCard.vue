@@ -27,9 +27,9 @@
       <div class="pt-2 border-t border-white/10 flex items-center justify-between">
         <div>
           <p class="text-[10px] uppercase text-slate-500 font-semibold tracking-widest">Desde</p>
-          <p class="text-primary font-bold text-lg">{{ formatPrice(development.devt_price_from) }}</p>
+          <p class="text-primary font-bold text-lg">{{ formatPrice(development.devt_price_from, development.currency) }}</p>
           <p v-if="development.devt_price_to && development.devt_price_to !== development.devt_price_from" class="text-[10px] uppercase text-slate-500 font-semibold tracking-widest mt-2">Hasta</p>
-          <p v-if="development.devt_price_to && development.devt_price_to !== development.devt_price_from" class="text-primary font-bold text-lg">{{ formatPrice(development.devt_price_to) }}</p>
+          <p v-if="development.devt_price_to && development.devt_price_to !== development.devt_price_from" class="text-primary font-bold text-lg">{{ formatPrice(development.devt_price_to, development.currency) }}</p>
         </div>
         <button class="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-dark transition-all">
           <span class="material-symbols-outlined">arrow_forward</span>
@@ -50,16 +50,23 @@ defineProps({
 });
 
 
-const formatPrice = (price) => {
+const formatPrice = (price, currency) => {
   if (!price) return 'Consultar';
   const num = Number(price);
+  let formatted = '';
+
   if (num >= 1000000) {
-    return `$${(num / 1000000).toFixed(2)}M`;
+    formatted = `${(num / 1000000).toFixed(2)}M`;
+  } else if (num >= 1000) {
+    formatted = `${(num / 1000).toFixed(0)}K`;
+  } else {
+    formatted = num.toLocaleString();
   }
-  if (num >= 1000) {
-    return `$${(num / 1000).toFixed(0)}K`;
-  }
-  return `$${num.toLocaleString()}`;
+
+  const symbol = currency?.curr_symbol || '$';
+  const symbolFirst = currency?.curr_symbol_first ?? true;
+
+  return symbolFirst ? `${symbol}${formatted}` : `${formatted} ${symbol}`;
 };
 </script>
 

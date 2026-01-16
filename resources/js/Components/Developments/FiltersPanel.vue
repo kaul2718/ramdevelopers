@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
     search: String,
@@ -22,6 +22,14 @@ const selectedHousingType = ref(props.housingType || '')
 const priceFrom = ref(props.priceFrom || '')
 const priceTo = ref(props.priceTo || '')
 
+// Filtrar ciudades según el país seleccionado
+const filteredCities = computed(() => {
+    if (!selectedCountry.value) {
+        return []
+    }
+    return props.cities.filter(city => city.ctry_id === Number(selectedCountry.value))
+})
+
 // Sincronizar cambios externos
 watch(() => props.search, (newVal) => searchQuery.value = newVal || '')
 watch(() => props.country, (newVal) => selectedCountry.value = newVal || '')
@@ -29,6 +37,11 @@ watch(() => props.city, (newVal) => selectedCity.value = newVal || '')
 watch(() => props.housingType, (newVal) => selectedHousingType.value = newVal || '')
 watch(() => props.priceFrom, (newVal) => priceFrom.value = newVal || '')
 watch(() => props.priceTo, (newVal) => priceTo.value = newVal || '')
+
+// Limpiar ciudad cuando cambia el país
+watch(selectedCountry, () => {
+    selectedCity.value = ''
+})
 
 const applyFilters = () => {
     emit('apply', {
@@ -60,31 +73,37 @@ const applyFilters = () => {
                 </div>
 
                 <!-- Country -->
-                <select v-model="selectedCountry"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:ring-primary focus:border-primary">
-                    <option value="" class="bg-[#191e2b] text-white">
-                        Todos los países
-                    </option>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-slate-300 text-sm font-semibold">
+                        <span class="material-symbols-outlined text-[20px]">public</span> País
+                    </label>
+                    <select v-model="selectedCountry"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:ring-primary focus:border-primary">
+                        <option value="" class="bg-[#191e2b] text-white">
+                            Todos los países
+                        </option>
 
-                    <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id"
-                        class="bg-[#191e2b] text-white">
-                        {{ country.ctry_name }}
-                    </option>
-                </select>
+                        <option v-for="country in countries" :key="country.ctry_id" :value="country.ctry_id"
+                            class="bg-[#191e2b] text-white">
+                            {{ country.ctry_name }}
+                        </option>
+                    </select>
+                </div>
 
                 <!-- City -->
                 <div class="space-y-2">
-                    <label class="flex items-center gap-2 text-slate-300 text-sm font-semibold">
+                    <label class="flex items-center gap-2 text-slate-300 text-sm font-semibold" :class="{ 'opacity-50': !selectedCountry }">
                         <span class="material-symbols-outlined text-[20px]">location_on</span> Ciudad
                     </label>
 
-                    <select v-model="selectedCity"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-primary focus:outline-none">
+                    <select v-model="selectedCity" :disabled="!selectedCountry"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg text-sm text-white px-3 py-2 focus:ring-1 focus:ring-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="{ 'opacity-50': !selectedCountry }">
                         <option value="" class="bg-[#191e2b] text-white">
-                            Todas las ciudades
+                            {{ selectedCountry ? 'Todas las ciudades' : 'Selecciona un país primero' }}
                         </option>
 
-                        <option v-for="city in cities" :key="city.city_id" :value="city.city_id"
+                        <option v-for="city in filteredCities" :key="city.city_id" :value="city.city_id"
                             class="bg-[#191e2b] text-white">
                             {{ city.city_name }}
                         </option>
